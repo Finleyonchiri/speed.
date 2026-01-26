@@ -597,7 +597,7 @@
     <!-- Firebase and Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getDatabase, ref, get, set, push, onChildAdded, onValue, update } 
+        import { getDatabase, ref, get, set, push, onChildAdded, onChildChanged, onValue, update, query, orderByChild, equalTo } 
                 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
         // Firebase configuration
@@ -621,6 +621,8 @@
         let currentConversation = null;
         let matches = [];
         let allUsers = [];
+        let messageListeners = {};
+        let conversationListeners = {};
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async () => {
@@ -641,7 +643,9 @@
                 await loadMatches();
                 await loadConversations();
                 setupEventListeners();
-                setupRealtimeListeners();
+                
+                // Start real-time listeners
+                setupConversationsListener();
                 
             } catch (error) {
                 console.error('Error loading messages page:', error);
@@ -693,7 +697,7 @@
                 
             } catch (error) {
                 console.error('Error loading users:', error);
-                showToast('Error loading users. Check database rules.', 'error');
+                showToast('Error loading users', 'error');
             }
         }
 
@@ -735,7 +739,6 @@
                 
             } catch (error) {
                 console.error('Error loading matches:', error);
-                showToast('Error loading matches. Check database rules.', 'error');
             }
         }
 
@@ -787,7 +790,6 @@
                 
             } catch (error) {
                 console.error('Error loading conversations:', error);
-                showToast('Error loading conversations. Check database rules.', 'error');
             }
         }
 
@@ -827,6 +829,151 @@
                 } catch (error) {
                     console.error('Error creating conversation for match:', match.userId, error);
                 }
+            }
+        }
+
+        // Setup real-time conversation listener
+        function setupConversationsListener() {
+            const conversationsRef = ref(database, 'conversations');
+            
+            // Listen for NEW conversations
+            onChildAdded(conversationsRef, async (snapshot) => {
+                const conversation = snapshot.val();
+                const conversationId = snapshot.key;
+                
+                // Check if this conversation involves current user
+                const currentUserId = currentUser.id || currentUser.username;
+                if (conversation.participants && 
+                    (conversation.participants.includes(currentUserId) ||
+                     conversation.participants.includes(currentUser.username))) {
+                    
+                    // Check if we already have this conversation locally
+                    const existingIndex = conversations.findIndex(c => c.id === conversationId);
+                    if (existingIndex === -1) {
+                        // Get other participant
+                        const otherParticipantId = conversation.participants.find(p => 
+                            p !== currentUserId && p !== currentUser.username
+                        );
+                        
+                        // Add to conversations array
+                        conversations.push({
+                            id: conversationId,
+                            participantId: otherParticipantId,
+                            lastMessage: conversation.lastMessage || {},
+                            unreadCount: conversation.unreadCount || 0,
+                            timestamp: conversation.timestamp || new Date().toISOString()
+                        });
+                        
+                        // Update UI
+                        await updateConversationInUI(conversationId, otherParticipantId);
+                    }
+                }
+            });
+            
+            // Listen for UPDATED conversations (new messages, read status)
+            onChildChanged(conversationsRef, async (snapshot) => {
+                const updatedConversation = snapshot.val();
+                const conversationId = snapshot.key;
+                
+                // Check if this conversation involves current user
+                const currentUserId = currentUser.id || currentUser.username;
+                if (updatedConversation.participants && 
+                    (updatedConversation.participants.includes(currentUserId) ||
+                     updatedConversation.participants.includes(currentUser.username))) {
+                    
+                    // Find conversation index
+                    const existingIndex = conversations.findIndex(c => c.id === conversationId);
+                    if (existingIndex !== -1) {
+                        // Update conversation data
+                        const otherParticipantId = updatedConversation.participants.find(p => 
+                            p !== currentUserId && p !== currentUser.username
+                        );
+                        
+                        conversations[existingIndex] = {
+                            ...conversations[existingIndex],
+                            lastMessage: updatedConversation.lastMessage || {},
+                            unreadCount: updatedConversation.unreadCount || 0,
+                            timestamp: updatedConversation.timestamp || new Date().toISOString()
+                        };
+                        
+                        // Update UI
+                        await updateConversationInUI(conversationId, otherParticipantId);
+                        
+                        // If this is the current conversation, update messages too
+                        if (currentConversation === conversationId) {
+                            // Mark as read if we're viewing it
+                            await markConversationAsRead(conversationId);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update conversation in UI
+        async function updateConversationInUI(conversationId, participantId) {
+            try {
+                // Get user data
+                const userData = await getUserData(participantId);
+                if (!userData) return;
+                
+                // Find conversation item in DOM
+                const existingItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
+                const conversation = conversations.find(c => c.id === conversationId);
+                
+                if (!conversation) return;
+                
+                if (existingItem) {
+                    // Update existing item
+                    updateConversationItem(existingItem, conversation, userData);
+                } else {
+                    // Create new item and add to top
+                    const newItem = createConversationItem(conversation, userData);
+                    const conversationsList = document.getElementById('conversationsList');
+                    conversationsList.insertBefore(newItem, conversationsList.firstChild);
+                }
+                
+                // Update badge
+                updateMessagesBadge();
+                
+            } catch (error) {
+                console.error('Error updating conversation in UI:', error);
+            }
+        }
+
+        // Update existing conversation item
+        function updateConversationItem(item, conversation, userData) {
+            // Format time
+            const time = formatTime(conversation.lastMessage?.timestamp || conversation.timestamp);
+            
+            // Truncate last message
+            const lastMessage = conversation.lastMessage?.text || 'No messages yet';
+            const truncatedMessage = lastMessage.length > 30 
+                ? lastMessage.substring(0, 30) + '...' 
+                : lastMessage;
+            
+            // Update content
+            const nameElement = item.querySelector('.conversation-name');
+            const messageElement = item.querySelector('.conversation-last-message');
+            const timeElement = item.querySelector('.conversation-time');
+            const badgeElement = item.querySelector('.unread-badge');
+            
+            if (nameElement) nameElement.textContent = userData.fullName;
+            if (messageElement) messageElement.textContent = truncatedMessage;
+            if (timeElement) timeElement.textContent = time;
+            
+            // Update badge
+            if (conversation.unreadCount > 0) {
+                if (!badgeElement) {
+                    const metaElement = item.querySelector('.conversation-meta');
+                    const badge = document.createElement('div');
+                    badge.className = 'unread-badge';
+                    badge.textContent = conversation.unreadCount;
+                    metaElement.appendChild(badge);
+                } else {
+                    badgeElement.textContent = conversation.unreadCount;
+                }
+            } else if (badgeElement) {
+                badgeElement.remove();
             }
         }
 
@@ -948,6 +1095,12 @@
         // Open conversation
         async function openConversation(conversationId, userData) {
             try {
+                // Remove previous message listener
+                if (messageListeners[currentConversation]) {
+                    messageListeners[currentConversation]();
+                    delete messageListeners[currentConversation];
+                }
+                
                 currentConversation = conversationId;
                 
                 // Mark as active in list
@@ -979,6 +1132,9 @@
                 // Mark conversation as read
                 await markConversationAsRead(conversationId);
                 
+                // Setup real-time message listener for THIS conversation
+                setupMessageListener(conversationId, userData);
+                
                 // On mobile, hide conversations sidebar
                 if (window.innerWidth <= 768) {
                     document.getElementById('conversationsSidebar').classList.remove('active');
@@ -988,6 +1144,36 @@
                 console.error('Error opening conversation:', error);
                 showToast('Error loading conversation', 'error');
             }
+        }
+
+        // Setup real-time message listener for a conversation
+        function setupMessageListener(conversationId, userData) {
+            // Remove existing listener if any
+            if (messageListeners[conversationId]) {
+                messageListeners[conversationId]();
+            }
+            
+            const messagesRef = ref(database, `messages/${conversationId}`);
+            
+            // Listen for NEW messages
+            const unsubscribe = onChildAdded(messagesRef, (snapshot) => {
+                const message = snapshot.val();
+                
+                // Check if message already exists in UI
+                const existingMessage = document.querySelector(`[data-message-id="${snapshot.key}"]`);
+                if (existingMessage) return;
+                
+                // Add message to UI
+                addMessageToUI(message, snapshot.key, userData);
+                
+                // If message is from other user, mark as read
+                if (message.senderId !== currentUser.id && message.senderId !== currentUser.username) {
+                    markMessageAsRead(snapshot.key);
+                }
+            });
+            
+            // Store unsubscribe function
+            messageListeners[conversationId] = unsubscribe;
         }
 
         // Load messages for conversation
@@ -1028,7 +1214,7 @@
                         }
                         
                         // Create message element
-                        const messageElement = createMessageElement(message);
+                        const messageElement = createMessageElement(message, userData);
                         messagesContainer.appendChild(messageElement);
                     });
                     
@@ -1056,12 +1242,69 @@
             }
         }
 
+        // Add message to UI (for real-time updates)
+        function addMessageToUI(message, messageId, userData) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            // Check if this is the "no messages" state
+            const noMessagesDiv = messagesContainer.querySelector('.text-center');
+            if (noMessagesDiv) {
+                messagesContainer.innerHTML = '';
+            }
+            
+            // Create message element
+            const messageElement = createMessageElement({...message, id: messageId}, userData);
+            
+            // Add date separator if needed
+            const messageDate = new Date(message.timestamp).toLocaleDateString();
+            const lastMessage = messagesContainer.lastElementChild;
+            
+            if (lastMessage && lastMessage.classList.contains('message-date')) {
+                const lastDate = lastMessage.textContent;
+                if (formatDate(message.timestamp) !== lastDate) {
+                    const dateElement = document.createElement('div');
+                    dateElement.className = 'message-date';
+                    dateElement.textContent = formatDate(message.timestamp);
+                    messagesContainer.appendChild(dateElement);
+                }
+            } else if (!lastMessage || !lastMessage.classList.contains('message-date')) {
+                const dateElement = document.createElement('div');
+                dateElement.className = 'message-date';
+                dateElement.textContent = formatDate(message.timestamp);
+                messagesContainer.appendChild(dateElement);
+            }
+            
+            messagesContainer.appendChild(messageElement);
+            
+            // Scroll to bottom
+            setTimeout(() => {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 100);
+            
+            // Update conversation in sidebar with new last message
+            updateConversationLastMessage(currentConversation, message);
+        }
+
+        // Update conversation last message
+        async function updateConversationLastMessage(conversationId, message) {
+            try {
+                const conversationRef = ref(database, `conversations/${conversationId}`);
+                await update(conversationRef, {
+                    lastMessage: message,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (error) {
+                console.error('Error updating conversation last message:', error);
+            }
+        }
+
         // Create message element
-        function createMessageElement(message) {
+        function createMessageElement(message, userData) {
             const messageDiv = document.createElement('div');
             const isSent = message.senderId === currentUser.id || message.senderId === currentUser.username;
             
             messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+            messageDiv.dataset.messageId = message.id;
             
             const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
@@ -1106,40 +1349,22 @@
                 
                 // Update conversation last message
                 const conversationRef = ref(database, `conversations/${currentConversation}`);
-                const conversationSnapshot = await get(conversationRef);
-                
-                if (conversationSnapshot.exists()) {
-                    const conversationData = conversationSnapshot.val();
-                    await update(conversationRef, {
-                        lastMessage: message,
-                        timestamp: new Date().toISOString(),
-                        unreadCount: conversationData.participants[0] === currentUser.id || 
-                                    conversationData.participants[0] === currentUser.username ? 
-                                    (conversationData.unreadCount || 0) + 1 : 0
-                    });
-                }
+                await update(conversationRef, {
+                    lastMessage: message,
+                    timestamp: new Date().toISOString(),
+                    unreadCount: 1
+                });
                 
                 // Clear input
                 messageInput.value = '';
                 
-                // Add message to UI
-                const messagesContainer = document.getElementById('messagesContainer');
-                const messageElement = createMessageElement({
-                    ...message,
-                    id: newMessageRef.key
-                });
-                messagesContainer.appendChild(messageElement);
-                
-                // Scroll to bottom
-                setTimeout(() => {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, 100);
+                // Message will appear automatically via real-time listener
                 
                 showToast('Message sent!', 'success');
                 
             } catch (error) {
                 console.error('Error sending message:', error);
-                showToast('Error sending message. Check database rules.', 'error');
+                showToast('Error sending message', 'error');
             }
         }
 
@@ -1147,90 +1372,24 @@
         async function markConversationAsRead(conversationId) {
             try {
                 const conversationRef = ref(database, `conversations/${conversationId}`);
-                const conversationSnapshot = await get(conversationRef);
+                await update(conversationRef, {
+                    unreadCount: 0
+                });
                 
-                if (conversationSnapshot.exists()) {
-                    const conversationData = conversationSnapshot.val();
-                    await update(conversationRef, {
-                        unreadCount: 0
-                    });
-                    
-                    // Update UI
-                    const conversationItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
-                    if (conversationItem) {
-                        const badge = conversationItem.querySelector('.unread-badge');
-                        if (badge) {
-                            badge.remove();
-                        }
+                // Update UI
+                const conversationItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
+                if (conversationItem) {
+                    const badge = conversationItem.querySelector('.unread-badge');
+                    if (badge) {
+                        badge.remove();
                     }
-                    
-                    updateMessagesBadge();
                 }
+                
+                updateMessagesBadge();
                 
             } catch (error) {
                 console.error('Error marking conversation as read:', error);
             }
-        }
-
-        // Setup realtime listeners
-        function setupRealtimeListeners() {
-            // Listen for new messages in current conversation
-            if (currentConversation) {
-                const messagesRef = ref(database, `messages/${currentConversation}`);
-                onChildAdded(messagesRef, (snapshot) => {
-                    const message = snapshot.val();
-                    
-                    // Don't add if message is from current user (we already added it)
-                    if (message.senderId !== currentUser.id && message.senderId !== currentUser.username) {
-                        const messagesContainer = document.getElementById('messagesContainer');
-                        const messageElement = createMessageElement({
-                            ...message,
-                            id: snapshot.key
-                        });
-                        messagesContainer.appendChild(messageElement);
-                        
-                        // Scroll to bottom
-                        setTimeout(() => {
-                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                        }, 100);
-                        
-                        // Mark as read
-                        markMessageAsRead(snapshot.key);
-                    }
-                });
-            }
-            
-            // Listen for conversation updates
-            const conversationsRef = ref(database, 'conversations');
-            onChildAdded(conversationsRef, async (snapshot) => {
-                const conversation = snapshot.val();
-                
-                // Check if this conversation involves current user
-                const currentUserId = currentUser.id || currentUser.username;
-                if (conversation.participants && 
-                    (conversation.participants.includes(currentUserId) ||
-                     conversation.participants.includes(currentUser.username))) {
-                    
-                    // Check if we already have this conversation
-                    const existingIndex = conversations.findIndex(c => c.id === snapshot.key);
-                    if (existingIndex === -1) {
-                        // Get other participant
-                        const otherParticipantId = conversation.participants.find(p => 
-                            p !== currentUserId && p !== currentUser.username
-                        );
-                        
-                        conversations.push({
-                            id: snapshot.key,
-                            participantId: otherParticipantId,
-                            lastMessage: conversation.lastMessage || {},
-                            unreadCount: conversation.unreadCount || 0,
-                            timestamp: conversation.timestamp || new Date().toISOString()
-                        });
-                        
-                        await displayConversations();
-                    }
-                }
-            });
         }
 
         // Mark message as read
@@ -1272,6 +1431,12 @@
                 document.getElementById('emptyChat').style.display = 'flex';
                 document.getElementById('activeChat').style.display = 'none';
                 currentConversation = null;
+                
+                // Remove message listener when leaving chat
+                if (messageListeners[currentConversation]) {
+                    messageListeners[currentConversation]();
+                    delete messageListeners[currentConversation];
+                }
             });
             
             // Mobile menu button
