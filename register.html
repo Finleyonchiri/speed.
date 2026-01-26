@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amora - Create Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .auth-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+        .auth-body {
+            padding: 40px;
+        }
+        .btn-amora {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            font-weight: bold;
+        }
+        .spinner-border {
+            vertical-align: middle;
+        }
+        .profile-image-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-image-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #f093fb;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .profile-image-preview:hover {
+            transform: scale(1.05);
+        }
+        .image-upload-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            border: none;
+        }
+        #imageFile {
+            display: none;
+        }
+        .image-upload-status {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .progress {
+            height: 6px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1 class="display-5 fw-bold">Join Amora</h1>
+                        <p class="mb-0">Create your account to start matching</p>
+                    </div>
+                    <div class="auth-body">
+                        <h2 class="text-center mb-4">Create Account</h2>
+                        
+                        <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+                        <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
+                        
+                        <form id="registerForm">
+                            <!-- Profile Image Upload -->
+                            <div class="profile-image-container">
+                                <img src="https://via.placeholder.com/150x150?text=Upload+Photo" 
+                                     alt="Profile Preview" 
+                                     class="profile-image-preview"
+                                     id="profileImagePreview"
+                                     onclick="document.getElementById('imageFile').click()">
+                                <div>
+                                    <label for="imageFile" class="image-upload-btn">
+                                        <i class="bi bi-camera-fill"></i> Upload Profile Photo
+                                    </label>
+                                    <input type="file" id="imageFile" accept="image/*">
+                                    <div class="image-upload-status" id="imageStatus">
+                                        Click to upload or drag & drop
+                                    </div>
+                                    <div class="progress d-none" id="uploadProgress">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                             role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- User Information -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fullName" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control form-control-lg" id="fullName" 
+                                           placeholder="Enter your full name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="username" class="form-label">Username *</label>
+                                    <input type="text" class="form-control form-control-lg" id="username" 
+                                           placeholder="Choose a username" required>
+                                    <div class="form-text">3-20 characters, letters and numbers only</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control form-control-lg" id="email" 
+                                           placeholder="Enter your email" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control form-control-lg" id="phone" 
+                                           placeholder="Enter phone number" required>
+                                    <div class="form-text">Format: 1234567890 (no spaces/dashes)</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="gender" class="form-label">Gender *</label>
+                                    <select class="form-control form-control-lg" id="gender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="dob" class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control form-control-lg" id="dob" 
+                                           max="2006-01-01" required>
+                                    <div class="form-text">Must be 18+ years old</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bio/About Me -->
+                            <div class="mb-3">
+                                <label for="bio" class="form-label">About Me</label>
+                                <textarea class="form-control form-control-lg" id="bio" 
+                                          placeholder="Tell us about yourself (optional)" 
+                                          rows="3" maxlength="500"></textarea>
+                                <div class="form-text"><span id="bioCounter">0</span>/500 characters</div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">Password *</label>
+                                    <input type="password" class="form-control form-control-lg" id="password" 
+                                           placeholder="Create password" required>
+                                    <div class="form-text">At least 8 characters</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                                    <input type="password" class="form-control form-control-lg" id="confirmPassword" 
+                                           placeholder="Confirm password" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                                        <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-amora btn-lg mb-3" id="registerBtn">
+                                Create Account
+                            </button>
+                            
+                            <div class="text-center">
+                                <p class="mb-0">Already have an account? 
+                                    <a href="index.html" class="text-decoration-none fw-bold">Sign In</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getDatabase, ref, set, get, query, orderByChild, equalTo } 
+                from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEzRCOw2E89qjewG-vuQ_SWBWUbGdDHv8",
+            authDomain: "how-fast-bcabe.firebaseapp.com",
+            databaseURL: "https://how-fast-bcabe-default-rtdb.firebaseio.com",
+            projectId: "how-fast-bcabe",
+            storageBucket: "how-fast-bcabe.firebasestorage.app",
+            messagingSenderId: "435644508816",
+            appId: "1:435644508816:web:53e51d3cc22331996e4615",
+            measurementId: "G-ZBZZK4D9D0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // ImgBB API Key
+        const IMGBB_API_KEY = 'cadf18f0796ebaedaa486eff1586bdc4';
+        const IMGBB_UPLOAD_URL = 'https://api.imgbb.com/1/upload';
+
+        // DOM Elements
+        const registerForm = document.getElementById('registerForm');
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
+        const registerBtn = document.getElementById('registerBtn');
+        const imageFileInput = document.getElementById('imageFile');
+        const profileImagePreview = document.getElementById('profileImagePreview');
+        const imageStatus = document.getElementById('imageStatus');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const bioTextarea = document.getElementById('bio');
+        const bioCounter = document.getElementById('bioCounter');
+
+        // Variables
+        let profileImageUrl = '';
+        let isUploading = false;
+
+        // Bio character counter
+        bioTextarea.addEventListener('input', () => {
+            bioCounter.textContent = bioTextarea.value.length;
+        });
+
+        // Image preview and upload
+        imageFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showAlert('error', 'Please select an image file');
+                return;
+            }
+
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showAlert('error', 'Image size must be less than 5MB');
+                return;
+            }
+
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profileImagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Upload to ImgBB
+            await uploadToImgBB(file);
+        });
+
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            profileImagePreview.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            profileImagePreview.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            profileImagePreview.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            profileImagePreview.style.transform = 'scale(1.1)';
+            profileImagePreview.style.borderColor = '#667eea';
+        }
+
+        function unhighlight() {
+            profileImagePreview.style.transform = 'scale(1)';
+            profileImagePreview.style.borderColor = '#f093fb';
+        }
+
+        profileImagePreview.addEventListener('drop', async (e) => {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            
+            if (file && file.type.startsWith('image/')) {
+                imageFileInput.files = dt.files;
+                const changeEvent = new Event('change');
+                imageFileInput.dispatchEvent(changeEvent);
+            }
+        });
+
+        // Upload image to ImgBB
+        async function uploadToImgBB(file) {
+            if (isUploading) return;
+            
+            isUploading = true;
+            imageStatus.textContent = 'Uploading...';
+            uploadProgress.classList.remove('d-none');
+            const progressBar = uploadProgress.querySelector('.progress-bar');
+            progressBar.style.width = '0%';
+            
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('key', IMGBB_API_KEY);
+                
+                // Simulate progress for better UX
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    if (progress <= 90) {
+                        progressBar.style.width = progress + '%';
+                    }
+                }, 100);
+                
+                const response = await fetch(IMGBB_UPLOAD_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                clearInterval(progressInterval);
+                
+                if (!response.ok) {
+                    throw new Error(`Upload failed: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    profileImageUrl = data.data.url;
+                    imageStatus.textContent = 'Upload successful!';
+                    progressBar.style.width = '100%';
+                    progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+                    progressBar.classList.add('bg-success');
+                    
+                    setTimeout(() => {
+                        uploadProgress.classList.add('d-none');
+                        progressBar.classList.remove('bg-success');
+                        progressBar.classList.add('progress-bar-striped', 'progress-bar-animated');
+                        progressBar.style.width = '0%';
+                    }, 2000);
+                } else {
+                    throw new Error(data.error?.message || 'Upload failed');
+                }
+                
+            } catch (error) {
+                console.error('Image upload error:', error);
+                imageStatus.textContent = 'Upload failed. Click to try again';
+                profileImageUrl = '';
+                uploadProgress.classList.add('d-none');
+                showAlert('error', 'Failed to upload image. You can continue without a profile picture.');
+            } finally {
+                isUploading = false;
+            }
+        }
+
+        // Check if username or email already exists
+        async function checkUserExists(field, value) {
+            try {
+                console.log(`Checking if ${field}: ${value} exists...`);
+                const usersRef = ref(database, 'users');
+                const userQuery = query(usersRef, orderByChild(field), equalTo(value));
+                const snapshot = await get(userQuery);
+                
+                console.log(`Check result for ${field}:`, snapshot.exists());
+                return snapshot.exists();
+            } catch (error) {
+                console.error(`Error checking ${field}:`, error);
+                if (error.message.includes('Permission denied')) {
+                    return false;
+                }
+                throw error;
+            }
+        }
+
+        // Register new user
+        async function registerUser(userData) {
+            try {
+                registerBtn.disabled = true;
+                registerBtn.innerHTML = 'Creating account... <span class="spinner-border spinner-border-sm"></span>';
+                
+                console.log('Registering user with data:', userData);
+                
+                // Check if username already exists
+                const usernameExists = await checkUserExists('username', userData.username);
+                if (usernameExists) {
+                    showAlert('error', 'Username already taken. Please choose another.');
+                    return false;
+                }
+                
+                // Check if email already exists
+                const emailExists = await checkUserExists('email', userData.email);
+                if (emailExists) {
+                    showAlert('error', 'Email already registered. Please use a different email.');
+                    return false;
+                }
+                
+                // Check if phone already exists
+                const phoneExists = await checkUserExists('phone', userData.phone);
+                if (phoneExists) {
+                    showAlert('error', 'Phone number already registered.');
+                    return false;
+                }
+                
+                // Create user in database
+                const userId = 'user_' + Date.now();
+                const newUserRef = ref(database, 'users/' + userId);
+                
+                console.log('Saving user to database at path:', 'users/' + userId);
+                
+                await set(newUserRef, userData);
+                
+                console.log('User saved successfully');
+                
+                showAlert('success', 'Account created successfully! Redirecting to login...');
+                
+                // Store user data temporarily for login
+                localStorage.setItem('temp_user', JSON.stringify({
+                    username: userData.username,
+                    password: userData.password
+                }));
+                
+                // Clear form
+                registerForm.reset();
+                profileImagePreview.src = 'https://via.placeholder.com/150x150?text=Upload+Photo';
+                profileImageUrl = '';
+                bioCounter.textContent = '0';
+                
+                // Redirect to login after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+                return true;
+                
+            } catch (error) {
+                console.error('Registration error details:', error);
+                showAlert('error', `Error: ${error.message}. Please try again.`);
+                return false;
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'Create Account';
+            }
+        }
+
+        // Show alert message
+        function showAlert(type, message) {
+            if (type === 'error') {
+                errorAlert.textContent = message;
+                errorAlert.classList.remove('d-none');
+                successAlert.classList.add('d-none');
+            } else {
+                successAlert.textContent = message;
+                successAlert.classList.remove('d-none');
+                errorAlert.classList.add('d-none');
+            }
+            
+            setTimeout(() => {
+                errorAlert.classList.add('d-none');
+                successAlert.classList.add('d-none');
+            }, 5000);
+        }
+
+        // Form validation
+        function validateForm(formData) {
+            const errors = [];
+            
+            // Full name validation
+            if (!formData.fullName || formData.fullName.trim().length < 2) {
+                errors.push('Please enter a valid full name');
+            }
+            
+            // Username validation
+            const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+            if (!usernameRegex.test(formData.username)) {
+                errors.push('Username must be 3-20 characters (letters, numbers, underscore only)');
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                errors.push('Please enter a valid email address');
+            }
+            
+            // Phone validation
+            const phoneRegex = /^[0-9]{10,15}$/;
+            const cleanPhone = formData.phone.replace(/\D/g, '');
+            if (!phoneRegex.test(cleanPhone)) {
+                errors.push('Please enter a valid phone number (10-15 digits)');
+            } else {
+                formData.phone = cleanPhone;
+            }
+            
+            // Gender validation
+            if (!formData.gender) {
+                errors.push('Please select your gender');
+            }
+            
+            // Password validation
+            if (formData.password.length < 8) {
+                errors.push('Password must be at least 8 characters');
+            }
+            
+            if (formData.password !== formData.confirmPassword) {
+                errors.push('Passwords do not match');
+            }
+            
+            // Age validation (must be 18+)
+            const dob = new Date(formData.dob);
+            const today = new Date();
+            const age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            const dayDiff = today.getDate() - dob.getDate();
+            
+            if (age < 18 || (age === 18 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
+                errors.push('You must be at least 18 years old');
+            }
+            
+            return { errors, cleanedData: formData };
+        }
+
+        // Form submission handler
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                fullName: document.getElementById('fullName').value.trim(),
+                username: document.getElementById('username').value.trim(),
+                email: document.getElementById('email').value.trim().toLowerCase(),
+                phone: document.getElementById('phone').value.trim(),
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                bio: document.getElementById('bio').value.trim(),
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                profileImage: profileImageUrl,
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                isActive: true
+            };
+            
+            // Validate form
+            const validation = validateForm(formData);
+            if (validation.errors.length > 0) {
+                showAlert('error', validation.errors[0]);
+                return;
+            }
+            
+            // Prepare user data for database
+            const userData = {
+                fullName: validation.cleanedData.fullName,
+                username: validation.cleanedData.username,
+                email: validation.cleanedData.email,
+                phone: validation.cleanedData.phone,
+                gender: validation.cleanedData.gender,
+                dob: validation.cleanedData.dob,
+                bio: validation.cleanedData.bio || '',
+                profileImage: validation.cleanedData.profileImage || '',
+                password: validation.cleanedData.password,
+                createdAt: validation.cleanedData.createdAt,
+                lastLogin: validation.cleanedData.lastLogin,
+                isActive: validation.cleanedData.isActive
+            };
+            
+            // Register user
+            await registerUser(userData);
+        });
+
+        // Pre-fill form with temp user data if coming from registration
+        window.addEventListener('DOMContentLoaded', () => {
+            const tempUser = localStorage.getItem('temp_user');
+            if (tempUser) {
+                try {
+                    const user = JSON.parse(tempUser);
+                    document.getElementById('username').value = user.username || '';
+                    document.getElementById('password').value = user.password || '';
+                    localStorage.removeItem('temp_user');
+                } catch (e) {
+                    console.error('Error parsing temp user:', e);
+                }
+            }
+        });
+    </script>
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

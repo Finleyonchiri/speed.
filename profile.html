@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Amora</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --primary-color: #f5576c;
+            --secondary-color: #f093fb;
+            --light-bg: #f8f9fa;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.3s ease, transform 0.3s ease, 
+                        opacity 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: var(--primary-gradient);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link.active {
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+        }
+        
+        /* Profile Header */
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .profile-cover {
+            height: 200px;
+            background: var(--primary-gradient);
+            position: relative;
+        }
+        
+        .profile-image-container {
+            text-align: center;
+            margin-top: -75px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .profile-image-edit {
+            position: absolute;
+            bottom: 10px;
+            right: calc(50% - 75px);
+            background: var(--primary-gradient);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid white;
+        }
+        
+        /* Sections */
+        .profile-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+        }
+        
+        .profile-section:hover {
+            border-color: #eee;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Editable Fields */
+        .editable-field {
+            position: relative;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .editable-field:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .editable-field.editing {
+            background-color: #f0f7ff;
+        }
+        
+        .edit-icon {
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: #6c757d;
+        }
+        
+        .editable-field:hover .edit-icon {
+            opacity: 1;
+        }
+        
+        /* Tags & Hobbies */
+        .tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 6px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9rem;
+            border: 1px solid #dee2e6;
+        }
+        
+        .tag.add-tag {
+            background: transparent;
+            border: 2px dashed #ced4da;
+            color: #6c757d;
+            cursor: pointer;
+        }
+        
+        .tag.add-tag:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Modal */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        
+        /* Status Indicator */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #28a745;
+            margin-right: 8px;
+        }
+        
+        /* Action Buttons */
+        .action-btn {
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+        
+        /* Save Indicator */
+        .save-indicator {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateX(100px);
+            z-index: 1000;
+        }
+        
+        .save-indicator.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Profile Stats */
+        .profile-stat {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-heart-fill me-2"></i>Amora
+            </a>
+            <div class="navbar-nav ms-auto align-items-center">
+                <a class="nav-link" href="home.html">
+                    <i class="bi bi-house me-1"></i> Discover
+                </a>
+                <a class="nav-link active" href="profile.html">
+                    <i class="bi bi-person me-1"></i> Profile
+                </a>
+                <a class="nav-link" href="matches.html">
+                    <i class="bi bi-chat-dots me-1"></i> Matches
+                </a>
+                <a class="nav-link" href="likes.html">
+                    <i class="bi bi-heart me-1"></i> Likes
+                </a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                       data-bs-toggle="dropdown">
+                        <img src="" alt="Profile" class="user-avatar me-2" id="navProfileImage" 
+                             style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                        <span id="navUsername"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" id="editProfileBtn">
+                            <i class="bi bi-pencil me-2"></i>Edit Profile
+                        </a></li>
+                        <li><a class="dropdown-item" href="settings.html">
+                            <i class="bi bi-gear me-2"></i>Settings
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button class="dropdown-item" id="logoutBtn">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Save Indicator -->
+    <div class="save-indicator" id="saveIndicator">
+        <i class="bi bi-check-circle me-2"></i>Changes saved!
+    </div>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <!-- Profile Header -->
+        <div class="profile-header mb-4">
+            <div class="profile-cover"></div>
+            <div class="profile-image-container">
+                <img src="" alt="Profile" class="profile-image" id="profileImage">
+                <div class="profile-image-edit" data-bs-toggle="modal" data-bs-target="#imageUploadModal">
+                    <i class="bi bi-camera-fill"></i>
+                </div>
+            </div>
+            <div class="text-center p-4">
+                <h2 id="profileName" class="mb-2 editable-field" data-field="fullName">
+                    <span id="fullNameDisplay"></span>
+                    <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                </h2>
+                <div class="mb-3">
+                    <span class="badge bg-primary fs-6 editable-field" data-field="title" id="titleDisplay">
+                        <span>Add your title</span>
+                        <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                    </span>
+                </div>
+                <p class="text-muted">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    <span class="editable-field" data-field="location" id="locationDisplay">
+                        <span>Add location</span>
+                        <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                    </span>
+                    •
+                    <i class="bi bi-calendar me-1 ms-2"></i>
+                    <span id="ageDisplay"></span> years old
+                    •
+                    <span class="status-indicator"></span>
+                    <span id="memberSince"></span>
+                </p>
+            </div>
+            
+            <!-- Profile Stats -->
+            <div class="row text-center border-top py-3 mx-0">
+                <div class="col">
+                    <div class="profile-stat">
+                        <div class="stat-number" id="likesCount">0</div>
+                        <div class="stat-label">Likes</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="profile-stat">
+                        <div class="stat-number" id="matchesCount">0</div>
+                        <div class="stat-label">Matches</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="profile-stat">
+                        <div class="stat-number" id="viewsCount">0</div>
+                        <div class="stat-label">Views</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- About Me -->
+                <div class="profile-section">
+                    <h4 class="section-title">
+                        <i class="bi bi-person-circle me-2"></i>About Me
+                    </h4>
+                    <div class="editable-field mb-3" data-field="bio" id="bioDisplay">
+                        <p class="mb-0">Tell others about yourself...</p>
+                        <i class="bi bi-pencil-square edit-icon"></i>
+                    </div>
+                    
+                    <h6 class="mt-4"><i class="bi bi-stars me-2"></i>Why I'm Here</h6>
+                    <div class="editable-field" data-field="reason" id="reasonDisplay">
+                        <p class="mb-0">Share what you're looking for...</p>
+                        <i class="bi bi-pencil-square edit-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Hobbies & Interests -->
+                <div class="profile-section">
+                    <h4 class="section-title">
+                        <i class="bi bi-heart me-2"></i>Hobbies & Interests
+                    </h4>
+                    <div id="hobbiesContainer">
+                        <div class="d-flex flex-wrap mb-3">
+                            <!-- Hobbies will be loaded here -->
+                        </div>
+                        <div class="tag add-tag" id="addHobbyBtn">
+                            <i class="bi bi-plus me-1"></i> Add hobby
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lifestyle -->
+                <div class="profile-section">
+                    <h4 class="section-title">
+                        <i class="bi bi-sun me-2"></i>Lifestyle
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Education</label>
+                            <div class="editable-field" data-field="education" id="educationDisplay">
+                                <span>Add education</span>
+                                <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Profession</label>
+                            <div class="editable-field" data-field="profession" id="professionDisplay">
+                                <span>Add profession</span>
+                                <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Relationship Goals</label>
+                            <div class="editable-field" data-field="relationshipGoals" id="goalsDisplay">
+                                <span>Add goals</span>
+                                <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Personality Type</label>
+                            <div class="editable-field" data-field="personality" id="personalityDisplay">
+                                <span>Add personality</span>
+                                <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Contact Info -->
+                <div class="profile-section">
+                    <h4 class="section-title">
+                        <i class="bi bi-telephone me-2"></i>Contact Info
+                    </h4>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <div class="editable-field" data-field="email" id="emailDisplay">
+                            <span>Loading...</span>
+                            <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <div class="editable-field" data-field="phone" id="phoneDisplay">
+                            <span>Loading...</span>
+                            <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Gender</label>
+                        <div id="genderDisplay"></div>
+                    </div>
+                </div>
+
+                <!-- Preferences -->
+                <div class="profile-section">
+                    <h4 class="section-title">
+                        <i class="bi bi-sliders me-2"></i>Preferences
+                    </h4>
+                    <div class="mb-3">
+                        <label class="form-label">Looking for</label>
+                        <div class="editable-field" data-field="lookingFor" id="lookingForDisplay">
+                            <span>Add preferences</span>
+                            <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age Range</label>
+                        <div id="ageRangeDisplay">18 - 40</div>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div class="profile-section">
+                    <h4 class="section-title">
+                        <i class="bi bi-link-45deg me-2"></i>Social Links
+                    </h4>
+                    <div class="mb-3">
+                        <label class="form-label">Instagram</label>
+                        <div class="editable-field" data-field="instagram" id="instagramDisplay">
+                            <span>@username</span>
+                            <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Twitter</label>
+                        <div class="editable-field" data-field="twitter" id="twitterDisplay">
+                            <span>@username</span>
+                            <i class="bi bi-pencil-square edit-icon ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Upload Modal -->
+    <div class="modal fade" id="imageUploadModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Profile Picture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="" alt="Current" class="img-fluid rounded mb-3" 
+                             id="currentImage" style="max-height: 200px;">
+                        <input type="file" class="form-control" id="newImageFile" accept="image/*">
+                        <div class="progress mt-3 d-none" id="imageUploadProgress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="uploadImageBtn">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Field Modal -->
+    <div class="modal fade" id="editFieldModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalTitle">Edit Field</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="editFieldContent">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveFieldBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase and Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getDatabase, ref, get, set, update, query, orderByChild, equalTo } 
+                from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEzRCOw2E89qjewG-vuQ_SWBWUbGdDHv8",
+            authDomain: "how-fast-bcabe.firebaseapp.com",
+            databaseURL: "https://how-fast-bcabe-default-rtdb.firebaseio.com",
+            projectId: "how-fast-bcabe",
+            storageBucket: "how-fast-bcabe.firebasestorage.app",
+            messagingSenderId: "435644508816",
+            appId: "1:435644508816:web:53e51d3cc22331996e4615",
+            measurementId: "G-ZBZZK4D9D0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // ImgBB API Key
+        const IMGBB_API_KEY = 'cadf18f0796ebaedaa486eff1586bdc4';
+        const IMGBB_UPLOAD_URL = 'https://api.imgbb.com/1/upload';
+
+        // Global variables
+        let currentUser = null;
+        let userData = {};
+        let isEditing = false;
+        let currentEditField = null;
+        let pendingUpdates = {};
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('amora_user');
+            
+            if (!storedUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            try {
+                currentUser = JSON.parse(storedUser);
+                
+                // Load user data immediately from localStorage first
+                loadFromLocalStorage();
+                
+                // Then fetch fresh data from Firebase
+                await loadUserData();
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Update profile stats
+                await updateProfileStats();
+                
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showMessage('Error loading profile data', 'error');
+            }
+        });
+
+        // Load user data from localStorage first (instant display)
+        function loadFromLocalStorage() {
+            const user = JSON.parse(localStorage.getItem('amora_user') || '{}');
+            
+            // Update navigation
+            document.getElementById('navUsername').textContent = user.fullName || user.username || '';
+            document.getElementById('navProfileImage').src = user.profileImage || 
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName || user.username || 'U')}&background=f093fb&color=fff&size=32`;
+            
+            // Update profile header
+            document.getElementById('fullNameDisplay').textContent = user.fullName || user.username || 'Your Name';
+            document.getElementById('profileName').textContent = user.fullName || user.username || 'Your Name';
+            
+            if (user.profileImage) {
+                document.getElementById('profileImage').src = user.profileImage;
+                document.getElementById('currentImage').src = user.profileImage;
+            }
+            
+            // Update other fields if available
+            if (user.title) document.getElementById('titleDisplay').innerHTML = 
+                `${user.title} <i class="bi bi-pencil-square edit-icon ms-2"></i>`;
+            
+            if (user.location) document.getElementById('locationDisplay').innerHTML = 
+                `${user.location} <i class="bi bi-pencil-square edit-icon ms-2"></i>`;
+            
+            if (user.bio) document.getElementById('bioDisplay').innerHTML = 
+                `<p class="mb-0">${user.bio}</p><i class="bi bi-pencil-square edit-icon"></i>`;
+            
+            if (user.email) document.getElementById('emailDisplay').innerHTML = 
+                `${user.email} <i class="bi bi-pencil-square edit-icon ms-2"></i>`;
+            
+            if (user.phone) document.getElementById('phoneDisplay').innerHTML = 
+                `${user.phone} <i class="bi bi-pencil-square edit-icon ms-2"></i>`;
+        }
+
+        // Load user data from Firebase
+        async function loadUserData() {
+            try {
+                if (!currentUser || !currentUser.id) {
+                    // Try to find user by username/email
+                    const storedUser = JSON.parse(localStorage.getItem('amora_user') || '{}');
+                    const identifier = storedUser.username || storedUser.email;
+                    
+                    if (!identifier) return;
+                    
+                    const usersRef = ref(database, 'users');
+                    let userQuery = query(usersRef, orderByChild('username'), equalTo(identifier));
+                    let snapshot = await get(userQuery);
+                    
+                    if (!snapshot.exists()) {
+                        userQuery = query(usersRef, orderByChild('email'), equalTo(identifier));
+                        snapshot = await get(userQuery);
+                    }
+                    
+                    if (snapshot.exists()) {
+                        const users = snapshot.val();
+                        const userKey = Object.keys(users)[0];
+                        userData = users[userKey];
+                        currentUser.id = userKey;
+                        userData.id = userKey;
+                    } else {
+                        return;
+                    }
+                } else {
+                    // Load by user ID
+                    const userRef = ref(database, 'users/' + currentUser.id);
+                    const snapshot = await get(userRef);
+                    
+                    if (snapshot.exists()) {
+                        userData = snapshot.val();
+                        userData.id = currentUser.id;
+                    }
+                }
+                
+                // Merge with current user data
+                if (userData) {
+                    // Update localStorage with fresh data
+                    const updatedUser = {
+                        ...currentUser,
+                        ...userData
+                    };
+                    localStorage.setItem('amora_user', JSON.stringify(updatedUser));
+                    currentUser = updatedUser;
+                    
+                    // Update UI with fresh data
+                    updateProfileUI();
+                }
+                
+            } catch (error) {
+                console.error('Error loading user data from Firebase:', error);
+            }
+        }
+
+        // Update profile UI with user data
+        function updateProfileUI() {
+            // Calculate age
+            let age = '';
+            if (userData.dob) {
+                const dob = new Date(userData.dob);
+                const today = new Date();
+                age = today.getFullYear() - dob.getFullYear();
+                const monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                document.getElementById('ageDisplay').textContent = age;
+            }
+            
+            // Update all fields
+            const fieldMap = {
+                fullName: { element: 'fullNameDisplay', default: 'Your Name' },
+                title: { element: 'titleDisplay', default: 'Add your title' },
+                location: { element: 'locationDisplay', default: 'Add location' },
+                bio: { element: 'bioDisplay', default: 'Tell others about yourself...', isTextarea: true },
+                reason: { element: 'reasonDisplay', default: 'Share what you\'re looking for...', isTextarea: true },
+                email: { element: 'emailDisplay', default: 'Add email' },
+                phone: { element: 'phoneDisplay', default: 'Add phone' },
+                education: { element: 'educationDisplay', default: 'Add education' },
+                profession: { element: 'professionDisplay', default: 'Add profession' },
+                relationshipGoals: { element: 'goalsDisplay', default: 'Add goals' },
+                personality: { element: 'personalityDisplay', default: 'Add personality' },
+                lookingFor: { element: 'lookingForDisplay', default: 'Add preferences' },
+                instagram: { element: 'instagramDisplay', default: '@username' },
+                twitter: { element: 'twitterDisplay', default: '@username' }
+            };
+            
+            Object.entries(fieldMap).forEach(([field, config]) => {
+                const value = userData[field];
+                const element = document.getElementById(config.element);
+                
+                if (element) {
+                    if (value && value.trim() !== '') {
+                        if (config.isTextarea) {
+                            element.innerHTML = `<p class="mb-0">${value}</p><i class="bi bi-pencil-square edit-icon"></i>`;
+                        } else {
+                            element.innerHTML = `${value} <i class="bi bi-pencil-square edit-icon ms-2"></i>`;
+                        }
+                    } else {
+                        element.innerHTML = `<span>${config.default}</span> <i class="bi bi-pencil-square edit-icon ms-2"></i>`;
+                    }
+                }
+            });
+            
+            // Update gender
+            if (userData.gender) {
+                const genderMap = {
+                    'male': 'Male',
+                    'female': 'Female',
+                    'other': 'Other',
+                    'prefer-not-to-say': 'Prefer not to say'
+                };
+                document.getElementById('genderDisplay').textContent = genderMap[userData.gender] || userData.gender;
+            }
+            
+            // Update profile image
+            if (userData.profileImage) {
+                const profileImage = document.getElementById('profileImage');
+                const navProfileImage = document.getElementById('navProfileImage');
+                const currentImage = document.getElementById('currentImage');
+                
+                profileImage.src = userData.profileImage;
+                navProfileImage.src = userData.profileImage;
+                currentImage.src = userData.profileImage;
+            }
+            
+            // Update member since
+            if (userData.createdAt) {
+                const date = new Date(userData.createdAt);
+                const options = { year: 'numeric', month: 'long' };
+                document.getElementById('memberSince').textContent = `Member since ${date.toLocaleDateString('en-US', options)}`;
+            }
+            
+            // Load hobbies
+            loadHobbies();
+            
+            // Update nav username
+            document.getElementById('navUsername').textContent = userData.fullName || userData.username || '';
+        }
+
+        // Load hobbies
+        function loadHobbies() {
+            const hobbiesContainer = document.querySelector('#hobbiesContainer .d-flex.flex-wrap');
+            hobbiesContainer.innerHTML = '';
+            
+            const hobbies = userData.hobbies || [];
+            
+            hobbies.forEach((hobby, index) => {
+                const hobbyTag = document.createElement('div');
+                hobbyTag.className = 'tag';
+                hobbyTag.innerHTML = `
+                    ${hobby}
+                    <i class="bi bi-x ms-2" data-index="${index}" style="cursor: pointer;"></i>
+                `;
+                hobbiesContainer.appendChild(hobbyTag);
+            });
+            
+            // Add event listeners to remove buttons
+            hobbiesContainer.querySelectorAll('.bi-x').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const index = parseInt(icon.dataset.index);
+                    removeHobby(index);
+                });
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', () => {
+                // Highlight all editable fields
+                document.querySelectorAll('.editable-field').forEach(field => {
+                    field.classList.add('editing');
+                    setTimeout(() => field.classList.remove('editing'), 1000);
+                });
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('amora_user');
+                window.location.href = 'index.html';
+            });
+            
+            // Editable fields
+            document.querySelectorAll('.editable-field').forEach(field => {
+                field.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('bi-x')) return;
+                    const fieldName = field.dataset.field;
+                    openEditModal(fieldName, field);
+                });
+            });
+            
+            // Add hobby button
+            document.getElementById('addHobbyBtn').addEventListener('click', addHobby);
+            
+            // Image upload
+            document.getElementById('uploadImageBtn').addEventListener('click', uploadProfileImage);
+            document.getElementById('newImageFile').addEventListener('change', previewImage);
+            
+            // Modal save button
+            document.getElementById('saveFieldBtn').addEventListener('click', saveField);
+            
+            // Navigation links (prevent full page reload)
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.href.includes('home.html') || link.href.includes('matches.html') || 
+                    link.href.includes('likes.html')) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        navigateTo(link.href);
+                    });
+                }
+            });
+        }
+
+        // Open edit modal
+        function openEditModal(fieldName, fieldElement) {
+            currentEditField = fieldName;
+            
+            const fieldMap = {
+                fullName: { label: 'Full Name', type: 'text', placeholder: 'Enter your full name' },
+                title: { label: 'Title/Profession', type: 'text', placeholder: 'e.g., Interior Designer, Software Engineer' },
+                location: { label: 'Location', type: 'text', placeholder: 'Enter your city' },
+                bio: { label: 'About Me', type: 'textarea', placeholder: 'Tell others about yourself...' },
+                reason: { label: 'Why I\'m Here', type: 'textarea', placeholder: 'Share what you\'re looking for in a relationship...' },
+                email: { label: 'Email', type: 'email', placeholder: 'Enter your email' },
+                phone: { label: 'Phone', type: 'tel', placeholder: 'Enter your phone number' },
+                education: { label: 'Education', type: 'text', placeholder: 'e.g., Bachelor\'s in Computer Science' },
+                profession: { label: 'Profession', type: 'text', placeholder: 'e.g., Interior Designer' },
+                relationshipGoals: { label: 'Relationship Goals', type: 'text', placeholder: 'e.g., Long-term relationship, Marriage' },
+                personality: { label: 'Personality Type', type: 'text', placeholder: 'e.g., Introvert, Adventurous' },
+                lookingFor: { label: 'Looking For', type: 'text', placeholder: 'e.g., Someone kind and ambitious' },
+                instagram: { label: 'Instagram', type: 'text', placeholder: '@username' },
+                twitter: { label: 'Twitter', type: 'text', placeholder: '@username' }
+            };
+            
+            const config = fieldMap[fieldName] || { label: fieldName, type: 'text' };
+            const currentValue = userData[fieldName] || '';
+            
+            document.getElementById('editModalTitle').textContent = `Edit ${config.label}`;
+            
+            let inputHtml = '';
+            if (config.type === 'textarea') {
+                inputHtml = `
+                    <textarea class="form-control" id="editFieldInput" rows="4" 
+                              placeholder="${config.placeholder}">${currentValue}</textarea>
+                `;
+            } else {
+                inputHtml = `
+                    <input type="${config.type}" class="form-control" id="editFieldInput" 
+                           value="${currentValue}" placeholder="${config.placeholder}">
+                `;
+            }
+            
+            document.getElementById('editFieldContent').innerHTML = inputHtml;
+            
+            const modal = new bootstrap.Modal(document.getElementById('editFieldModal'));
+            modal.show();
+            
+            // Focus the input
+            setTimeout(() => {
+                document.getElementById('editFieldInput').focus();
+            }, 100);
+        }
+
+        // Save field
+        async function saveField() {
+            const input = document.getElementById('editFieldInput');
+            const value = input.value.trim();
+            const fieldName = currentEditField;
+            
+            if (value === '') {
+                showMessage('Please enter a value', 'error');
+                return;
+            }
+            
+            // Update userData
+            userData[fieldName] = value;
+            
+            // Update UI immediately
+            const element = document.querySelector(`[data-field="${fieldName}"]`);
+            if (element) {
+                if (fieldName === 'bio' || fieldName === 'reason') {
+                    element.innerHTML = `<p class="mb-0">${value}</p><i class="bi bi-pencil-square edit-icon"></i>`;
+                } else {
+                    element.innerHTML = `${value} <i class="bi bi-pencil-square edit-icon ms-2"></i>`;
+                }
+            }
+            
+            // Special cases
+            if (fieldName === 'fullName') {
+                document.getElementById('navUsername').textContent = value;
+                document.getElementById('profileName').textContent = value;
+            }
+            
+            // Save to Firebase
+            await saveToFirebase();
+            
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('editFieldModal')).hide();
+            
+            showMessage('Changes saved successfully!', 'success');
+        }
+
+        // Add hobby
+        function addHobby() {
+            const hobby = prompt('Enter a hobby or interest:');
+            if (hobby && hobby.trim() !== '') {
+                if (!userData.hobbies) userData.hobbies = [];
+                userData.hobbies.push(hobby.trim());
+                
+                // Update UI immediately
+                loadHobbies();
+                
+                // Save to Firebase
+                saveToFirebase();
+                
+                showMessage('Hobby added!', 'success');
+            }
+        }
+
+        // Remove hobby
+        function removeHobby(index) {
+            if (userData.hobbies && userData.hobbies[index]) {
+                userData.hobbies.splice(index, 1);
+                
+                // Update UI immediately
+                loadHobbies();
+                
+                // Save to Firebase
+                saveToFirebase();
+                
+                showMessage('Hobby removed', 'info');
+            }
+        }
+
+        // Preview image before upload
+        function previewImage() {
+            const file = document.getElementById('newImageFile').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('currentImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Upload profile image
+        async function uploadProfileImage() {
+            const file = document.getElementById('newImageFile').files[0];
+            if (!file) {
+                showMessage('Please select an image', 'error');
+                return;
+            }
+            
+            const progressBar = document.getElementById('imageUploadProgress');
+            const progressBarInner = progressBar.querySelector('.progress-bar');
+            
+            progressBar.classList.remove('d-none');
+            progressBarInner.style.width = '0%';
+            
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('key', IMGBB_API_KEY);
+                
+                // Upload to ImgBB
+                const response = await fetch(IMGBB_UPLOAD_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error('Upload failed');
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update progress
+                    progressBarInner.style.width = '100%';
+                    
+                    // Update user data
+                    userData.profileImage = data.data.url;
+                    
+                    // Update UI immediately
+                    document.getElementById('profileImage').src = data.data.url;
+                    document.getElementById('navProfileImage').src = data.data.url;
+                    document.getElementById('currentImage').src = data.data.url;
+                    
+                    // Save to Firebase
+                    await saveToFirebase();
+                    
+                    // Close modal
+                    bootstrap.Modal.getInstance(document.getElementById('imageUploadModal')).hide();
+                    
+                    showMessage('Profile picture updated!', 'success');
+                    
+                    // Reset file input
+                    document.getElementById('newImageFile').value = '';
+                    
+                } else {
+                    throw new Error(data.error?.message || 'Upload failed');
+                }
+                
+            } catch (error) {
+                console.error('Image upload error:', error);
+                showMessage('Failed to upload image. Please try again.', 'error');
+            } finally {
+                setTimeout(() => {
+                    progressBar.classList.add('d-none');
+                    progressBarInner.style.width = '0%';
+                }, 1000);
+            }
+        }
+
+        // Save data to Firebase
+        async function saveToFirebase() {
+            if (!currentUser || !currentUser.id) return;
+            
+            try {
+                const userRef = ref(database, 'users/' + currentUser.id);
+                
+                // Prepare update data (don't send sensitive fields)
+                const updateData = { ...userData };
+                delete updateData.password;
+                delete updateData.id;
+                
+                await update(userRef, updateData);
+                
+                // Update localStorage
+                const updatedUser = {
+                    ...currentUser,
+                    ...updateData
+                };
+                localStorage.setItem('amora_user', JSON.stringify(updatedUser));
+                currentUser = updatedUser;
+                
+            } catch (error) {
+                console.error('Error saving to Firebase:', error);
+                showMessage('Error saving changes. Please try again.', 'error');
+            }
+        }
+
+        // Update profile stats
+        async function updateProfileStats() {
+            try {
+                // Simulate stats for now - you can implement real stats later
+                document.getElementById('likesCount').textContent = Math.floor(Math.random() * 50);
+                document.getElementById('matchesCount').textContent = Math.floor(Math.random() * 20);
+                document.getElementById('viewsCount').textContent = Math.floor(Math.random() * 100);
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        // Navigate without page reload
+        function navigateTo(url) {
+            // Add fade out animation
+            document.body.style.opacity = '0.9';
+            
+            setTimeout(() => {
+                window.location.href = url;
+            }, 150);
+        }
+
+        // Show message
+        function showMessage(message, type = 'success') {
+            const indicator = document.getElementById('saveIndicator');
+            
+            if (type === 'error') {
+                indicator.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i>${message}`;
+                indicator.style.background = '#dc3545';
+            } else {
+                indicator.innerHTML = `<i class="bi bi-check-circle me-2"></i>${message}`;
+                indicator.style.background = '#28a745';
+            }
+            
+            indicator.classList.add('show');
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html><!DOCTYPE html>

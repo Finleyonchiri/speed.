@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover - Amora</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --primary-color: #f5576c;
+            --secondary-color: #f093fb;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-light: #ffffff;
+            --text-muted: #b0b0b0;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-link {
+            color: var(--text-muted) !important;
+            position: relative;
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-light) !important;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 15px;
+            right: 15px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        /* Profile Card - Swipeable Style */
+        .profile-stack {
+            position: relative;
+            height: 500px;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        
+        .profile-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform-origin: center bottom;
+            cursor: grab;
+            user-select: none;
+        }
+        
+        .profile-card:active {
+            cursor: grabbing;
+        }
+        
+        .profile-card.swipe-left {
+            transform: translateX(-100vw) rotate(-30deg);
+            opacity: 0;
+        }
+        
+        .profile-card.swipe-right {
+            transform: translateX(100vw) rotate(30deg);
+            opacity: 0;
+        }
+        
+        .profile-image {
+            width: 100%;
+            height: 65%;
+            object-fit: cover;
+            position: relative;
+        }
+        
+        .profile-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .profile-info {
+            padding: 25px;
+            position: relative;
+        }
+        
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .profile-age {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .profile-distance {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .profile-bio {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .profile-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            z-index: 1000;
+        }
+        
+        .action-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .dislike-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .super-like-btn {
+            background: linear-gradient(135deg, #00dbde 0%, #fc00ff 100%);
+            color: white;
+        }
+        
+        .like-btn {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .undo-btn {
+            background: #2d3436;
+            color: white;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            z-index: 1001;
+        }
+        
+        /* Match Modal */
+        .match-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .match-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .match-content {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: matchPop 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes matchPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .match-images {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 20px;
+        }
+        
+        .match-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .match-heart {
+            font-size: 3rem;
+            color: var(--primary-color);
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* Filter Panel */
+        .filter-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: var(--card-bg);
+            padding: 30px;
+            z-index: 1000;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+        }
+        
+        .filter-panel.active {
+            right: 0;
+        }
+        
+        .filter-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .filter-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            transition: opacity 0.3s;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .empty-state-icon {
+            font-size: 5rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        /* Quick Stats */
+        .quick-stats {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-stack {
+                height: 450px;
+            }
+            
+            .action-buttons {
+                bottom: 20px;
+                gap: 15px;
+            }
+            
+            .action-btn {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .filter-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .quick-stats {
+                left: 10px;
+                right: 10px;
+                top: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-heart-fill me-2" style="color: var(--primary-color);"></i>Amora
+            </a>
+            
+            <div class="navbar-nav ms-auto align-items-center">
+                <a class="nav-link active" href="home.html">
+                    <i class="bi bi-fire me-1"></i> Discover
+                </a>
+                <a class="nav-link" href="matches.html">
+                    <i class="bi bi-chat-dots me-1"></i> Matches
+                    <span class="notification-badge" id="matchesBadge">0</span>
+                </a>
+                <a class="nav-link" href="likes.html">
+                    <i class="bi bi-heart me-1"></i> Likes
+                    <span class="notification-badge" id="likesBadge">0</span>
+                </a>
+                <a class="nav-link" href="messages.html">
+                    <i class="bi bi-chat-text me-1"></i> Messages
+                    <span class="notification-badge" id="messagesBadge">0</span>
+                </a>
+                <a class="nav-link" href="profile.html">
+                    <i class="bi bi-person me-1"></i> Profile
+                </a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                       data-bs-toggle="dropdown">
+                        <img src="" alt="Profile" class="user-avatar me-2" id="navProfileImage" 
+                             style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><button class="dropdown-item" id="filterBtn">
+                            <i class="bi bi-sliders me-2"></i>Filters
+                        </button></li>
+                        <li><a class="dropdown-item" href="settings.html">
+                            <i class="bi bi-gear me-2"></i>Settings
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button class="dropdown-item" id="logoutBtn">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                        </button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats" id="quickStats">
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="bi bi-eye"></i>
+            </div>
+            <div>
+                <div class="stat-value" id="viewsToday">0</div>
+                <div class="stat-label">Views today</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="bi bi-people"></i>
+            </div>
+            <div>
+                <div class="stat-value" id="profilesNearby">0</div>
+                <div class="stat-label">Near you</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Welcome Section -->
+        <div class="text-center mb-5">
+            <h2 id="welcomeMessage">Find your perfect match</h2>
+            <p class="text-muted">Swipe right to like, left to pass</p>
+        </div>
+
+        <!-- Profile Stack -->
+        <div class="profile-stack" id="profileStack">
+            <!-- Profiles will be loaded here dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">
+                <i class="bi bi-people"></i>
+            </div>
+            <h3>No more profiles</h3>
+            <p class="text-muted">Try adjusting your filters or check back later</p>
+            <button class="btn btn-primary mt-3" id="refreshProfilesBtn">
+                <i class="bi bi-arrow-clockwise me-2"></i>Refresh Profiles
+            </button>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="action-btn undo-btn" id="undoBtn" title="Undo last swipe">
+            <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+        <button class="action-btn dislike-btn" id="dislikeBtn" title="Not interested">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <button class="action-btn super-like-btn" id="superLikeBtn" title="Super Like">
+            <i class="bi bi-star-fill"></i>
+        </button>
+        <button class="action-btn like-btn" id="likeBtn" title="Like">
+            <i class="bi bi-heart"></i>
+        </button>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="filter-overlay" id="filterOverlay"></div>
+    <div class="filter-panel" id="filterPanel">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Filters</h4>
+            <button class="btn-close btn-close-white" id="closeFilterBtn"></button>
+        </div>
+        
+        <div class="mb-4">
+            <label class="form-label">Show me:</label>
+            <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="gender" id="genderAll" checked>
+                <label class="btn btn-outline-secondary" for="genderAll">All</label>
+                
+                <input type="radio" class="btn-check" name="gender" id="genderFemale">
+                <label class="btn btn-outline-secondary" for="genderFemale">Women</label>
+                
+                <input type="radio" class="btn-check" name="gender" id="genderMale">
+                <label class="btn btn-outline-secondary" for="genderMale">Men</label>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <label class="form-label">Age range: <span id="ageRangeValue">18-35</span></label>
+            <div class="range-slider">
+                <input type="range" class="form-range" min="18" max="60" value="18" id="ageMin">
+                <input type="range" class="form-range" min="18" max="60" value="35" id="ageMax">
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <label class="form-label">Looking for:</label>
+            <select class="form-select" id="lookingForSelect">
+                <option value="all">Everything</option>
+                <option value="relationship">Relationship</option>
+                <option value="friendship">Friendship</option>
+                <option value="casual">Something casual</option>
+                <option value="marriage">Marriage</option>
+            </select>
+        </div>
+        
+        <button class="btn btn-primary w-100" id="applyFiltersBtn">
+            <i class="bi bi-funnel me-2"></i>Apply Filters
+        </button>
+    </div>
+
+    <!-- Match Modal -->
+    <div class="match-modal" id="matchModal">
+        <div class="match-content">
+            <div class="match-heart">
+                <i class="bi bi-hearts"></i>
+            </div>
+            <h2>It's a Match!</h2>
+            <p>You and <span id="matchName">Sarah</span> have liked each other!</p>
+            
+            <div class="match-images">
+                <img src="" alt="You" class="match-img" id="matchUserImage">
+                <img src="" alt="Match" class="match-img" id="matchProfileImage">
+            </div>
+            
+            <p class="text-muted">Send a message to start the conversation</p>
+            
+            <div class="d-grid gap-2 mt-4">
+                <a href="messages.html" class="btn btn-primary" id="sendMessageBtn">
+                    <i class="bi bi-chat-dots me-2"></i>Send Message
+                </a>
+                <button class="btn btn-outline-secondary" id="keepSwipingBtn">
+                    Keep Swiping
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase and Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getDatabase, ref, get, set, push, query, orderByChild } 
+                from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEzRCOw2E89qjewG-vuQ_SWBWUbGdDHv8",
+            authDomain: "how-fast-bcabe.firebaseapp.com",
+            databaseURL: "https://how-fast-bcabe-default-rtdb.firebaseio.com",
+            projectId: "how-fast-bcabe",
+            storageBucket: "how-fast-bcabe.firebasestorage.app",
+            messagingSenderId: "435644508816",
+            appId: "1:435644508816:web:53e51d3cc22331996e4615",
+            measurementId: "G-ZBZZK4D9D0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Global variables
+        let currentUser = null;
+        let profiles = [];
+        let currentProfileIndex = 0;
+        let swipeHistory = [];
+        let isSwiping = false;
+        let startX = 0;
+        let currentX = 0;
+        let currentCard = null;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Hide loading screen after 500ms
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 500);
+
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('amora_user');
+            
+            if (!storedUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            try {
+                currentUser = JSON.parse(storedUser);
+                console.log('Current user:', currentUser);
+                
+                updateUserDisplay();
+                await loadProfiles();
+                setupEventListeners();
+                updateQuickStats();
+                updateNotificationBadges();
+                
+            } catch (error) {
+                console.error('Error loading home page:', error);
+                showToast('Error loading profiles', 'error');
+            }
+        });
+
+        // Update user display
+        function updateUserDisplay() {
+            const navProfileImage = document.getElementById('navProfileImage');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            
+            // Use real profile image from currentUser data
+            if (currentUser.profileImage) {
+                navProfileImage.src = currentUser.profileImage;
+            } else {
+                // Fallback to avatar if no profile image
+                navProfileImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.fullName || currentUser.username || 'U')}&background=f093fb&color=fff&size=32`;
+            }
+            
+            // Update welcome message with real name
+            if (currentUser.fullName) {
+                welcomeMessage.textContent = `Welcome back, ${currentUser.fullName.split(' ')[0]}!`;
+            } else if (currentUser.username) {
+                welcomeMessage.textContent = `Welcome back, ${currentUser.username}!`;
+            }
+        }
+
+        // Load profiles from REAL database
+        async function loadProfiles() {
+            try {
+                console.log('Loading profiles from database...');
+                
+                const usersRef = ref(database, 'users');
+                const snapshot = await get(usersRef);
+                
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
+                    profiles = [];
+                    
+                    console.log('Found users in database:', users);
+                    
+                    Object.keys(users).forEach(userId => {
+                        const user = users[userId];
+                        console.log('Processing user:', user.fullName || user.username);
+                        
+                        // Skip current user - check by ID or username/email
+                        const isCurrentUser = (
+                            userId === currentUser.id ||
+                            (currentUser.username && user.username === currentUser.username) ||
+                            (currentUser.email && user.email === currentUser.email)
+                        );
+                        
+                        if (isCurrentUser) {
+                            console.log('Skipping current user:', user.fullName || user.username);
+                            return;
+                        }
+                        
+                        // Calculate age from REAL DOB
+                        let age = 'Unknown';
+                        if (user.dob) {
+                            const dob = new Date(user.dob);
+                            const today = new Date();
+                            let calculatedAge = today.getFullYear() - dob.getFullYear();
+                            const monthDiff = today.getMonth() - dob.getMonth();
+                            
+                            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                                calculatedAge--;
+                            }
+                            age = calculatedAge;
+                        }
+                        
+                        // Get REAL user data
+                        profiles.push({
+                            id: userId,
+                            fullName: user.fullName || user.username || 'Unknown User',
+                            username: user.username || '',
+                            age: age,
+                            gender: user.gender || 'other',
+                            bio: user.bio || 'No bio available',
+                            profileImage: user.profileImage || '',
+                            hobbies: user.hobbies || [],
+                            education: user.education || 'Not specified',
+                            profession: user.profession || 'Not specified',
+                            title: user.title || '',
+                            location: user.location || 'Location not set',
+                            instagram: user.instagram || '',
+                            relationshipGoals: user.relationshipGoals || 'Not specified',
+                            personality: user.personality || 'Not specified',
+                            phone: user.phone || '',
+                            email: user.email || ''
+                        });
+                    });
+                    
+                    console.log('Total profiles loaded:', profiles.length);
+                    
+                    // Apply gender filter based on current user's preference
+                    applyGenderFilter();
+                    
+                    if (profiles.length > 0) {
+                        displayProfiles();
+                    } else {
+                        showEmptyState();
+                    }
+                    
+                } else {
+                    console.log('No users found in database');
+                    showEmptyState();
+                }
+                
+            } catch (error) {
+                console.error('Error loading profiles:', error);
+                showEmptyState();
+                showToast('Error loading profiles from database', 'error');
+            }
+        }
+
+        // Apply gender filter based on current user's gender
+        function applyGenderFilter() {
+            const currentUserGender = currentUser.gender || 'male';
+            const genderFilter = document.querySelector('input[name="gender"]:checked')?.id || 'genderAll';
+            
+            console.log('Current user gender:', currentUserGender);
+            console.log('Selected filter:', genderFilter);
+            
+            // Default: show opposite gender
+            let filteredProfiles = profiles.filter(profile => {
+                if (genderFilter === 'genderAll') return true;
+                if (genderFilter === 'genderFemale') return profile.gender === 'female';
+                if (genderFilter === 'genderMale') return profile.gender === 'male';
+                return true;
+            });
+            
+            // Apply age filter
+            const minAge = parseInt(document.getElementById('ageMin')?.value || 18);
+            const maxAge = parseInt(document.getElementById('ageMax')?.value || 35);
+            
+            filteredProfiles = filteredProfiles.filter(profile => {
+                if (profile.age === 'Unknown') return true;
+                return profile.age >= minAge && profile.age <= maxAge;
+            });
+            
+            console.log('Profiles after filtering:', filteredProfiles.length);
+            profiles = filteredProfiles;
+        }
+
+        // Display profiles in stack
+        function displayProfiles() {
+            const profileStack = document.getElementById('profileStack');
+            profileStack.innerHTML = '';
+            
+            // Show only next 3 profiles
+            const nextProfiles = profiles.slice(currentProfileIndex, currentProfileIndex + 3);
+            
+            console.log('Displaying profiles:', nextProfiles.length);
+            
+            if (nextProfiles.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            nextProfiles.forEach((profile, index) => {
+                const card = createProfileCard(profile, index);
+                profileStack.appendChild(card);
+                
+                if (index === 0) {
+                    currentCard = card;
+                    setupSwipe(card);
+                }
+            });
+            
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        // Create profile card with REAL data
+        function createProfileCard(profile, index) {
+            const card = document.createElement('div');
+            card.className = 'profile-card';
+            card.style.zIndex = 100 - index;
+            card.style.transform = `translateY(${index * 10}px) scale(${1 - index * 0.05})`;
+            card.dataset.profileId = profile.id;
+            card.dataset.profileName = profile.fullName;
+            card.dataset.profileImage = profile.profileImage;
+            
+            // Use real profile image or fallback
+            const profileImageUrl = profile.profileImage || 
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.fullName)}&background=363636&color=fff&size=400`;
+            
+            // Create tags from hobbies
+            const tags = profile.hobbies && profile.hobbies.length > 0 
+                ? profile.hobbies.map(hobby => `<span class="profile-tag">${hobby}</span>`).join('')
+                : '<span class="profile-tag">No hobbies listed</span>';
+            
+            card.innerHTML = `
+                <img src="${profileImageUrl}" 
+                     class="profile-image" 
+                     alt="${profile.fullName}"
+                     onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(profile.fullName.charAt(0))}&background=363636&color=fff&size=400'">
+                ${profile.title ? `<div class="profile-badge">${profile.title}</div>` : ''}
+                <div class="profile-info">
+                    <div class="profile-name">
+                        ${profile.fullName}, <span class="profile-age">${profile.age}</span>
+                    </div>
+                    ${profile.profession !== 'Not specified' ? `
+                    <div class="profile-distance">
+                        <i class="bi bi-briefcase me-1"></i>${profile.profession}
+                    </div>
+                    ` : ''}
+                    ${profile.location !== 'Location not set' ? `
+                    <div class="profile-distance">
+                        <i class="bi bi-geo-alt me-1"></i>${profile.location}
+                    </div>
+                    ` : ''}
+                    <p class="profile-bio">${profile.bio || 'This user hasn\'t added a bio yet.'}</p>
+                    <div class="profile-tags">
+                        ${tags}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Setup swipe functionality
+        function setupSwipe(card) {
+            card.addEventListener('mousedown', startSwipe);
+            card.addEventListener('touchstart', startSwipe);
+            
+            document.addEventListener('mousemove', swipeMove);
+            document.addEventListener('touchmove', swipeMove);
+            
+            document.addEventListener('mouseup', endSwipe);
+            document.addEventListener('touchend', endSwipe);
+        }
+
+        function startSwipe(e) {
+            if (!currentCard) return;
+            
+            isSwiping = true;
+            startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            currentCard.style.transition = 'none';
+        }
+
+        function swipeMove(e) {
+            if (!isSwiping || !currentCard) return;
+            
+            e.preventDefault();
+            currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            const rotation = deltaX * 0.1;
+            
+            currentCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+            
+            // Change opacity based on swipe direction
+            const opacity = 1 - Math.abs(deltaX) / 300;
+            currentCard.style.opacity = opacity;
+            
+            // Show hint color
+            if (deltaX > 50) {
+                currentCard.style.boxShadow = '0 20px 40px rgba(76, 175, 80, 0.3)';
+            } else if (deltaX < -50) {
+                currentCard.style.boxShadow = '0 20px 40px rgba(244, 67, 54, 0.3)';
+            }
+        }
+
+        async function endSwipe() {
+            if (!isSwiping || !currentCard) return;
+            
+            isSwiping = false;
+            currentCard.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            const deltaX = currentX - startX;
+            const threshold = 100;
+            
+            if (Math.abs(deltaX) > threshold) {
+                const profileId = currentCard.dataset.profileId;
+                const profileName = currentCard.dataset.profileName;
+                const profileImage = currentCard.dataset.profileImage;
+                const profile = profiles.find(p => p.id === profileId);
+                
+                if (deltaX > 0) {
+                    // Swipe right (like)
+                    await likeProfile(profileId, profileName);
+                    currentCard.classList.add('swipe-right');
+                    
+                    // Check for match (in real app, check database)
+                    setTimeout(() => {
+                        checkForMatch(profileId, profileName, profileImage);
+                    }, 500);
+                } else {
+                    // Swipe left (dislike)
+                    await dislikeProfile(profileId, profileName);
+                    currentCard.classList.add('swipe-left');
+                }
+                
+                // Add to history
+                swipeHistory.push({
+                    profileId: profileId,
+                    profileName: profileName,
+                    direction: deltaX > 0 ? 'right' : 'left',
+                    card: currentCard
+                });
+                
+                // Move to next profile
+                setTimeout(() => {
+                    currentProfileIndex++;
+                    
+                    if (currentProfileIndex >= profiles.length) {
+                        showEmptyState();
+                    } else {
+                        displayProfiles();
+                    }
+                }, 300);
+                
+            } else {
+                // Return to center
+                currentCard.style.transform = 'translateX(0) rotate(0)';
+                currentCard.style.opacity = 1;
+                currentCard.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+            }
+        }
+
+        // Like profile - Save to REAL database
+        async function likeProfile(profileId, profileName) {
+            try {
+                const likeData = {
+                    userId: currentUser.id || currentUser.username || 'unknown',
+                    likedUserId: profileId,
+                    likedUserName: profileName,
+                    timestamp: new Date().toISOString(),
+                    type: 'like',
+                    currentUserGender: currentUser.gender || 'male',
+                    currentUserName: currentUser.fullName || currentUser.username || 'Unknown'
+                };
+                
+                const likesRef = ref(database, 'likes');
+                const newLikeRef = push(likesRef);
+                await set(newLikeRef, likeData);
+                
+                console.log('Liked profile:', profileName);
+                showToast(`You liked ${profileName}!`, 'success');
+                
+                // Update likes badge
+                updateNotificationBadges();
+                
+            } catch (error) {
+                console.error('Error liking profile:', error);
+                showToast('Error saving like', 'error');
+            }
+        }
+
+        // Dislike profile - Save to REAL database
+        async function dislikeProfile(profileId, profileName) {
+            try {
+                const dislikeData = {
+                    userId: currentUser.id || currentUser.username || 'unknown',
+                    dislikedUserId: profileId,
+                    dislikedUserName: profileName,
+                    timestamp: new Date().toISOString(),
+                    type: 'dislike'
+                };
+                
+                const dislikesRef = ref(database, 'dislikes');
+                const newDislikeRef = push(dislikesRef);
+                await set(newDislikeRef, dislikeData);
+                
+                console.log('Disliked profile:', profileName);
+                
+            } catch (error) {
+                console.error('Error disliking profile:', error);
+            }
+        }
+
+        // Super like profile - Save to REAL database
+        async function superLikeProfile(profileId, profileName) {
+            try {
+                const superLikeData = {
+                    userId: currentUser.id || currentUser.username || 'unknown',
+                    likedUserId: profileId,
+                    likedUserName: profileName,
+                    timestamp: new Date().toISOString(),
+                    type: 'super_like',
+                    currentUserGender: currentUser.gender || 'male',
+                    currentUserName: currentUser.fullName || currentUser.username || 'Unknown'
+                };
+                
+                const likesRef = ref(database, 'likes');
+                const newLikeRef = push(likesRef);
+                await set(newLikeRef, superLikeData);
+                
+                console.log('Super liked profile:', profileName);
+                showToast(`Super liked ${profileName}! ✨`, 'success');
+                
+                // Update likes badge
+                updateNotificationBadges();
+                
+            } catch (error) {
+                console.error('Error super liking profile:', error);
+                showToast('Error saving super like', 'error');
+            }
+        }
+
+        // Check for match - Check REAL database
+        async function checkForMatch(profileId, profileName, profileImage) {
+            try {
+                // Check if other user has liked current user
+                const likesRef = ref(database, 'likes');
+                const snapshot = await get(likesRef);
+                
+                if (snapshot.exists()) {
+                    const likes = snapshot.val();
+                    let hasMatch = false;
+                    
+                    // Check all likes to see if there's a mutual like
+                    for (const likeId in likes) {
+                        const like = likes[likeId];
+                        // If the profile we just liked has also liked us
+                        if (like.userId === profileId && 
+                            (like.likedUserId === currentUser.id || 
+                             like.likedUserName === currentUser.username)) {
+                            hasMatch = true;
+                            break;
+                        }
+                    }
+                    
+                    if (hasMatch) {
+                        showMatchModal(profileName, profileImage);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking for match:', error);
+            }
+        }
+
+        // Show match modal
+        function showMatchModal(matchName, matchImage) {
+            document.getElementById('matchName').textContent = matchName;
+            
+            // Set match image
+            if (matchImage) {
+                document.getElementById('matchProfileImage').src = matchImage;
+            } else {
+                document.getElementById('matchProfileImage').src = 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(matchName)}&background=f093fb&color=fff&size=400`;
+            }
+            
+            // Set current user image
+            if (currentUser.profileImage) {
+                document.getElementById('matchUserImage').src = currentUser.profileImage;
+            } else {
+                document.getElementById('matchUserImage').src = 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.fullName || currentUser.username || 'U')}&background=f5576c&color=fff&size=400`;
+            }
+            
+            document.getElementById('matchModal').classList.add('active');
+        }
+
+        // Update notification badges from REAL database
+        async function updateNotificationBadges() {
+            try {
+                // Get likes count for current user
+                const likesRef = ref(database, 'likes');
+                const snapshot = await get(likesRef);
+                
+                let likesCount = 0;
+                let matchesCount = 0;
+                
+                if (snapshot.exists()) {
+                    const likes = snapshot.val();
+                    
+                    for (const likeId in likes) {
+                        const like = likes[likeId];
+                        
+                        // Count likes received by current user
+                        if (like.likedUserId === currentUser.id || 
+                            like.likedUserName === currentUser.username) {
+                            likesCount++;
+                        }
+                        
+                        // Check for mutual likes (matches)
+                        // This is simplified - in real app you'd need to check both directions
+                        if (like.userId === currentUser.id || like.userId === currentUser.username) {
+                            // Check if there's a reciprocal like
+                            for (const otherLikeId in likes) {
+                                const otherLike = likes[otherLikeId];
+                                if (otherLike.userId === like.likedUserId && 
+                                    otherLike.likedUserId === currentUser.id) {
+                                    matchesCount++;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Update badges
+                document.getElementById('likesBadge').textContent = likesCount;
+                document.getElementById('matchesBadge').textContent = matchesCount;
+                
+                // Update stats
+                document.getElementById('viewsToday').textContent = likesCount * 2 + Math.floor(Math.random() * 10);
+                document.getElementById('profilesNearby').textContent = profiles.length;
+                
+            } catch (error) {
+                console.error('Error updating badges:', error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Action buttons
+            document.getElementById('dislikeBtn').addEventListener('click', async () => {
+                if (currentCard) {
+                    const profileId = currentCard.dataset.profileId;
+                    const profileName = currentCard.dataset.profileName;
+                    await dislikeProfile(profileId, profileName);
+                    
+                    currentCard.classList.add('swipe-left');
+                    setTimeout(() => {
+                        currentProfileIndex++;
+                        if (currentProfileIndex >= profiles.length) {
+                            showEmptyState();
+                        } else {
+                            displayProfiles();
+                        }
+                    }, 300);
+                }
+            });
+            
+            document.getElementById('likeBtn').addEventListener('click', async () => {
+                if (currentCard) {
+                    const profileId = currentCard.dataset.profileId;
+                    const profileName = currentCard.dataset.profileName;
+                    const profileImage = currentCard.dataset.profileImage;
+                    
+                    await likeProfile(profileId, profileName);
+                    currentCard.classList.add('swipe-right');
+                    
+                    setTimeout(() => {
+                        currentProfileIndex++;
+                        if (currentProfileIndex >= profiles.length) {
+                            showEmptyState();
+                        } else {
+                            displayProfiles();
+                        }
+                        
+                        // Check for match
+                        setTimeout(() => {
+                            checkForMatch(profileId, profileName, profileImage);
+                        }, 500);
+                    }, 300);
+                }
+            });
+            
+            document.getElementById('superLikeBtn').addEventListener('click', async () => {
+                if (currentCard) {
+                    const profileId = currentCard.dataset.profileId;
+                    const profileName = currentCard.dataset.profileName;
+                    const profileImage = currentCard.dataset.profileImage;
+                    
+                    await superLikeProfile(profileId, profileName);
+                    currentCard.classList.add('swipe-right');
+                    currentCard.style.boxShadow = '0 20px 40px rgba(156, 39, 176, 0.5)';
+                    
+                    setTimeout(() => {
+                        currentProfileIndex++;
+                        if (currentProfileIndex >= profiles.length) {
+                            showEmptyState();
+                        } else {
+                            displayProfiles();
+                        }
+                        
+                        // Check for match
+                        setTimeout(() => {
+                            checkForMatch(profileId, profileName, profileImage);
+                        }, 500);
+                    }, 300);
+                }
+            });
+            
+            document.getElementById('undoBtn').addEventListener('click', () => {
+                if (swipeHistory.length > 0) {
+                    const lastSwipe = swipeHistory.pop();
+                    lastSwipe.card.classList.remove('swipe-left', 'swipe-right');
+                    lastSwipe.card.style.transform = 'translateX(0) rotate(0)';
+                    lastSwipe.card.style.opacity = '1';
+                    currentProfileIndex--;
+                    
+                    // Show the card again
+                    setTimeout(() => {
+                        const profileStack = document.getElementById('profileStack');
+                        profileStack.insertBefore(lastSwipe.card, profileStack.firstChild);
+                        currentCard = lastSwipe.card;
+                        setupSwipe(currentCard);
+                    }, 50);
+                }
+            });
+            
+            // Filter panel
+            document.getElementById('filterBtn').addEventListener('click', () => {
+                document.getElementById('filterPanel').classList.add('active');
+                document.getElementById('filterOverlay').classList.add('active');
+            });
+            
+            document.getElementById('closeFilterBtn').addEventListener('click', () => {
+                document.getElementById('filterPanel').classList.remove('active');
+                document.getElementById('filterOverlay').classList.remove('active');
+            });
+            
+            document.getElementById('filterOverlay').addEventListener('click', () => {
+                document.getElementById('filterPanel').classList.remove('active');
+                document.getElementById('filterOverlay').classList.remove('active');
+            });
+            
+            document.getElementById('applyFiltersBtn').addEventListener('click', () => {
+                document.getElementById('filterPanel').classList.remove('active');
+                document.getElementById('filterOverlay').classList.remove('active');
+                
+                // Reset and reload with new filters
+                currentProfileIndex = 0;
+                loadProfiles();
+                
+                showToast('Filters applied', 'success');
+            });
+            
+            // Range sliders
+            const ageMin = document.getElementById('ageMin');
+            const ageMax = document.getElementById('ageMax');
+            const ageRangeValue = document.getElementById('ageRangeValue');
+            
+            function updateAgeRange() {
+                ageRangeValue.textContent = `${ageMin.value}-${ageMax.value}`;
+            }
+            
+            ageMin.addEventListener('input', updateAgeRange);
+            ageMax.addEventListener('input', updateAgeRange);
+            
+            // Match modal
+            document.getElementById('keepSwipingBtn').addEventListener('click', () => {
+                document.getElementById('matchModal').classList.remove('active');
+            });
+            
+            // Refresh profiles
+            document.getElementById('refreshProfilesBtn').addEventListener('click', () => {
+                currentProfileIndex = 0;
+                loadProfiles();
+            });
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('amora_user');
+                window.location.href = 'index.html';
+            });
+            
+            // Navigation (prevent full reload)
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (!link.classList.contains('active')) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        navigateTo(link.href);
+                    });
+                }
+            });
+        }
+
+        // Show empty state
+        function showEmptyState() {
+            document.getElementById('profileStack').innerHTML = '';
+            document.getElementById('emptyState').style.display = 'block';
+        }
+
+        // Update quick stats
+        function updateQuickStats() {
+            document.getElementById('profilesNearby').textContent = profiles.length;
+        }
+
+        // Show toast message
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed top-0 start-50 translate-middle-x mt-3 p-3 rounded';
+            toast.style.zIndex = '9999';
+            toast.style.backgroundColor = type === 'success' ? '#28a745' : 
+                                         type === 'error' ? '#dc3545' : '#17a2b8';
+            toast.style.color = 'white';
+            toast.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-info-circle'} me-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Navigate without page reload
+        function navigateTo(url) {
+            document.body.style.opacity = '0.8';
+            setTimeout(() => {
+                window.location.href = url;
+            }, 200);
+        }
+    </script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
