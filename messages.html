@@ -3,64 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages - Amora</title>
+    <title>Messages - LIILA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --primary-color: #f5576c;
-            --secondary-color: #f093fb;
-            --dark-bg: #121212;
-            --card-bg: #1e1e1e;
+            --primary-gradient: linear-gradient(135deg, #a9100f 0%, #8f1eae 100%);
+            --primary-color: #8f1eae;
+            --secondary-color: #a9100f;
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
             --text-light: #ffffff;
-            --text-muted: #b0b0b0;
-            --message-bg-sent: #0084ff;
-            --message-bg-received: #2d3436;
+            --text-muted: #cccccc;
+            --message-sent: #8f1eae;
+            --message-received: #2a2a2a;
+            --online: #00ff9d;
+            --offline: #ff4757;
+            --border: rgba(143, 30, 174, 0.2);
         }
         
         body {
             background-color: var(--dark-bg);
             color: var(--text-light);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             height: 100vh;
             overflow: hidden;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            height: 70px;
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-link {
+            color: var(--text-muted) !important;
+            font-weight: 500;
+        }
+        
+        .nav-link.active {
+            color: var(--primary-color) !important;
         }
         
         /* Chat Layout */
         .chat-container {
             display: flex;
-            height: calc(100vh - 76px);
+            height: calc(100vh - 70px);
         }
         
-        /* Conversations List */
+        /* Conversations Sidebar */
         .conversations-sidebar {
             width: 350px;
             background: var(--card-bg);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
         
         .conversations-header {
             padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border);
         }
         
         .conversations-search {
             background: rgba(255, 255, 255, 0.1);
-            border: none;
+            border: 1px solid var(--border);
             color: white;
-            border-radius: 20px;
+            border-radius: 10px;
             padding: 10px 15px;
             width: 100%;
-            margin-top: 10px;
-        }
-        
-        .conversations-search:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--primary-color);
+            margin-top: 15px;
         }
         
         .conversations-list {
@@ -69,21 +92,21 @@
         }
         
         .conversation-item {
-            padding: 15px 20px;
+            padding: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             cursor: pointer;
-            transition: background 0.3s;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            transition: all 0.3s;
         }
         
         .conversation-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(143, 30, 174, 0.1);
         }
         
         .conversation-item.active {
-            background: rgba(245, 87, 108, 0.1);
+            background: rgba(143, 30, 174, 0.15);
             border-left: 3px solid var(--primary-color);
         }
         
@@ -92,7 +115,7 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            flex-shrink: 0;
+            border: 2px solid var(--primary-color);
         }
         
         .conversation-info {
@@ -102,7 +125,7 @@
         
         .conversation-name {
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -116,23 +139,15 @@
             text-overflow: ellipsis;
         }
         
-        .conversation-meta {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 5px;
-        }
-        
         .conversation-time {
             font-size: 0.8rem;
             color: var(--text-muted);
         }
         
         .unread-badge {
-            background: var(--primary-color);
+            background: var(--secondary-color);
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             padding: 2px 8px;
             border-radius: 10px;
             min-width: 20px;
@@ -150,17 +165,10 @@
         .chat-header {
             padding: 15px 25px;
             background: var(--card-bg);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 15px;
-        }
-        
-        .chat-user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
         }
         
         .chat-user-avatar {
@@ -168,6 +176,7 @@
             height: 45px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--primary-color);
         }
         
         .chat-user-details h5 {
@@ -180,87 +189,36 @@
             font-size: 0.85rem;
         }
         
-        .online-status {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #4caf50;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        
-        .chat-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .chat-action-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .chat-action-btn:hover {
-            color: var(--text-light);
-        }
-        
-        /* Messages Area */
+        /* Messages */
         .messages-container {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-        }
-        
-        .message-date {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin: 10px 0;
-            padding: 5px 0;
+            gap: 10px;
         }
         
         .message {
             max-width: 70%;
             padding: 12px 15px;
-            border-radius: 20px;
+            border-radius: 15px;
             position: relative;
-            animation: messageAppear 0.3s ease;
-        }
-        
-        @keyframes messageAppear {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            animation: fadeIn 0.3s ease;
         }
         
         .message.sent {
-            background: var(--message-bg-sent);
+            background: var(--message-sent);
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 5px;
         }
         
         .message.received {
-            background: var(--message-bg-received);
+            background: var(--message-received);
             color: var(--text-light);
             align-self: flex-start;
             border-bottom-left-radius: 5px;
-        }
-        
-        .message-content {
-            word-wrap: break-word;
-            line-height: 1.4;
         }
         
         .message-time {
@@ -270,72 +228,90 @@
             margin-top: 5px;
         }
         
-        .message-status {
-            display: inline-block;
-            margin-left: 5px;
-            font-size: 0.8rem;
-        }
-        
-        .message-status.read {
-            color: #4caf50;
-        }
-        
         /* Message Input */
         .message-input-container {
             padding: 20px;
             background: var(--card-bg);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
         
         .message-input {
             flex: 1;
             background: rgba(255, 255, 255, 0.1);
-            border: none;
+            border: 1px solid var(--border);
             color: white;
             border-radius: 25px;
             padding: 12px 20px;
             font-size: 1rem;
         }
         
-        .message-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--primary-color);
-        }
-        
-        .input-action-btn {
-            background: none;
+        .send-btn {
+            background: var(--primary-color);
             border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s;
+            color: white;
             width: 45px;
             height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .input-action-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-        }
-        
-        .send-btn {
-            background: var(--primary-gradient);
-            color: white !important;
+            transition: all 0.3s;
         }
         
         .send-btn:hover {
+            background: var(--secondary-color);
             transform: scale(1.05);
         }
         
-        /* Empty State */
-        .empty-chat {
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .conversations-sidebar {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .conversations-sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .mobile-menu-btn {
+                display: block !important;
+            }
+            
+            .back-to-conversations {
+                display: block !important;
+            }
+        }
+        
+        .mobile-menu-btn, .back-to-conversations {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -345,96 +321,14 @@
             padding: 40px;
             color: var(--text-muted);
         }
-        
-        .empty-chat-icon {
-            font-size: 5rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-        
-        /* Typing Indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 10px 15px;
-            background: var(--message-bg-received);
-            border-radius: 20px;
-            align-self: flex-start;
-            margin-bottom: 10px;
-            animation: typingPulse 1.5s infinite;
-        }
-        
-        @keyframes typingPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--text-muted);
-            border-radius: 50%;
-            animation: typingDot 1.4s infinite;
-        }
-        
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes typingDot {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .conversations-sidebar {
-                width: 100%;
-                position: absolute;
-                z-index: 1000;
-                height: 100%;
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            
-            .conversations-sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .back-to-conversations {
-                display: block !important;
-            }
-            
-            .mobile-menu-btn {
-                display: block !important;
-            }
-        }
-        
-        .back-to-conversations {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-heart-fill me-2" style="color: var(--primary-color);"></i>Amora
+            <a class="navbar-brand fw-bold" href="home.html">
+                <i class="bi bi-heart-fill me-2"></i>LIILA
             </a>
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -446,12 +340,10 @@
                     <i class="bi bi-fire me-1"></i> Discover
                 </a>
                 <a class="nav-link" href="matches.html">
-                    <i class="bi bi-chat-dots me-1"></i> Matches
-                    <span class="notification-badge" id="matchesBadge">0</span>
+                    <i class="bi bi-heart me-1"></i> Matches
                 </a>
                 <a class="nav-link active" href="messages.html">
                     <i class="bi bi-chat-text me-1"></i> Messages
-                    <span class="notification-badge" id="messagesBadge">0</span>
                 </a>
                 <a class="nav-link" href="profile.html">
                     <i class="bi bi-person me-1"></i> Profile
@@ -479,11 +371,12 @@
     <!-- Chat Container -->
     <div class="chat-container">
         <!-- Conversations Sidebar -->
-        <div class="conversations-sidebar" id="conversationsSidebar">
+        <div class="conversations-sidebar active" id="conversationsSidebar">
             <div class="conversations-header">
                 <div class="d-flex align-items-center justify-content-between">
                     <h4 class="mb-0">Messages</h4>
-                    <button class="btn btn-sm btn-outline-primary" id="newMessageBtn">
+                    <button class="btn btn-sm" id="newMessageBtn" 
+                            style="background: var(--primary-color); color: white;">
                         <i class="bi bi-plus"></i> New
                     </button>
                 </div>
@@ -491,7 +384,7 @@
             </div>
             
             <div class="conversations-list" id="conversationsList">
-                <div class="text-center p-5 text-muted">
+                <div class="loading">
                     <div class="spinner-border spinner-border-sm me-2"></div>
                     Loading conversations...
                 </div>
@@ -500,16 +393,14 @@
         
         <!-- Chat Area -->
         <div class="chat-area" id="chatArea">
-            <!-- Empty State (shown when no conversation selected) -->
-            <div class="empty-chat" id="emptyChat">
-                <div class="empty-chat-icon">
-                    <i class="bi bi-chat-text"></i>
-                </div>
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyChat">
+                <i class="bi bi-chat-text fs-1 mb-3"></i>
                 <h4>Your messages</h4>
                 <p class="text-muted">Select a conversation to start messaging</p>
             </div>
             
-            <!-- Active Chat (shown when conversation selected) -->
+            <!-- Active Chat -->
             <div id="activeChat" style="display: none; height: 100%;">
                 <!-- Chat Header -->
                 <div class="chat-header">
@@ -517,9 +408,9 @@
                         <i class="bi bi-arrow-left"></i>
                     </button>
                     
-                    <div class="chat-user-info">
+                    <div class="d-flex align-items-center gap-3 flex-grow-1">
                         <img src="" alt="User" class="chat-user-avatar" id="chatUserAvatar">
-                        <div class="chat-user-details">
+                        <div>
                             <h5 id="chatUserName">Loading...</h5>
                             <small id="chatUserStatus">
                                 <span class="online-status"></span>
@@ -527,68 +418,24 @@
                             </small>
                         </div>
                     </div>
-                    
-                    <div class="chat-actions">
-                        <button class="chat-action-btn" title="Voice call">
-                            <i class="bi bi-telephone"></i>
-                        </button>
-                        <button class="chat-action-btn" title="Video call">
-                            <i class="bi bi-camera-video"></i>
-                        </button>
-                        <button class="chat-action-btn" title="More options">
-                            <i class="bi bi-three-dots-vertical"></i>
-                        </button>
-                    </div>
                 </div>
                 
                 <!-- Messages Container -->
                 <div class="messages-container" id="messagesContainer">
-                    <!-- Messages will be loaded here -->
-                </div>
-                
-                <!-- Typing Indicator -->
-                <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <span>typing...</span>
+                    <!-- Messages loaded here -->
                 </div>
                 
                 <!-- Message Input -->
                 <div class="message-input-container">
-                    <button class="input-action-btn" title="Add attachment">
-                        <i class="bi bi-plus"></i>
-                    </button>
-                    <button class="input-action-btn" title="Add photo">
-                        <i class="bi bi-camera"></i>
-                    </button>
-                    <button class="input-action-btn" title="Add emoji">
-                        <i class="bi bi-emoji-smile"></i>
+                    <button class="btn btn-outline-light border-0" title="Add attachment">
+                        <i class="bi bi-paperclip"></i>
                     </button>
                     
                     <input type="text" class="message-input" placeholder="Type a message..." id="messageInput">
                     
-                    <button class="input-action-btn send-btn" id="sendMessageBtn" title="Send message">
+                    <button class="send-btn" id="sendMessageBtn">
                         <i class="bi bi-send"></i>
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- New Message Modal -->
-    <div class="modal fade" id="newMessageModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: var(--card-bg); color: var(--text-light);">
-                <div class="modal-header">
-                    <h5 class="modal-title">New Message</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" class="form-control mb-3" placeholder="Search users..." id="userSearch">
-                    <div class="users-list" id="usersList" style="max-height: 300px; overflow-y: auto;">
-                        <div class="text-center p-3 text-muted">Loading users...</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -597,10 +444,10 @@
     <!-- Firebase and Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getDatabase, ref, get, set, push, onChildAdded, onChildChanged, onValue, update, query, orderByChild, equalTo } 
+        import { getDatabase, ref, get, set, push, onChildAdded, onValue, update } 
                 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-        // Firebase configuration
+        // Firebase configuration (MUST MATCH YOUR INDEX.HTML)
         const firebaseConfig = {
             apiKey: "AIzaSyDEzRCOw2E89qjewG-vuQ_SWBWUbGdDHv8",
             authDomain: "how-fast-bcabe.firebaseapp.com",
@@ -619,133 +466,50 @@
         let currentUser = null;
         let conversations = [];
         let currentConversation = null;
-        let matches = [];
-        let allUsers = [];
-        let messageListeners = {};
-        let conversationListeners = {};
+        let messageListener = null;
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async () => {
-            // Check if user is logged in
-            const storedUser = localStorage.getItem('amora_user');
+            // Check for LIILA session (MATCHES INDEX.HTML)
+            const storedUser = localStorage.getItem('liila_user');
+            const sessionData = localStorage.getItem('liila_session');
             
-            if (!storedUser) {
+            if (!storedUser || !sessionData) {
                 window.location.href = 'index.html';
                 return;
             }
             
             try {
                 currentUser = JSON.parse(storedUser);
-                console.log('Current user:', currentUser);
+                console.log('LIILA user loaded:', currentUser);
                 
                 updateUserDisplay();
-                await loadAllUsers();
-                await loadMatches();
                 await loadConversations();
                 setupEventListeners();
                 
-                // Start real-time listeners
-                setupConversationsListener();
-                
             } catch (error) {
                 console.error('Error loading messages page:', error);
-                showToast('Error loading messages', 'error');
+                alert('Error loading messages. Please refresh.');
             }
         });
 
         // Update user display
         function updateUserDisplay() {
             const navProfileImage = document.getElementById('navProfileImage');
+            const avatarUrl = currentUser?.profileImage || 
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    currentUser?.fullName || currentUser?.username || 'U'
+                )}&background=8f1eae&color=fff&size=100`;
             
-            if (currentUser.profileImage) {
-                navProfileImage.src = currentUser.profileImage;
-            } else {
-                navProfileImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.fullName || currentUser.username || 'U')}&background=f093fb&color=fff&size=32`;
-            }
+            navProfileImage.src = avatarUrl;
+            navProfileImage.onerror = () => {
+                navProfileImage.src = 'https://ui-avatars.com/api/?name=U&background=8f1eae&color=fff&size=100';
+            };
         }
 
-        // Load all users from database
-        async function loadAllUsers() {
-            try {
-                console.log('Loading all users...');
-                const usersRef = ref(database, 'users');
-                const snapshot = await get(usersRef);
-                
-                allUsers = [];
-                
-                if (snapshot.exists()) {
-                    const usersData = snapshot.val();
-                    
-                    Object.keys(usersData).forEach(userId => {
-                        const user = usersData[userId];
-                        allUsers.push({
-                            id: userId,
-                            username: user.username,
-                            fullName: user.fullName || user.username,
-                            profileImage: user.profileImage || '',
-                            email: user.email || '',
-                            phone: user.phone || '',
-                            gender: user.gender || 'other',
-                            isOnline: Math.random() > 0.5
-                        });
-                    });
-                    
-                    console.log(`Loaded ${allUsers.length} users from database`);
-                } else {
-                    console.log('No users found in database');
-                }
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-                showToast('Error loading users', 'error');
-            }
-        }
-
-        // Load matches from database
-        async function loadMatches() {
-            try {
-                console.log('Loading matches...');
-                const matchesRef = ref(database, 'matches');
-                const snapshot = await get(matchesRef);
-                
-                matches = [];
-                
-                if (snapshot.exists()) {
-                    const matchesData = snapshot.val();
-                    
-                    Object.keys(matchesData).forEach(matchId => {
-                        const match = matchesData[matchId];
-                        
-                        // Check if current user is part of this match
-                        const currentUserId = currentUser.id || currentUser.username;
-                        if (match.user1Id === currentUserId || match.user2Id === currentUserId) {
-                            
-                            // Determine the other user's ID
-                            const otherUserId = match.user1Id === currentUserId ? match.user2Id : match.user1Id;
-                            
-                            matches.push({
-                                id: matchId,
-                                userId: otherUserId,
-                                timestamp: match.timestamp || new Date().toISOString(),
-                                status: match.status || 'matched'
-                            });
-                        }
-                    });
-                    
-                    console.log(`Loaded ${matches.length} matches from database`);
-                } else {
-                    console.log('No matches found in database');
-                }
-                
-            } catch (error) {
-                console.error('Error loading matches:', error);
-            }
-        }
-
-        // Load conversations from database
+        // Load conversations
         async function loadConversations() {
             try {
-                console.log('Loading conversations...');
                 const conversationsRef = ref(database, 'conversations');
                 const snapshot = await get(conversationsRef);
                 
@@ -753,20 +517,15 @@
                 
                 if (snapshot.exists()) {
                     const conversationsData = snapshot.val();
+                    const currentUserId = currentUser.id || currentUser.username;
                     
                     Object.keys(conversationsData).forEach(conversationId => {
                         const conversation = conversationsData[conversationId];
                         
-                        // Check if current user is part of this conversation
-                        const currentUserId = currentUser.id || currentUser.username;
                         if (conversation.participants && 
-                            (conversation.participants.includes(currentUserId) ||
-                             conversation.participants.includes(currentUser.username))) {
+                            conversation.participants.includes(currentUserId)) {
                             
-                            // Get other participant
-                            const otherParticipantId = conversation.participants.find(p => 
-                                p !== currentUserId && p !== currentUser.username
-                            );
+                            const otherParticipantId = conversation.participants.find(p => p !== currentUserId);
                             
                             conversations.push({
                                 id: conversationId,
@@ -778,202 +537,15 @@
                         }
                     });
                     
-                    console.log(`Loaded ${conversations.length} conversations from database`);
-                    
-                } else {
-                    console.log('No conversations found in database');
-                    // Create conversations from matches
-                    await createConversationsFromMatches();
+                    console.log(`Loaded ${conversations.length} conversations`);
                 }
                 
                 displayConversations();
                 
             } catch (error) {
                 console.error('Error loading conversations:', error);
-            }
-        }
-
-        // Create conversations from matches
-        async function createConversationsFromMatches() {
-            for (const match of matches) {
-                try {
-                    // Check if conversation already exists
-                    const existingConversation = conversations.find(c => c.participantId === match.userId);
-                    if (!existingConversation) {
-                        // Create new conversation
-                        const conversationData = {
-                            participants: [currentUser.id || currentUser.username, match.userId],
-                            timestamp: new Date().toISOString(),
-                            lastMessage: {
-                                text: "You matched! Say hello! 👋",
-                                senderId: "system",
-                                timestamp: new Date().toISOString()
-                            },
-                            unreadCount: 0
-                        };
-                        
-                        const conversationsRef = ref(database, 'conversations');
-                        const newConversationRef = push(conversationsRef);
-                        await set(newConversationRef, conversationData);
-                        
-                        conversations.push({
-                            id: newConversationRef.key,
-                            participantId: match.userId,
-                            lastMessage: conversationData.lastMessage,
-                            unreadCount: 0,
-                            timestamp: conversationData.timestamp
-                        });
-                        
-                        console.log('Created conversation for match:', match.userId);
-                    }
-                } catch (error) {
-                    console.error('Error creating conversation for match:', match.userId, error);
-                }
-            }
-        }
-
-        // Setup real-time conversation listener
-        function setupConversationsListener() {
-            const conversationsRef = ref(database, 'conversations');
-            
-            // Listen for NEW conversations
-            onChildAdded(conversationsRef, async (snapshot) => {
-                const conversation = snapshot.val();
-                const conversationId = snapshot.key;
-                
-                // Check if this conversation involves current user
-                const currentUserId = currentUser.id || currentUser.username;
-                if (conversation.participants && 
-                    (conversation.participants.includes(currentUserId) ||
-                     conversation.participants.includes(currentUser.username))) {
-                    
-                    // Check if we already have this conversation locally
-                    const existingIndex = conversations.findIndex(c => c.id === conversationId);
-                    if (existingIndex === -1) {
-                        // Get other participant
-                        const otherParticipantId = conversation.participants.find(p => 
-                            p !== currentUserId && p !== currentUser.username
-                        );
-                        
-                        // Add to conversations array
-                        conversations.push({
-                            id: conversationId,
-                            participantId: otherParticipantId,
-                            lastMessage: conversation.lastMessage || {},
-                            unreadCount: conversation.unreadCount || 0,
-                            timestamp: conversation.timestamp || new Date().toISOString()
-                        });
-                        
-                        // Update UI
-                        await updateConversationInUI(conversationId, otherParticipantId);
-                    }
-                }
-            });
-            
-            // Listen for UPDATED conversations (new messages, read status)
-            onChildChanged(conversationsRef, async (snapshot) => {
-                const updatedConversation = snapshot.val();
-                const conversationId = snapshot.key;
-                
-                // Check if this conversation involves current user
-                const currentUserId = currentUser.id || currentUser.username;
-                if (updatedConversation.participants && 
-                    (updatedConversation.participants.includes(currentUserId) ||
-                     updatedConversation.participants.includes(currentUser.username))) {
-                    
-                    // Find conversation index
-                    const existingIndex = conversations.findIndex(c => c.id === conversationId);
-                    if (existingIndex !== -1) {
-                        // Update conversation data
-                        const otherParticipantId = updatedConversation.participants.find(p => 
-                            p !== currentUserId && p !== currentUser.username
-                        );
-                        
-                        conversations[existingIndex] = {
-                            ...conversations[existingIndex],
-                            lastMessage: updatedConversation.lastMessage || {},
-                            unreadCount: updatedConversation.unreadCount || 0,
-                            timestamp: updatedConversation.timestamp || new Date().toISOString()
-                        };
-                        
-                        // Update UI
-                        await updateConversationInUI(conversationId, otherParticipantId);
-                        
-                        // If this is the current conversation, update messages too
-                        if (currentConversation === conversationId) {
-                            // Mark as read if we're viewing it
-                            await markConversationAsRead(conversationId);
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update conversation in UI
-        async function updateConversationInUI(conversationId, participantId) {
-            try {
-                // Get user data
-                const userData = await getUserData(participantId);
-                if (!userData) return;
-                
-                // Find conversation item in DOM
-                const existingItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
-                const conversation = conversations.find(c => c.id === conversationId);
-                
-                if (!conversation) return;
-                
-                if (existingItem) {
-                    // Update existing item
-                    updateConversationItem(existingItem, conversation, userData);
-                } else {
-                    // Create new item and add to top
-                    const newItem = createConversationItem(conversation, userData);
-                    const conversationsList = document.getElementById('conversationsList');
-                    conversationsList.insertBefore(newItem, conversationsList.firstChild);
-                }
-                
-                // Update badge
-                updateMessagesBadge();
-                
-            } catch (error) {
-                console.error('Error updating conversation in UI:', error);
-            }
-        }
-
-        // Update existing conversation item
-        function updateConversationItem(item, conversation, userData) {
-            // Format time
-            const time = formatTime(conversation.lastMessage?.timestamp || conversation.timestamp);
-            
-            // Truncate last message
-            const lastMessage = conversation.lastMessage?.text || 'No messages yet';
-            const truncatedMessage = lastMessage.length > 30 
-                ? lastMessage.substring(0, 30) + '...' 
-                : lastMessage;
-            
-            // Update content
-            const nameElement = item.querySelector('.conversation-name');
-            const messageElement = item.querySelector('.conversation-last-message');
-            const timeElement = item.querySelector('.conversation-time');
-            const badgeElement = item.querySelector('.unread-badge');
-            
-            if (nameElement) nameElement.textContent = userData.fullName;
-            if (messageElement) messageElement.textContent = truncatedMessage;
-            if (timeElement) timeElement.textContent = time;
-            
-            // Update badge
-            if (conversation.unreadCount > 0) {
-                if (!badgeElement) {
-                    const metaElement = item.querySelector('.conversation-meta');
-                    const badge = document.createElement('div');
-                    badge.className = 'unread-badge';
-                    badge.textContent = conversation.unreadCount;
-                    metaElement.appendChild(badge);
-                } else {
-                    badgeElement.textContent = conversation.unreadCount;
-                }
-            } else if (badgeElement) {
-                badgeElement.remove();
+                document.getElementById('conversationsList').innerHTML = 
+                    '<div class="text-center p-5 text-muted">Error loading conversations</div>';
             }
         }
 
@@ -984,12 +556,9 @@
             if (conversations.length === 0) {
                 conversationsList.innerHTML = `
                     <div class="text-center p-5 text-muted">
-                        <i class="bi bi-chat-text" style="font-size: 3rem; opacity: 0.5;"></i>
-                        <p class="mt-3">No messages yet</p>
+                        <i class="bi bi-chat-text fs-1 mb-3"></i>
+                        <p>No conversations yet</p>
                         <p class="small">Match with someone to start chatting!</p>
-                        <button class="btn btn-sm btn-primary mt-2" onclick="window.location.href='home.html'">
-                            Find Matches
-                        </button>
                     </div>
                 `;
                 return;
@@ -998,118 +567,91 @@
             // Sort by timestamp (newest first)
             conversations.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
-            conversationsList.innerHTML = '';
+            let html = '';
             
             for (const conversation of conversations) {
                 try {
-                    // Get user data for this conversation
                     const userData = await getUserData(conversation.participantId);
+                    if (!userData) continue;
                     
-                    if (userData) {
-                        const conversationItem = createConversationItem(conversation, userData);
-                        conversationsList.appendChild(conversationItem);
-                    }
+                    const time = formatTime(conversation.lastMessage?.timestamp || conversation.timestamp);
+                    const lastMessage = conversation.lastMessage?.text || 'No messages yet';
+                    const truncatedMessage = lastMessage.length > 25 ? 
+                        lastMessage.substring(0, 25) + '...' : lastMessage;
+                    
+                    html += `
+                        <div class="conversation-item" data-conversation-id="${conversation.id}" data-user-id="${userData.id}">
+                            <img src="${userData.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName)}&background=8f1eae&color=fff&size=100`}" 
+                                 class="conversation-avatar"
+                                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName.charAt(0))}&background=8f1eae&color=fff&size=100'">
+                            <div class="conversation-info">
+                                <div class="conversation-name">${userData.fullName}</div>
+                                <div class="conversation-last-message">${truncatedMessage}</div>
+                            </div>
+                            <div class="conversation-meta">
+                                <div class="conversation-time">${time}</div>
+                                ${conversation.unreadCount > 0 ? 
+                                    `<div class="unread-badge mt-1">${conversation.unreadCount}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
                 } catch (error) {
                     console.error('Error loading user for conversation:', error);
                 }
             }
             
-            updateMessagesBadge();
+            conversationsList.innerHTML = html;
+            
+            // Add click listeners
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.addEventListener('click', async () => {
+                    const conversationId = item.dataset.conversationId;
+                    const userId = item.dataset.userId;
+                    const userData = await getUserData(userId);
+                    if (userData) {
+                        openConversation(conversationId, userData);
+                    }
+                });
+            });
         }
 
         // Get user data
         async function getUserData(userId) {
-            // Try to find in allUsers array
-            let userData = allUsers.find(user => 
-                user.id === userId || user.username === userId
-            );
-            
-            if (!userData) {
-                // Try to fetch from database
-                try {
-                    const usersRef = ref(database, 'users');
-                    const snapshot = await get(usersRef);
+            try {
+                const usersRef = ref(database, 'users');
+                const snapshot = await get(usersRef);
+                
+                if (snapshot.exists()) {
+                    const users = snapshot.val();
                     
-                    if (snapshot.exists()) {
-                        const users = snapshot.val();
-                        for (const userKey in users) {
-                            const user = users[userKey];
-                            if (userKey === userId || user.username === userId) {
-                                userData = {
-                                    id: userKey,
-                                    fullName: user.fullName || user.username,
-                                    username: user.username,
-                                    profileImage: user.profileImage || '',
-                                    isOnline: Math.random() > 0.5
-                                };
-                                break;
-                            }
+                    for (const userKey in users) {
+                        const user = users[userKey];
+                        if (userKey === userId || user.username === userId) {
+                            return {
+                                id: userKey,
+                                fullName: user.fullName || user.username,
+                                profileImage: user.profileImage || '',
+                                isOnline: Math.random() > 0.5
+                            };
                         }
                     }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
                 }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
             }
-            
-            return userData;
-        }
-
-        // Create conversation list item
-        function createConversationItem(conversation, userData) {
-            const item = document.createElement('div');
-            item.className = 'conversation-item';
-            item.dataset.conversationId = conversation.id;
-            item.dataset.userId = userData.id;
-            
-            // Format time
-            const time = formatTime(conversation.lastMessage?.timestamp || conversation.timestamp);
-            
-            // Truncate last message
-            const lastMessage = conversation.lastMessage?.text || 'No messages yet';
-            const truncatedMessage = lastMessage.length > 30 
-                ? lastMessage.substring(0, 30) + '...' 
-                : lastMessage;
-            
-            item.innerHTML = `
-                <img src="${userData.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName)}&background=f093fb&color=fff&size=50`}" 
-                     alt="${userData.fullName}" 
-                     class="conversation-avatar"
-                     onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName.charAt(0))}&background=f093fb&color=fff&size=50'">
-                <div class="conversation-info">
-                    <div class="conversation-name">${userData.fullName}</div>
-                    <div class="conversation-last-message">${truncatedMessage}</div>
-                </div>
-                <div class="conversation-meta">
-                    <div class="conversation-time">${time}</div>
-                    ${conversation.unreadCount > 0 ? 
-                        `<div class="unread-badge">${conversation.unreadCount}</div>` : 
-                        ''}
-                </div>
-            `;
-            
-            item.addEventListener('click', () => openConversation(conversation.id, userData));
-            
-            return item;
+            return null;
         }
 
         // Open conversation
         async function openConversation(conversationId, userData) {
             try {
-                // Remove previous message listener
-                if (messageListeners[currentConversation]) {
-                    messageListeners[currentConversation]();
-                    delete messageListeners[currentConversation];
-                }
-                
-                currentConversation = conversationId;
-                
-                // Mark as active in list
+                // Update UI
                 document.querySelectorAll('.conversation-item').forEach(item => {
                     item.classList.remove('active');
-                    if (item.dataset.conversationId === conversationId) {
-                        item.classList.add('active');
-                    }
                 });
+                document.querySelector(`[data-conversation-id="${conversationId}"]`).classList.add('active');
+                
+                currentConversation = conversationId;
                 
                 // Show chat area
                 document.getElementById('emptyChat').style.display = 'none';
@@ -1119,65 +661,37 @@
                 // Update chat header
                 document.getElementById('chatUserName').textContent = userData.fullName;
                 document.getElementById('chatUserStatus').innerHTML = `
-                    <span class="online-status" style="background: ${userData.isOnline ? '#4caf50' : '#9e9e9e'}"></span>
-                    ${userData.isOnline ? 'Online' : 'Offline'}
+                    <span style="color: ${userData.isOnline ? '#00ff9d' : '#ff4757'}">
+                        ${userData.isOnline ? 'Online' : 'Offline'}
+                    </span>
                 `;
                 
-                document.getElementById('chatUserAvatar').src = userData.profileImage || 
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName)}&background=f093fb&color=fff&size=45`;
+                const avatarUrl = userData.profileImage || 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName)}&background=8f1eae&color=fff&size=100`;
+                document.getElementById('chatUserAvatar').src = avatarUrl;
                 
                 // Load messages
-                await loadMessages(conversationId, userData);
+                await loadMessages(conversationId);
                 
                 // Mark conversation as read
                 await markConversationAsRead(conversationId);
                 
-                // Setup real-time message listener for THIS conversation
-                setupMessageListener(conversationId, userData);
+                // Setup real-time listener
+                setupMessageListener(conversationId);
                 
-                // On mobile, hide conversations sidebar
+                // Mobile: hide sidebar
                 if (window.innerWidth <= 768) {
                     document.getElementById('conversationsSidebar').classList.remove('active');
                 }
                 
             } catch (error) {
                 console.error('Error opening conversation:', error);
-                showToast('Error loading conversation', 'error');
+                alert('Error opening conversation');
             }
         }
 
-        // Setup real-time message listener for a conversation
-        function setupMessageListener(conversationId, userData) {
-            // Remove existing listener if any
-            if (messageListeners[conversationId]) {
-                messageListeners[conversationId]();
-            }
-            
-            const messagesRef = ref(database, `messages/${conversationId}`);
-            
-            // Listen for NEW messages
-            const unsubscribe = onChildAdded(messagesRef, (snapshot) => {
-                const message = snapshot.val();
-                
-                // Check if message already exists in UI
-                const existingMessage = document.querySelector(`[data-message-id="${snapshot.key}"]`);
-                if (existingMessage) return;
-                
-                // Add message to UI
-                addMessageToUI(message, snapshot.key, userData);
-                
-                // If message is from other user, mark as read
-                if (message.senderId !== currentUser.id && message.senderId !== currentUser.username) {
-                    markMessageAsRead(snapshot.key);
-                }
-            });
-            
-            // Store unsubscribe function
-            messageListeners[conversationId] = unsubscribe;
-        }
-
-        // Load messages for conversation
-        async function loadMessages(conversationId, userData) {
+        // Load messages
+        async function loadMessages(conversationId) {
             try {
                 const messagesRef = ref(database, `messages/${conversationId}`);
                 const snapshot = await get(messagesRef);
@@ -1189,7 +703,6 @@
                     const messagesData = snapshot.val();
                     const messages = [];
                     
-                    // Convert to array and sort by timestamp
                     Object.keys(messagesData).forEach(messageId => {
                         messages.push({
                             id: messageId,
@@ -1199,130 +712,79 @@
                     
                     messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
                     
-                    // Display messages
-                    let lastDate = null;
-                    
                     messages.forEach(message => {
-                        // Add date separator if needed
-                        const messageDate = new Date(message.timestamp).toLocaleDateString();
-                        if (messageDate !== lastDate) {
-                            const dateElement = document.createElement('div');
-                            dateElement.className = 'message-date';
-                            dateElement.textContent = formatDate(message.timestamp);
-                            messagesContainer.appendChild(dateElement);
-                            lastDate = messageDate;
-                        }
-                        
-                        // Create message element
-                        const messageElement = createMessageElement(message, userData);
-                        messagesContainer.appendChild(messageElement);
+                        addMessageToUI(message);
                     });
                     
                     // Scroll to bottom
                     setTimeout(() => {
                         messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     }, 100);
-                    
                 } else {
-                    // No messages yet
                     messagesContainer.innerHTML = `
-                        <div class="text-center text-muted" style="flex: 1; display: flex; align-items: center; justify-content: center;">
-                            <div>
-                                <i class="bi bi-chat-text" style="font-size: 3rem; opacity: 0.5;"></i>
-                                <p class="mt-3">No messages yet</p>
-                                <p>Say hello to ${userData.fullName}! 👋</p>
-                            </div>
+                        <div class="text-center text-muted mt-5">
+                            <i class="bi bi-chat-text fs-1"></i>
+                            <p class="mt-3">No messages yet</p>
+                            <p>Say hello! 👋</p>
                         </div>
                     `;
                 }
                 
             } catch (error) {
                 console.error('Error loading messages:', error);
-                showToast('Error loading messages', 'error');
             }
         }
 
-        // Add message to UI (for real-time updates)
-        function addMessageToUI(message, messageId, userData) {
+        // Setup real-time message listener
+        function setupMessageListener(conversationId) {
+            // Remove existing listener
+            if (messageListener) {
+                messageListener();
+            }
+            
+            const messagesRef = ref(database, `messages/${conversationId}`);
+            messageListener = onChildAdded(messagesRef, (snapshot) => {
+                const message = snapshot.val();
+                const messageId = snapshot.key;
+                
+                // Check if message already exists
+                if (document.querySelector(`[data-message-id="${messageId}"]`)) return;
+                
+                addMessageToUI({...message, id: messageId});
+                
+                // Scroll to bottom
+                setTimeout(() => {
+                    document.getElementById('messagesContainer').scrollTop = 
+                        document.getElementById('messagesContainer').scrollHeight;
+                }, 100);
+            });
+        }
+
+        // Add message to UI
+        function addMessageToUI(message) {
             const messagesContainer = document.getElementById('messagesContainer');
             
-            // Check if this is the "no messages" state
-            const noMessagesDiv = messagesContainer.querySelector('.text-center');
-            if (noMessagesDiv) {
-                messagesContainer.innerHTML = '';
+            // Remove "no messages" state
+            const noMessages = messagesContainer.querySelector('.text-center');
+            if (noMessages) {
+                noMessages.remove();
             }
             
-            // Create message element
-            const messageElement = createMessageElement({...message, id: messageId}, userData);
+            const isSent = message.senderId === currentUser.id || 
+                          message.senderId === currentUser.username;
             
-            // Add date separator if needed
-            const messageDate = new Date(message.timestamp).toLocaleDateString();
-            const lastMessage = messagesContainer.lastElementChild;
+            const time = new Date(message.timestamp).toLocaleTimeString([], 
+                { hour: '2-digit', minute: '2-digit' });
             
-            if (lastMessage && lastMessage.classList.contains('message-date')) {
-                const lastDate = lastMessage.textContent;
-                if (formatDate(message.timestamp) !== lastDate) {
-                    const dateElement = document.createElement('div');
-                    dateElement.className = 'message-date';
-                    dateElement.textContent = formatDate(message.timestamp);
-                    messagesContainer.appendChild(dateElement);
-                }
-            } else if (!lastMessage || !lastMessage.classList.contains('message-date')) {
-                const dateElement = document.createElement('div');
-                dateElement.className = 'message-date';
-                dateElement.textContent = formatDate(message.timestamp);
-                messagesContainer.appendChild(dateElement);
-            }
-            
-            messagesContainer.appendChild(messageElement);
-            
-            // Scroll to bottom
-            setTimeout(() => {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 100);
-            
-            // Update conversation in sidebar with new last message
-            updateConversationLastMessage(currentConversation, message);
-        }
-
-        // Update conversation last message
-        async function updateConversationLastMessage(conversationId, message) {
-            try {
-                const conversationRef = ref(database, `conversations/${conversationId}`);
-                await update(conversationRef, {
-                    lastMessage: message,
-                    timestamp: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error('Error updating conversation last message:', error);
-            }
-        }
-
-        // Create message element
-        function createMessageElement(message, userData) {
             const messageDiv = document.createElement('div');
-            const isSent = message.senderId === currentUser.id || message.senderId === currentUser.username;
-            
             messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
             messageDiv.dataset.messageId = message.id;
-            
-            const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            let statusIcon = '';
-            if (isSent) {
-                statusIcon = message.read ? 
-                    '<span class="message-status read"><i class="bi bi-check-all"></i></span>' :
-                    '<span class="message-status"><i class="bi bi-check"></i></span>';
-            }
-            
             messageDiv.innerHTML = `
-                <div class="message-content">${message.text}</div>
-                <div class="message-time">
-                    ${time} ${statusIcon}
-                </div>
+                <div>${message.text}</div>
+                <div class="message-time">${time}</div>
             `;
             
-            return messageDiv;
+            messagesContainer.appendChild(messageDiv);
         }
 
         // Send message
@@ -1333,7 +795,6 @@
             if (!text || !currentConversation) return;
             
             try {
-                // Create message object
                 const message = {
                     text: text,
                     senderId: currentUser.id || currentUser.username,
@@ -1351,2111 +812,16 @@
                 const conversationRef = ref(database, `conversations/${currentConversation}`);
                 await update(conversationRef, {
                     lastMessage: message,
-                    timestamp: new Date().toISOString(),
-                    unreadCount: 1
-                });
-                
-                // Clear input
-                messageInput.value = '';
-                
-                // Message will appear automatically via real-time listener
-                
-                showToast('Message sent!', 'success');
-                
-            } catch (error) {
-                console.error('Error sending message:', error);
-                showToast('Error sending message', 'error');
-            }
-        }
-
-        // Mark conversation as read
-        async function markConversationAsRead(conversationId) {
-            try {
-                const conversationRef = ref(database, `conversations/${conversationId}`);
-                await update(conversationRef, {
-                    unreadCount: 0
-                });
-                
-                // Update UI
-                const conversationItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
-                if (conversationItem) {
-                    const badge = conversationItem.querySelector('.unread-badge');
-                    if (badge) {
-                        badge.remove();
-                    }
-                }
-                
-                updateMessagesBadge();
-                
-            } catch (error) {
-                console.error('Error marking conversation as read:', error);
-            }
-        }
-
-        // Mark message as read
-        async function markMessageAsRead(messageId) {
-            try {
-                const messageRef = ref(database, `messages/${currentConversation}/${messageId}`);
-                await update(messageRef, {
-                    read: true
-                });
-                
-            } catch (error) {
-                console.error('Error marking message as read:', error);
-            }
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Send message on Enter key
-            document.getElementById('messageInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-            
-            // Send message button
-            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
-            
-            // New message button
-            document.getElementById('newMessageBtn').addEventListener('click', () => {
-                const modal = new bootstrap.Modal(document.getElementById('newMessageModal'));
-                loadUsersForNewMessage();
-                modal.show();
-            });
-            
-            // Back to conversations (mobile)
-            document.getElementById('backToConversations').addEventListener('click', () => {
-                document.getElementById('conversationsSidebar').classList.add('active');
-                document.getElementById('emptyChat').style.display = 'flex';
-                document.getElementById('activeChat').style.display = 'none';
-                currentConversation = null;
-                
-                // Remove message listener when leaving chat
-                if (messageListeners[currentConversation]) {
-                    messageListeners[currentConversation]();
-                    delete messageListeners[currentConversation];
-                }
-            });
-            
-            // Mobile menu button
-            document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-                document.getElementById('conversationsSidebar').classList.add('active');
-            });
-            
-            // Search conversations
-            document.getElementById('messageSearch').addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const items = document.querySelectorAll('.conversation-item');
-                
-                items.forEach(item => {
-                    const name = item.querySelector('.conversation-name').textContent.toLowerCase();
-                    const message = item.querySelector('.conversation-last-message').textContent.toLowerCase();
-                    
-                    if (name.includes(searchTerm) || message.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Logout
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                localStorage.removeItem('amora_user');
-                window.location.href = 'index.html';
-            });
-        }
-
-        // Load users for new message modal
-        async function loadUsersForNewMessage() {
-            const usersList = document.getElementById('usersList');
-            usersList.innerHTML = '<div class="text-center p-3 text-muted">Loading users...</div>';
-            
-            // Filter out current user and users we already have conversations with
-            const availableUsers = allUsers.filter(user => {
-                if (user.id === currentUser.id || user.username === currentUser.username) {
-                    return false;
-                }
-                
-                // Check if we already have a conversation with this user
-                const existingConversation = conversations.find(c => 
-                    c.participantId === user.id || c.participantId === user.username
-                );
-                
-                return !existingConversation;
-            });
-            
-            usersList.innerHTML = '';
-            
-            if (availableUsers.length === 0) {
-                usersList.innerHTML = '<div class="text-center p-3 text-muted">No users available</div>';
-                return;
-            }
-            
-            availableUsers.forEach(user => {
-                const userItem = document.createElement('div');
-                userItem.className = 'conversation-item';
-                userItem.innerHTML = `
-                    <img src="${user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=f093fb&color=fff&size=50`}" 
-                         class="conversation-avatar">
-                    <div class="conversation-info">
-                        <div class="conversation-name">${user.fullName}</div>
-                        <div class="conversation-last-message">Start new conversation</div>
-                    </div>
-                `;
-                
-                userItem.addEventListener('click', async () => {
-                    // Close modal
-                    bootstrap.Modal.getInstance(document.getElementById('newMessageModal')).hide();
-                    
-                    // Create new conversation
-                    await createNewConversation(user);
-                });
-                
-                usersList.appendChild(userItem);
-            });
-        }
-
-        // Create new conversation
-        async function createNewConversation(userData) {
-            try {
-                const conversationData = {
-                    participants: [currentUser.id || currentUser.username, userData.id || userData.username],
-                    timestamp: new Date().toISOString(),
-                    lastMessage: {
-                        text: "You started a conversation 👋",
-                        senderId: "system",
-                        timestamp: new Date().toISOString()
-                    },
-                    unreadCount: 0
-                };
-                
-                const conversationsRef = ref(database, 'conversations');
-                const newConversationRef = push(conversationsRef);
-                await set(newConversationRef, conversationData);
-                
-                // Add to local conversations
-                const newConversation = {
-                    id: newConversationRef.key,
-                    participantId: userData.id || userData.username,
-                    lastMessage: conversationData.lastMessage,
-                    unreadCount: 0,
-                    timestamp: conversationData.timestamp
-                };
-                
-                conversations.push(newConversation);
-                await displayConversations();
-                
-                // Open the new conversation
-                await openConversation(newConversationRef.key, userData);
-                
-                showToast('New conversation started!', 'success');
-                
-            } catch (error) {
-                console.error('Error creating conversation:', error);
-                showToast('Error creating conversation', 'error');
-            }
-        }
-
-        // Update messages badge
-        function updateMessagesBadge() {
-            const totalUnread = conversations.reduce((sum, conv) => sum + (conv.unreadCount || 0), 0);
-            document.getElementById('messagesBadge').textContent = totalUnread > 0 ? totalUnread : '0';
-        }
-
-        // Format time
-        function formatTime(timestamp) {
-            const date = new Date(timestamp);
-            const now = new Date();
-            const diff = now - date;
-            
-            if (diff < 86400000) { // Less than 24 hours
-                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            } else if (diff < 604800000) { // Less than 7 days
-                return date.toLocaleDateString([], { weekday: 'short' });
-            } else {
-                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            }
-        }
-
-        // Format date
-        function formatDate(timestamp) {
-            const date = new Date(timestamp);
-            const now = new Date();
-            const diff = now - date;
-            
-            if (diff < 86400000) { // Today
-                return 'Today';
-            } else if (diff < 172800000) { // Yesterday
-                return 'Yesterday';
-            } else if (diff < 604800000) { // This week
-                return date.toLocaleDateString([], { weekday: 'long' });
-            } else {
-                return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
-            }
-        }
-
-        // Show toast message
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = 'position-fixed top-0 start-50 translate-middle-x mt-3 p-3 rounded';
-            toast.style.zIndex = '9999';
-            toast.style.backgroundColor = type === 'success' ? '#28a745' : 
-                                         type === 'error' ? '#dc3545' : '#17a2b8';
-            toast.style.color = 'white';
-            toast.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
-            toast.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-info-circle'} me-2"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-20px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-    </script>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages - Amora</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --dark-bg: #0f0f23;
-            --card-bg: #1a1a2e;
-            --card-bg-light: #22223a;
-            --text-light: #ffffff;
-            --text-muted: #b0b0d0;
-            --message-bg-sent: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --message-bg-received: #2d2d4d;
-            --online: #00ff9d;
-            --offline: #ff4757;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-light);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            letter-spacing: -0.01em;
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Navigation */
-        .navbar {
-            background: rgba(15, 15, 35, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.8rem 0;
-            position: relative;
-            z-index: 1000;
-        }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-        }
-        
-        .navbar-brand i {
-            font-size: 1.8rem;
-            margin-right: 0.5rem;
-        }
-        
-        .nav-link {
-            color: var(--text-muted) !important;
-            font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            border-radius: 12px;
-            transition: var(--transition);
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            color: var(--text-light) !important;
-            background: rgba(102, 126, 234, 0.1);
-        }
-        
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-        }
-        
-        .notification-badge {
-            background: var(--accent-color);
-            color: white;
-            font-size: 0.7rem;
-            padding: 0.15rem 0.5rem;
-            border-radius: 10px;
-            margin-left: 0.5rem;
-            min-width: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid transparent;
-            background: var(--primary-gradient) border-box;
-            transition: var(--transition);
-        }
-        
-        .user-avatar:hover {
-            transform: scale(1.05);
-        }
-        
-        .dropdown-menu {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-        
-        .dropdown-item {
-            color: var(--text-light);
-            padding: 0.6rem 1rem;
-            transition: var(--transition);
-        }
-        
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--accent-color);
-        }
-        
-        /* Chat Layout */
-        .chat-container {
-            display: flex;
-            height: calc(100vh - 76px);
-            position: relative;
-        }
-        
-        /* Conversations Sidebar */
-        .conversations-sidebar {
-            width: 380px;
-            background: var(--card-bg);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 10;
-        }
-        
-        .conversations-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--card-bg);
-        }
-        
-        .conversations-header h4 {
-            font-weight: 600;
-            font-size: 1.5rem;
-            margin-bottom: 0;
-        }
-        
-        .conversations-search-container {
-            position: relative;
-            margin-top: 1.2rem;
-        }
-        
-        .conversations-search {
-            background: var(--card-bg-light);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            border-radius: 12px;
-            padding: 0.8rem 1rem 0.8rem 2.8rem;
-            width: 100%;
-            font-size: 0.95rem;
-            transition: var(--transition);
-        }
-        
-        .conversations-search:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
-        
-        #newMessageBtn {
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 12px;
-            padding: 0.5rem 1rem;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-        
-        #newMessageBtn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        .conversations-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.5rem;
-        }
-        
-        .conversation-item {
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: relative;
-            border: 1px solid transparent;
-        }
-        
-        .conversation-item:hover {
-            background: var(--card-bg-light);
-            transform: translateX(4px);
-            border-color: var(--border-color);
-        }
-        
-        .conversation-item.active {
-            background: rgba(102, 126, 234, 0.15);
-            border-color: rgba(102, 126, 234, 0.3);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
-        }
-        
-        .conversation-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 2px solid transparent;
-            background: var(--primary-gradient) border-box;
-            position: relative;
-        }
-        
-        .conversation-avatar::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--online);
-            border: 2px solid var(--card-bg);
-        }
-        
-        .conversation-avatar.offline::after {
-            background: var(--offline);
-        }
-        
-        .conversation-info {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .conversation-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 1rem;
-        }
-        
-        .conversation-last-message {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .conversation-meta {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.5rem;
-        }
-        
-        .conversation-time {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        
-        .unread-badge {
-            background: var(--accent-color);
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.2rem 0.6rem;
-            border-radius: 10px;
-            min-width: 24px;
-            text-align: center;
-            box-shadow: 0 3px 10px rgba(240, 147, 251, 0.3);
-        }
-        
-        /* Chat Area */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--dark-bg);
-            position: relative;
-        }
-        
-        .chat-header {
-            padding: 1rem 1.5rem;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
-        
-        .chat-user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-        
-        .chat-user-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid transparent;
-            background: var(--primary-gradient) border-box;
-        }
-        
-        .chat-user-details h5 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        
-        .chat-user-details small {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .online-status {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--online);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .chat-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .chat-action-btn {
-            background: var(--card-bg-light);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .chat-action-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-        
-        /* Messages Area */
-        .messages-container {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            background: url('data:image/svg+xml,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z" fill="%2322223a" opacity="0.4"/></svg>');
-            background-size: 300px;
-            background-position: center;
-        }
-        
-        .message-date {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin: 0.5rem 0;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            display: inline-block;
-            align-self: center;
-            backdrop-filter: blur(10px);
-            font-weight: 500;
-        }
-        
-        .message {
-            max-width: 70%;
-            padding: 0.9rem 1.2rem;
-            border-radius: 20px;
-            position: relative;
-            animation: messageAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            word-wrap: break-word;
-            line-height: 1.5;
-        }
-        
-        @keyframes messageAppear {
-            from {
-                opacity: 0;
-                transform: translateY(15px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        
-        .message.sent {
-            background: var(--message-bg-sent);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 5px;
-        }
-        
-        .message.received {
-            background: var(--message-bg-received);
-            color: var(--text-light);
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
-        }
-        
-        .message-time {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            text-align: right;
-            margin-top: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .message-status {
-            display: inline-block;
-            margin-left: 0.5rem;
-            font-size: 0.8rem;
-        }
-        
-        .message-status.read {
-            color: var(--online);
-        }
-        
-        /* Message Input */
-        .message-input-container {
-            padding: 1.2rem 1.5rem;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            position: sticky;
-            bottom: 0;
-            z-index: 5;
-        }
-        
-        .message-input {
-            flex: 1;
-            background: var(--card-bg-light);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            border-radius: 20px;
-            padding: 0.9rem 1.2rem;
-            font-size: 1rem;
-            transition: var(--transition);
-            resize: none;
-            min-height: 46px;
-            max-height: 120px;
-        }
-        
-        .message-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-        }
-        
-        .input-action-btn {
-            background: var(--card-bg-light);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .input-action-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-        
-        .send-btn {
-            background: var(--primary-gradient) !important;
-            color: white !important;
-            border: none !important;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        .send-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        /* Empty State */
-        .empty-chat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-muted);
-        }
-        
-        .empty-chat-icon {
-            font-size: 5rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.5;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .empty-chat h4 {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.5rem;
-        }
-        
-        /* Typing Indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1.2rem;
-            background: var(--message-bg-received);
-            border-radius: 20px;
-            align-self: flex-start;
-            margin-bottom: 0.5rem;
-            animation: typingPulse 1.5s infinite;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            max-width: 120px;
-        }
-        
-        @keyframes typingPulse {
-            0%, 100% { opacity: 0.7; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-2px); }
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--text-muted);
-            border-radius: 50%;
-            animation: typingDot 1.4s infinite;
-        }
-        
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes typingDot {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-        
-        /* Loading Animation */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Responsive */
-        @media (max-width: 992px) {
-            .conversations-sidebar {
-                width: 320px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .conversations-sidebar {
-                width: 100%;
-                position: absolute;
-                z-index: 1000;
-                height: 100%;
-                transform: translateX(-100%);
-                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
-            }
-            
-            .conversations-sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .back-to-conversations {
-                display: block !important;
-            }
-            
-            .mobile-menu-btn {
-                display: block !important;
-            }
-            
-            .message {
-                max-width: 85%;
-            }
-        }
-        
-        .back-to-conversations {
-            display: none;
-            background: var(--card-bg-light);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            font-size: 1.2rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        
-        .back-to-conversations:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            transform: translateX(-2px);
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: var(--card-bg-light);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            font-size: 1.2rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        
-        .mobile-menu-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-        
-        /* Modal */
-        .modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-        }
-        
-        .modal-header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 1.5rem;
-        }
-        
-        .modal-title {
-            font-weight: 600;
-            font-size: 1.3rem;
-        }
-        
-        .btn-close-white {
-            filter: invert(1) grayscale(100%) brightness(200%);
-        }
-        
-        .form-control {
-            background: var(--card-bg-light);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            border-radius: 12px;
-            padding: 0.8rem 1rem;
-        }
-        
-        .form-control:focus {
-            background: var(--card-bg-light);
-            border-color: var(--primary-color);
-            color: var(--text-light);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-        }
-        
-        /* Toast */
-        .toast-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            z-index: 9999;
-            transform: translateX(150%);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            max-width: 320px;
-        }
-        
-        .toast-notification.show {
-            transform: translateX(0);
-        }
-        
-        .toast-notification.success {
-            border-left: 4px solid var(--online);
-        }
-        
-        .toast-notification.error {
-            border-left: 4px solid var(--offline);
-        }
-        
-        /* Floating Action Button */
-        .floating-action-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        
-        .floating-action-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.5);
-        }
-        
-        /* Welcome Banner */
-        .welcome-banner {
-            padding: 2rem;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            text-align: center;
-        }
-        
-        .welcome-banner h3 {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        /* Enhancements for visual hierarchy */
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-            margin: 1rem 0;
-        }
-        
-        .text-gradient {
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="home.html">
-                <i class="bi bi-chat-heart-fill me-2"></i>Amora
-            </a>
-            
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="bi bi-list"></i>
-            </button>
-            
-            <div class="navbar-nav ms-auto align-items-center">
-                <a class="nav-link" href="home.html">
-                    <i class="bi bi-compass me-1"></i> Discover
-                </a>
-                <a class="nav-link" href="matches.html">
-                    <i class="bi bi-heart me-1"></i> Matches
-                    <span class="notification-badge" id="matchesBadge">0</span>
-                </a>
-                <a class="nav-link active" href="messages.html">
-                    <i class="bi bi-chat-left-text me-1"></i> Messages
-                    <span class="notification-badge" id="messagesBadge">0</span>
-                </a>
-                <a class="nav-link" href="profile.html">
-                    <i class="bi bi-person-circle me-1"></i> Profile
-                </a>
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
-                       data-bs-toggle="dropdown">
-                        <img src="" alt="Profile" class="user-avatar me-2" id="navProfileImage">
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="settings.html">
-                            <i class="bi bi-sliders me-2"></i>Settings
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><button class="dropdown-item" id="logoutBtn">
-                            <i class="bi bi-box-arrow-right me-2"></i>Logout
-                        </button></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Chat Container -->
-    <div class="chat-container">
-        <!-- Conversations Sidebar -->
-        <div class="conversations-sidebar" id="conversationsSidebar">
-            <div class="conversations-header">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h4>Messages</h4>
-                    <button class="btn" id="newMessageBtn">
-                        <i class="bi bi-plus-lg me-1"></i> New Chat
-                    </button>
-                </div>
-                <div class="conversations-search-container">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="text" class="conversations-search" placeholder="Search conversations..." id="messageSearch">
-                </div>
-            </div>
-            
-            <div class="conversations-list" id="conversationsList">
-                <div class="text-center p-5 text-muted">
-                    <div class="loading-spinner me-2"></div>
-                    Loading conversations...
-                </div>
-            </div>
-        </div>
-        
-        <!-- Chat Area -->
-        <div class="chat-area" id="chatArea">
-            <!-- Empty State (shown when no conversation selected) -->
-            <div class="empty-chat" id="emptyChat">
-                <div class="empty-chat-icon">
-                    <i class="bi bi-chat-square-heart"></i>
-                </div>
-                <h4>Your Messages</h4>
-                <p class="text-muted mb-4">Select a conversation to start messaging or create a new one</p>
-                <button class="btn" id="startNewChatBtn" style="background: var(--primary-gradient); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px;">
-                    <i class="bi bi-plus-circle me-1"></i> Start New Chat
-                </button>
-            </div>
-            
-            <!-- Active Chat (shown when conversation selected) -->
-            <div id="activeChat" style="display: none; height: 100%;">
-                <!-- Chat Header -->
-                <div class="chat-header">
-                    <button class="back-to-conversations" id="backToConversations">
-                        <i class="bi bi-arrow-left"></i>
-                    </button>
-                    
-                    <div class="chat-user-info">
-                        <img src="" alt="User" class="chat-user-avatar" id="chatUserAvatar">
-                        <div class="chat-user-details">
-                            <h5 id="chatUserName">Loading...</h5>
-                            <small id="chatUserStatus">
-                                <span class="online-status"></span>
-                                <span id="statusText">Online</span>
-                            </small>
-                        </div>
-                    </div>
-                    
-                    <div class="chat-actions">
-                        <button class="chat-action-btn" title="Voice call">
-                            <i class="bi bi-telephone"></i>
-                        </button>
-                        <button class="chat-action-btn" title="Video call">
-                            <i class="bi bi-camera-video"></i>
-                        </button>
-                        <button class="chat-action-btn" title="More options">
-                            <i class="bi bi-three-dots"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Messages Container -->
-                <div class="messages-container" id="messagesContainer">
-                    <!-- Messages will be loaded here -->
-                </div>
-                
-                <!-- Typing Indicator -->
-                <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <span>typing...</span>
-                </div>
-                
-                <!-- Message Input -->
-                <div class="message-input-container">
-                    <button class="input-action-btn" title="Add attachment">
-                        <i class="bi bi-paperclip"></i>
-                    </button>
-                    <button class="input-action-btn" title="Add photo">
-                        <i class="bi bi-image"></i>
-                    </button>
-                    
-                    <textarea class="message-input" placeholder="Type your message..." id="messageInput" rows="1"></textarea>
-                    
-                    <button class="input-action-btn" title="Add emoji">
-                        <i class="bi bi-emoji-smile"></i>
-                    </button>
-                    
-                    <button class="input-action-btn send-btn" id="sendMessageBtn" title="Send message">
-                        <i class="bi bi-send"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- New Message Modal -->
-    <div class="modal fade" id="newMessageModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">New Message</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" class="form-control mb-3" placeholder="Search users..." id="userSearch">
-                    <div class="users-list" id="usersList" style="max-height: 300px; overflow-y: auto;">
-                        <div class="text-center p-3 text-muted">
-                            <div class="loading-spinner me-2"></div>
-                            Loading users...
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification Container -->
-    <div id="toastContainer"></div>
-
-    <!-- Floating Action Button for Mobile -->
-    <button class="floating-action-btn d-md-none" id="floatingNewMessageBtn">
-        <i class="bi bi-plus-lg"></i>
-    </button>
-
-    <!-- Firebase and Scripts -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getDatabase, ref, get, set, push, onChildAdded, onChildChanged, onValue, update, query, orderByChild, equalTo } 
-                from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEzRCOw2E89qjewG-vuQ_SWBWUbGdDHv8",
-            authDomain: "how-fast-bcabe.firebaseapp.com",
-            databaseURL: "https://how-fast-bcabe-default-rtdb.firebaseio.com",
-            projectId: "how-fast-bcabe",
-            storageBucket: "how-fast-bcabe.firebasestorage.app",
-            messagingSenderId: "435644508816",
-            appId: "1:435644508816:web:53e51d3cc22331996e4615",
-            measurementId: "G-ZBZZK4D9D0"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // Global variables
-        let currentUser = null;
-        let conversations = [];
-        let currentConversation = null;
-        let matches = [];
-        let allUsers = [];
-        let messageListeners = {};
-        let conversationListeners = {};
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check if user is logged in
-            const storedUser = localStorage.getItem('amora_user');
-            
-            if (!storedUser) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            try {
-                currentUser = JSON.parse(storedUser);
-                console.log('Current user:', currentUser);
-                
-                updateUserDisplay();
-                await loadAllUsers();
-                await loadMatches();
-                await loadConversations();
-                setupEventListeners();
-                
-                // Start real-time listeners
-                setupConversationsListener();
-                
-            } catch (error) {
-                console.error('Error loading messages page:', error);
-                showToast('Error loading messages', 'error');
-            }
-        });
-
-        // Update user display
-        function updateUserDisplay() {
-            const navProfileImage = document.getElementById('navProfileImage');
-            
-            if (currentUser.profileImage) {
-                navProfileImage.src = currentUser.profileImage;
-            } else {
-                navProfileImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.fullName || currentUser.username || 'U')}&background=667eea&color=fff&size=32`;
-            }
-        }
-
-        // Load all users from database
-        async function loadAllUsers() {
-            try {
-                console.log('Loading all users...');
-                const usersRef = ref(database, 'users');
-                const snapshot = await get(usersRef);
-                
-                allUsers = [];
-                
-                if (snapshot.exists()) {
-                    const usersData = snapshot.val();
-                    
-                    Object.keys(usersData).forEach(userId => {
-                        const user = usersData[userId];
-                        allUsers.push({
-                            id: userId,
-                            username: user.username,
-                            fullName: user.fullName || user.username,
-                            profileImage: user.profileImage || '',
-                            email: user.email || '',
-                            phone: user.phone || '',
-                            gender: user.gender || 'other',
-                            isOnline: Math.random() > 0.5
-                        });
-                    });
-                    
-                    console.log(`Loaded ${allUsers.length} users from database`);
-                } else {
-                    console.log('No users found in database');
-                }
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-                showToast('Error loading users', 'error');
-            }
-        }
-
-        // Load matches from database
-        async function loadMatches() {
-            try {
-                console.log('Loading matches...');
-                const matchesRef = ref(database, 'matches');
-                const snapshot = await get(matchesRef);
-                
-                matches = [];
-                
-                if (snapshot.exists()) {
-                    const matchesData = snapshot.val();
-                    
-                    Object.keys(matchesData).forEach(matchId => {
-                        const match = matchesData[matchId];
-                        
-                        // Check if current user is part of this match
-                        const currentUserId = currentUser.id || currentUser.username;
-                        if (match.user1Id === currentUserId || match.user2Id === currentUserId) {
-                            
-                            // Determine the other user's ID
-                            const otherUserId = match.user1Id === currentUserId ? match.user2Id : match.user1Id;
-                            
-                            matches.push({
-                                id: matchId,
-                                userId: otherUserId,
-                                timestamp: match.timestamp || new Date().toISOString(),
-                                status: match.status || 'matched'
-                            });
-                        }
-                    });
-                    
-                    console.log(`Loaded ${matches.length} matches from database`);
-                } else {
-                    console.log('No matches found in database');
-                }
-                
-            } catch (error) {
-                console.error('Error loading matches:', error);
-            }
-        }
-
-        // Load conversations from database
-        async function loadConversations() {
-            try {
-                console.log('Loading conversations...');
-                const conversationsRef = ref(database, 'conversations');
-                const snapshot = await get(conversationsRef);
-                
-                conversations = [];
-                
-                if (snapshot.exists()) {
-                    const conversationsData = snapshot.val();
-                    
-                    Object.keys(conversationsData).forEach(conversationId => {
-                        const conversation = conversationsData[conversationId];
-                        
-                        // Check if current user is part of this conversation
-                        const currentUserId = currentUser.id || currentUser.username;
-                        if (conversation.participants && 
-                            (conversation.participants.includes(currentUserId) ||
-                             conversation.participants.includes(currentUser.username))) {
-                            
-                            // Get other participant
-                            const otherParticipantId = conversation.participants.find(p => 
-                                p !== currentUserId && p !== currentUser.username
-                            );
-                            
-                            conversations.push({
-                                id: conversationId,
-                                participantId: otherParticipantId,
-                                lastMessage: conversation.lastMessage || {},
-                                unreadCount: conversation.unreadCount || 0,
-                                timestamp: conversation.timestamp || new Date().toISOString()
-                            });
-                        }
-                    });
-                    
-                    console.log(`Loaded ${conversations.length} conversations from database`);
-                    
-                } else {
-                    console.log('No conversations found in database');
-                    // Create conversations from matches
-                    await createConversationsFromMatches();
-                }
-                
-                displayConversations();
-                
-            } catch (error) {
-                console.error('Error loading conversations:', error);
-            }
-        }
-
-        // Create conversations from matches
-        async function createConversationsFromMatches() {
-            for (const match of matches) {
-                try {
-                    // Check if conversation already exists
-                    const existingConversation = conversations.find(c => c.participantId === match.userId);
-                    if (!existingConversation) {
-                        // Create new conversation
-                        const conversationData = {
-                            participants: [currentUser.id || currentUser.username, match.userId],
-                            timestamp: new Date().toISOString(),
-                            lastMessage: {
-                                text: "You matched! Say hello! 👋",
-                                senderId: "system",
-                                timestamp: new Date().toISOString()
-                            },
-                            unreadCount: 0
-                        };
-                        
-                        const conversationsRef = ref(database, 'conversations');
-                        const newConversationRef = push(conversationsRef);
-                        await set(newConversationRef, conversationData);
-                        
-                        conversations.push({
-                            id: newConversationRef.key,
-                            participantId: match.userId,
-                            lastMessage: conversationData.lastMessage,
-                            unreadCount: 0,
-                            timestamp: conversationData.timestamp
-                        });
-                        
-                        console.log('Created conversation for match:', match.userId);
-                    }
-                } catch (error) {
-                    console.error('Error creating conversation for match:', match.userId, error);
-                }
-            }
-        }
-
-        // Setup real-time conversation listener
-        function setupConversationsListener() {
-            const conversationsRef = ref(database, 'conversations');
-            
-            // Listen for NEW conversations
-            onChildAdded(conversationsRef, async (snapshot) => {
-                const conversation = snapshot.val();
-                const conversationId = snapshot.key;
-                
-                // Check if this conversation involves current user
-                const currentUserId = currentUser.id || currentUser.username;
-                if (conversation.participants && 
-                    (conversation.participants.includes(currentUserId) ||
-                     conversation.participants.includes(currentUser.username))) {
-                    
-                    // Check if we already have this conversation locally
-                    const existingIndex = conversations.findIndex(c => c.id === conversationId);
-                    if (existingIndex === -1) {
-                        // Get other participant
-                        const otherParticipantId = conversation.participants.find(p => 
-                            p !== currentUserId && p !== currentUser.username
-                        );
-                        
-                        // Add to conversations array
-                        conversations.push({
-                            id: conversationId,
-                            participantId: otherParticipantId,
-                            lastMessage: conversation.lastMessage || {},
-                            unreadCount: conversation.unreadCount || 0,
-                            timestamp: conversation.timestamp || new Date().toISOString()
-                        });
-                        
-                        // Update UI
-                        await updateConversationInUI(conversationId, otherParticipantId);
-                    }
-                }
-            });
-            
-            // Listen for UPDATED conversations (new messages, read status)
-            onChildChanged(conversationsRef, async (snapshot) => {
-                const updatedConversation = snapshot.val();
-                const conversationId = snapshot.key;
-                
-                // Check if this conversation involves current user
-                const currentUserId = currentUser.id || currentUser.username;
-                if (updatedConversation.participants && 
-                    (updatedConversation.participants.includes(currentUserId) ||
-                     updatedConversation.participants.includes(currentUser.username))) {
-                    
-                    // Find conversation index
-                    const existingIndex = conversations.findIndex(c => c.id === conversationId);
-                    if (existingIndex !== -1) {
-                        // Update conversation data
-                        const otherParticipantId = updatedConversation.participants.find(p => 
-                            p !== currentUserId && p !== currentUser.username
-                        );
-                        
-                        conversations[existingIndex] = {
-                            ...conversations[existingIndex],
-                            lastMessage: updatedConversation.lastMessage || {},
-                            unreadCount: updatedConversation.unreadCount || 0,
-                            timestamp: updatedConversation.timestamp || new Date().toISOString()
-                        };
-                        
-                        // Update UI
-                        await updateConversationInUI(conversationId, otherParticipantId);
-                        
-                        // If this is the current conversation, update messages too
-                        if (currentConversation === conversationId) {
-                            // Mark as read if we're viewing it
-                            await markConversationAsRead(conversationId);
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update conversation in UI
-        async function updateConversationInUI(conversationId, participantId) {
-            try {
-                // Get user data
-                const userData = await getUserData(participantId);
-                if (!userData) return;
-                
-                // Find conversation item in DOM
-                const existingItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
-                const conversation = conversations.find(c => c.id === conversationId);
-                
-                if (!conversation) return;
-                
-                if (existingItem) {
-                    // Update existing item
-                    updateConversationItem(existingItem, conversation, userData);
-                } else {
-                    // Create new item and add to top
-                    const newItem = createConversationItem(conversation, userData);
-                    const conversationsList = document.getElementById('conversationsList');
-                    conversationsList.insertBefore(newItem, conversationsList.firstChild);
-                }
-                
-                // Update badge
-                updateMessagesBadge();
-                
-            } catch (error) {
-                console.error('Error updating conversation in UI:', error);
-            }
-        }
-
-        // Update existing conversation item
-        function updateConversationItem(item, conversation, userData) {
-            // Format time
-            const time = formatTime(conversation.lastMessage?.timestamp || conversation.timestamp);
-            
-            // Truncate last message
-            const lastMessage = conversation.lastMessage?.text || 'No messages yet';
-            const truncatedMessage = lastMessage.length > 30 
-                ? lastMessage.substring(0, 30) + '...' 
-                : lastMessage;
-            
-            // Update content
-            const nameElement = item.querySelector('.conversation-name');
-            const messageElement = item.querySelector('.conversation-last-message');
-            const timeElement = item.querySelector('.conversation-time');
-            const badgeElement = item.querySelector('.unread-badge');
-            
-            if (nameElement) nameElement.textContent = userData.fullName;
-            if (messageElement) messageElement.textContent = truncatedMessage;
-            if (timeElement) timeElement.textContent = time;
-            
-            // Update badge
-            if (conversation.unreadCount > 0) {
-                if (!badgeElement) {
-                    const metaElement = item.querySelector('.conversation-meta');
-                    const badge = document.createElement('div');
-                    badge.className = 'unread-badge';
-                    badge.textContent = conversation.unreadCount;
-                    metaElement.appendChild(badge);
-                } else {
-                    badgeElement.textContent = conversation.unreadCount;
-                }
-            } else if (badgeElement) {
-                badgeElement.remove();
-            }
-        }
-
-        // Display conversations
-        async function displayConversations() {
-            const conversationsList = document.getElementById('conversationsList');
-            
-            if (conversations.length === 0) {
-                conversationsList.innerHTML = `
-                    <div class="text-center p-5 text-muted">
-                        <i class="bi bi-chat-text" style="font-size: 3rem; opacity: 0.5;"></i>
-                        <p class="mt-3">No messages yet</p>
-                        <p class="small">Match with someone to start chatting!</p>
-                        <button class="btn btn-sm btn-primary mt-2" onclick="window.location.href='home.html'">
-                            Find Matches
-                        </button>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Sort by timestamp (newest first)
-            conversations.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            
-            conversationsList.innerHTML = '';
-            
-            for (const conversation of conversations) {
-                try {
-                    // Get user data for this conversation
-                    const userData = await getUserData(conversation.participantId);
-                    
-                    if (userData) {
-                        const conversationItem = createConversationItem(conversation, userData);
-                        conversationsList.appendChild(conversationItem);
-                    }
-                } catch (error) {
-                    console.error('Error loading user for conversation:', error);
-                }
-            }
-            
-            updateMessagesBadge();
-        }
-
-        // Get user data
-        async function getUserData(userId) {
-            // Try to find in allUsers array
-            let userData = allUsers.find(user => 
-                user.id === userId || user.username === userId
-            );
-            
-            if (!userData) {
-                // Try to fetch from database
-                try {
-                    const usersRef = ref(database, 'users');
-                    const snapshot = await get(usersRef);
-                    
-                    if (snapshot.exists()) {
-                        const users = snapshot.val();
-                        for (const userKey in users) {
-                            const user = users[userKey];
-                            if (userKey === userId || user.username === userId) {
-                                userData = {
-                                    id: userKey,
-                                    fullName: user.fullName || user.username,
-                                    username: user.username,
-                                    profileImage: user.profileImage || '',
-                                    isOnline: Math.random() > 0.5
-                                };
-                                break;
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                }
-            }
-            
-            return userData;
-        }
-
-        // Create conversation list item
-        function createConversationItem(conversation, userData) {
-            const item = document.createElement('div');
-            item.className = 'conversation-item';
-            item.dataset.conversationId = conversation.id;
-            item.dataset.userId = userData.id;
-            
-            // Format time
-            const time = formatTime(conversation.lastMessage?.timestamp || conversation.timestamp);
-            
-            // Truncate last message
-            const lastMessage = conversation.lastMessage?.text || 'No messages yet';
-            const truncatedMessage = lastMessage.length > 30 
-                ? lastMessage.substring(0, 30) + '...' 
-                : lastMessage;
-            
-            // Add offline class if needed
-            const avatarClass = userData.isOnline ? 'conversation-avatar' : 'conversation-avatar offline';
-            
-            item.innerHTML = `
-                <img src="${userData.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName)}&background=667eea&color=fff&size=50`}" 
-                     alt="${userData.fullName}" 
-                     class="${avatarClass}"
-                     onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName.charAt(0))}&background=667eea&color=fff&size=50'">
-                <div class="conversation-info">
-                    <div class="conversation-name">${userData.fullName}</div>
-                    <div class="conversation-last-message">${truncatedMessage}</div>
-                </div>
-                <div class="conversation-meta">
-                    <div class="conversation-time">${time}</div>
-                    ${conversation.unreadCount > 0 ? 
-                        `<div class="unread-badge">${conversation.unreadCount}</div>` : 
-                        ''}
-                </div>
-            `;
-            
-            item.addEventListener('click', () => openConversation(conversation.id, userData));
-            
-            return item;
-        }
-
-        // Open conversation
-        async function openConversation(conversationId, userData) {
-            try {
-                // Remove previous message listener
-                if (messageListeners[currentConversation]) {
-                    messageListeners[currentConversation]();
-                    delete messageListeners[currentConversation];
-                }
-                
-                currentConversation = conversationId;
-                
-                // Mark as active in list
-                document.querySelectorAll('.conversation-item').forEach(item => {
-                    item.classList.remove('active');
-                    if (item.dataset.conversationId === conversationId) {
-                        item.classList.add('active');
-                    }
-                });
-                
-                // Show chat area
-                document.getElementById('emptyChat').style.display = 'none';
-                document.getElementById('activeChat').style.display = 'flex';
-                document.getElementById('activeChat').style.flexDirection = 'column';
-                
-                // Update chat header
-                document.getElementById('chatUserName').textContent = userData.fullName;
-                document.getElementById('chatUserStatus').innerHTML = `
-                    <span class="online-status" style="background: ${userData.isOnline ? 'var(--online)' : 'var(--offline)'}"></span>
-                    <span id="statusText">${userData.isOnline ? 'Online' : 'Offline'}</span>
-                `;
-                
-                document.getElementById('chatUserAvatar').src = userData.profileImage || 
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName)}&background=667eea&color=fff&size=45`;
-                
-                // Load messages
-                await loadMessages(conversationId, userData);
-                
-                // Mark conversation as read
-                await markConversationAsRead(conversationId);
-                
-                // Setup real-time message listener for THIS conversation
-                setupMessageListener(conversationId, userData);
-                
-                // On mobile, hide conversations sidebar
-                if (window.innerWidth <= 768) {
-                    document.getElementById('conversationsSidebar').classList.remove('active');
-                }
-                
-            } catch (error) {
-                console.error('Error opening conversation:', error);
-                showToast('Error loading conversation', 'error');
-            }
-        }
-
-        // Setup real-time message listener for a conversation
-        function setupMessageListener(conversationId, userData) {
-            // Remove existing listener if any
-            if (messageListeners[conversationId]) {
-                messageListeners[conversationId]();
-            }
-            
-            const messagesRef = ref(database, `messages/${conversationId}`);
-            
-            // Listen for NEW messages
-            const unsubscribe = onChildAdded(messagesRef, (snapshot) => {
-                const message = snapshot.val();
-                
-                // Check if message already exists in UI
-                const existingMessage = document.querySelector(`[data-message-id="${snapshot.key}"]`);
-                if (existingMessage) return;
-                
-                // Add message to UI
-                addMessageToUI(message, snapshot.key, userData);
-                
-                // If message is from other user, mark as read
-                if (message.senderId !== currentUser.id && message.senderId !== currentUser.username) {
-                    markMessageAsRead(snapshot.key);
-                }
-            });
-            
-            // Store unsubscribe function
-            messageListeners[conversationId] = unsubscribe;
-        }
-
-        // Load messages for conversation
-        async function loadMessages(conversationId, userData) {
-            try {
-                const messagesRef = ref(database, `messages/${conversationId}`);
-                const snapshot = await get(messagesRef);
-                
-                const messagesContainer = document.getElementById('messagesContainer');
-                messagesContainer.innerHTML = '';
-                
-                if (snapshot.exists()) {
-                    const messagesData = snapshot.val();
-                    const messages = [];
-                    
-                    // Convert to array and sort by timestamp
-                    Object.keys(messagesData).forEach(messageId => {
-                        messages.push({
-                            id: messageId,
-                            ...messagesData[messageId]
-                        });
-                    });
-                    
-                    messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-                    
-                    // Display messages
-                    let lastDate = null;
-                    
-                    messages.forEach(message => {
-                        // Add date separator if needed
-                        const messageDate = new Date(message.timestamp).toLocaleDateString();
-                        if (messageDate !== lastDate) {
-                            const dateElement = document.createElement('div');
-                            dateElement.className = 'message-date';
-                            dateElement.textContent = formatDate(message.timestamp);
-                            messagesContainer.appendChild(dateElement);
-                            lastDate = messageDate;
-                        }
-                        
-                        // Create message element
-                        const messageElement = createMessageElement(message, userData);
-                        messagesContainer.appendChild(messageElement);
-                    });
-                    
-                    // Scroll to bottom
-                    setTimeout(() => {
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                    }, 100);
-                    
-                } else {
-                    // No messages yet
-                    messagesContainer.innerHTML = `
-                        <div class="text-center text-muted" style="flex: 1; display: flex; align-items: center; justify-content: center;">
-                            <div>
-                                <i class="bi bi-chat-text" style="font-size: 3rem; opacity: 0.5;"></i>
-                                <p class="mt-3">No messages yet</p>
-                                <p>Say hello to ${userData.fullName}! 👋</p>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-            } catch (error) {
-                console.error('Error loading messages:', error);
-                showToast('Error loading messages', 'error');
-            }
-        }
-
-        // Add message to UI (for real-time updates)
-        function addMessageToUI(message, messageId, userData) {
-            const messagesContainer = document.getElementById('messagesContainer');
-            
-            // Check if this is the "no messages" state
-            const noMessagesDiv = messagesContainer.querySelector('.text-center');
-            if (noMessagesDiv) {
-                messagesContainer.innerHTML = '';
-            }
-            
-            // Create message element
-            const messageElement = createMessageElement({...message, id: messageId}, userData);
-            
-            // Add date separator if needed
-            const messageDate = new Date(message.timestamp).toLocaleDateString();
-            const lastMessage = messagesContainer.lastElementChild;
-            
-            if (lastMessage && lastMessage.classList.contains('message-date')) {
-                const lastDate = lastMessage.textContent;
-                if (formatDate(message.timestamp) !== lastDate) {
-                    const dateElement = document.createElement('div');
-                    dateElement.className = 'message-date';
-                    dateElement.textContent = formatDate(message.timestamp);
-                    messagesContainer.appendChild(dateElement);
-                }
-            } else if (!lastMessage || !lastMessage.classList.contains('message-date')) {
-                const dateElement = document.createElement('div');
-                dateElement.className = 'message-date';
-                dateElement.textContent = formatDate(message.timestamp);
-                messagesContainer.appendChild(dateElement);
-            }
-            
-            messagesContainer.appendChild(messageElement);
-            
-            // Scroll to bottom
-            setTimeout(() => {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 100);
-            
-            // Update conversation in sidebar with new last message
-            updateConversationLastMessage(currentConversation, message);
-        }
-
-        // Update conversation last message
-        async function updateConversationLastMessage(conversationId, message) {
-            try {
-                const conversationRef = ref(database, `conversations/${conversationId}`);
-                await update(conversationRef, {
-                    lastMessage: message,
                     timestamp: new Date().toISOString()
                 });
-            } catch (error) {
-                console.error('Error updating conversation last message:', error);
-            }
-        }
-
-        // Create message element
-        function createMessageElement(message, userData) {
-            const messageDiv = document.createElement('div');
-            const isSent = message.senderId === currentUser.id || message.senderId === currentUser.username;
-            
-            messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-            messageDiv.dataset.messageId = message.id;
-            
-            const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            let statusIcon = '';
-            if (isSent) {
-                statusIcon = message.read ? 
-                    '<span class="message-status read"><i class="bi bi-check-all"></i></span>' :
-                    '<span class="message-status"><i class="bi bi-check"></i></span>';
-            }
-            
-            messageDiv.innerHTML = `
-                <div class="message-content">${message.text}</div>
-                <div class="message-time">
-                    ${time} ${statusIcon}
-                </div>
-            `;
-            
-            return messageDiv;
-        }
-
-        // Send message
-        async function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const text = messageInput.value.trim();
-            
-            if (!text || !currentConversation) return;
-            
-            try {
-                // Create message object
-                const message = {
-                    text: text,
-                    senderId: currentUser.id || currentUser.username,
-                    senderName: currentUser.fullName || currentUser.username,
-                    timestamp: new Date().toISOString(),
-                    read: false
-                };
-                
-                // Save to database
-                const messagesRef = ref(database, `messages/${currentConversation}`);
-                const newMessageRef = push(messagesRef);
-                await set(newMessageRef, message);
-                
-                // Update conversation last message
-                const conversationRef = ref(database, `conversations/${currentConversation}`);
-                await update(conversationRef, {
-                    lastMessage: message,
-                    timestamp: new Date().toISOString(),
-                    unreadCount: 1
-                });
                 
                 // Clear input
                 messageInput.value = '';
-                messageInput.style.height = 'auto';
-                
-                // Message will appear automatically via real-time listener
-                
-                showToast('Message sent!', 'success');
+                messageInput.focus();
                 
             } catch (error) {
                 console.error('Error sending message:', error);
-                showToast('Error sending message', 'error');
+                alert('Error sending message');
             }
         }
 
@@ -3468,202 +834,14 @@
                 });
                 
                 // Update UI
-                const conversationItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
-                if (conversationItem) {
-                    const badge = conversationItem.querySelector('.unread-badge');
-                    if (badge) {
-                        badge.remove();
-                    }
+                const badge = document.querySelector(`[data-conversation-id="${conversationId}"] .unread-badge`);
+                if (badge) {
+                    badge.remove();
                 }
-                
-                updateMessagesBadge();
                 
             } catch (error) {
                 console.error('Error marking conversation as read:', error);
             }
-        }
-
-        // Mark message as read
-        async function markMessageAsRead(messageId) {
-            try {
-                const messageRef = ref(database, `messages/${currentConversation}/${messageId}`);
-                await update(messageRef, {
-                    read: true
-                });
-                
-            } catch (error) {
-                console.error('Error marking message as read:', error);
-            }
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Send message on Enter key
-            document.getElementById('messageInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-            
-            // Send message button
-            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
-            
-            // New message button
-            document.getElementById('newMessageBtn').addEventListener('click', () => {
-                const modal = new bootstrap.Modal(document.getElementById('newMessageModal'));
-                loadUsersForNewMessage();
-                modal.show();
-            });
-            
-            // Back to conversations (mobile)
-            document.getElementById('backToConversations').addEventListener('click', () => {
-                document.getElementById('conversationsSidebar').classList.add('active');
-                document.getElementById('emptyChat').style.display = 'flex';
-                document.getElementById('activeChat').style.display = 'none';
-                currentConversation = null;
-                
-                // Remove message listener when leaving chat
-                if (messageListeners[currentConversation]) {
-                    messageListeners[currentConversation]();
-                    delete messageListeners[currentConversation];
-                }
-            });
-            
-            // Mobile menu button
-            document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-                document.getElementById('conversationsSidebar').classList.add('active');
-            });
-            
-            // Search conversations
-            document.getElementById('messageSearch').addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const items = document.querySelectorAll('.conversation-item');
-                
-                items.forEach(item => {
-                    const name = item.querySelector('.conversation-name').textContent.toLowerCase();
-                    const message = item.querySelector('.conversation-last-message').textContent.toLowerCase();
-                    
-                    if (name.includes(searchTerm) || message.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Logout
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                localStorage.removeItem('amora_user');
-                window.location.href = 'index.html';
-            });
-            
-            // Start new chat button in empty state
-            document.getElementById('startNewChatBtn').addEventListener('click', () => {
-                document.getElementById('newMessageBtn').click();
-            });
-            
-            // Floating action button
-            document.getElementById('floatingNewMessageBtn').addEventListener('click', () => {
-                document.getElementById('newMessageBtn').click();
-            });
-        }
-
-        // Load users for new message modal
-        async function loadUsersForNewMessage() {
-            const usersList = document.getElementById('usersList');
-            usersList.innerHTML = '<div class="text-center p-3 text-muted">Loading users...</div>';
-            
-            // Filter out current user and users we already have conversations with
-            const availableUsers = allUsers.filter(user => {
-                if (user.id === currentUser.id || user.username === currentUser.username) {
-                    return false;
-                }
-                
-                // Check if we already have a conversation with this user
-                const existingConversation = conversations.find(c => 
-                    c.participantId === user.id || c.participantId === user.username
-                );
-                
-                return !existingConversation;
-            });
-            
-            usersList.innerHTML = '';
-            
-            if (availableUsers.length === 0) {
-                usersList.innerHTML = '<div class="text-center p-3 text-muted">No users available</div>';
-                return;
-            }
-            
-            availableUsers.forEach(user => {
-                const userItem = document.createElement('div');
-                userItem.className = 'conversation-item';
-                userItem.innerHTML = `
-                    <img src="${user.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=667eea&color=fff&size=50`}" 
-                         class="conversation-avatar">
-                    <div class="conversation-info">
-                        <div class="conversation-name">${user.fullName}</div>
-                        <div class="conversation-last-message">Start new conversation</div>
-                    </div>
-                `;
-                
-                userItem.addEventListener('click', async () => {
-                    // Close modal
-                    bootstrap.Modal.getInstance(document.getElementById('newMessageModal')).hide();
-                    
-                    // Create new conversation
-                    await createNewConversation(user);
-                });
-                
-                usersList.appendChild(userItem);
-            });
-        }
-
-        // Create new conversation
-        async function createNewConversation(userData) {
-            try {
-                const conversationData = {
-                    participants: [currentUser.id || currentUser.username, userData.id || userData.username],
-                    timestamp: new Date().toISOString(),
-                    lastMessage: {
-                        text: "You started a conversation 👋",
-                        senderId: "system",
-                        timestamp: new Date().toISOString()
-                    },
-                    unreadCount: 0
-                };
-                
-                const conversationsRef = ref(database, 'conversations');
-                const newConversationRef = push(conversationsRef);
-                await set(newConversationRef, conversationData);
-                
-                // Add to local conversations
-                const newConversation = {
-                    id: newConversationRef.key,
-                    participantId: userData.id || userData.username,
-                    lastMessage: conversationData.lastMessage,
-                    unreadCount: 0,
-                    timestamp: conversationData.timestamp
-                };
-                
-                conversations.push(newConversation);
-                await displayConversations();
-                
-                // Open the new conversation
-                await openConversation(newConversationRef.key, userData);
-                
-                showToast('New conversation started!', 'success');
-                
-            } catch (error) {
-                console.error('Error creating conversation:', error);
-                showToast('Error creating conversation', 'error');
-            }
-        }
-
-        // Update messages badge
-        function updateMessagesBadge() {
-            const totalUnread = conversations.reduce((sum, conv) => sum + (conv.unreadCount || 0), 0);
-            document.getElementById('messagesBadge').textContent = totalUnread > 0 ? totalUnread : '0';
         }
 
         // Format time
@@ -3674,128 +852,73 @@
             
             if (diff < 86400000) { // Less than 24 hours
                 return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            } else if (diff < 604800000) { // Less than 7 days
-                return date.toLocaleDateString([], { weekday: 'short' });
+            } else if (diff < 172800000) { // Yesterday
+                return 'Yesterday';
             } else {
                 return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
             }
         }
 
-        // Format date
-        function formatDate(timestamp) {
-            const date = new Date(timestamp);
-            const now = new Date();
-            const diff = now - date;
+        // Setup event listeners
+        function setupEventListeners() {
+            // Send message
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
             
-            if (diff < 86400000) { // Today
-                return 'Today';
-            } else if (diff < 172800000) { // Yesterday
-                return 'Yesterday';
-            } else if (diff < 604800000) { // This week
-                return date.toLocaleDateString([], { weekday: 'long' });
-            } else {
-                return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
-            }
-        }
-
-        // Show toast message
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${type}`;
-            toast.innerHTML = `
-                <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-info-circle-fill'}"></i>
-                <span>${message}</span>
-            `;
+            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
             
-            container.appendChild(toast);
+            // Mobile menu
+            document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+                document.getElementById('conversationsSidebar').classList.add('active');
+            });
             
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 10);
+            document.getElementById('backToConversations').addEventListener('click', () => {
+                document.getElementById('conversationsSidebar').classList.add('active');
+                document.getElementById('emptyChat').style.display = 'flex';
+                document.getElementById('activeChat').style.display = 'none';
+                currentConversation = null;
+                
+                // Remove message listener
+                if (messageListener) {
+                    messageListener();
+                    messageListener = null;
+                }
+            });
             
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            // Search conversations
+            document.getElementById('messageSearch').addEventListener('input', (e) => {
+                const search = e.target.value.toLowerCase();
+                document.querySelectorAll('.conversation-item').forEach(item => {
+                    const name = item.querySelector('.conversation-name').textContent.toLowerCase();
+                    const message = item.querySelector('.conversation-last-message').textContent.toLowerCase();
+                    
+                    if (name.includes(search) || message.includes(search)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                if (confirm('Logout from LIILA?')) {
+                    // Clear LIILA session data (matches index.html)
+                    localStorage.removeItem('liila_user');
+                    localStorage.removeItem('liila_session');
+                    localStorage.removeItem('liila_last_login');
+                    localStorage.removeItem('liila_remembered_user');
+                    window.location.href = 'index.html';
+                }
+            });
         }
     </script>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- UI Enhancement Script -->
-    <script>
-        // UI enhancement functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-expand textarea as user types
-            const messageInput = document.getElementById('messageInput');
-            if (messageInput) {
-                messageInput.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-            }
-            
-            // Animate conversation items on load
-            setTimeout(() => {
-                const items = document.querySelectorAll('.conversation-item');
-                items.forEach((item, index) => {
-                    item.style.opacity = '0';
-                    item.style.transform = 'translateY(10px)';
-                    
-                    setTimeout(() => {
-                        item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                        item.style.opacity = '1';
-                        item.style.transform = 'translateY(0)';
-                    }, index * 50);
-                });
-            }, 500);
-            
-            // Add subtle hover effect to messages
-            document.addEventListener('mouseover', function(e) {
-                if (e.target.classList.contains('message')) {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.transition = 'transform 0.2s ease';
-                }
-            });
-            
-            document.addEventListener('mouseout', function(e) {
-                if (e.target.classList.contains('message')) {
-                    e.target.style.transform = 'translateY(0)';
-                }
-            });
-            
-            // Smooth scroll for messages container
-            const messagesContainer = document.getElementById('messagesContainer');
-            if (messagesContainer) {
-                messagesContainer.addEventListener('wheel', function(e) {
-                    e.preventDefault();
-                    this.scrollTop += e.deltaY;
-                }, { passive: false });
-            }
-            
-            // Mobile responsiveness
-            function handleResize() {
-                const sidebar = document.getElementById('conversationsSidebar');
-                const mobileBtn = document.getElementById('mobileMenuBtn');
-                
-                if (window.innerWidth <= 768) {
-                    if (mobileBtn) mobileBtn.style.display = 'flex';
-                    
-                    // If a conversation is open, hide sidebar
-                    if (document.getElementById('activeChat').style.display !== 'none') {
-                        sidebar.classList.remove('active');
-                    }
-                } else {
-                    if (mobileBtn) mobileBtn.style.display = 'none';
-                    sidebar.classList.remove('active');
-                }
-            }
-            
-            window.addEventListener('resize', handleResize);
-            handleResize();
-        });
-    </script>
 </body>
 </html>
