@@ -2,219 +2,998 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amora - Create Account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIILA | Create Account</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-red: #a9100f;
+            --primary-purple: #8f1eae;
+            --deep-black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --light-gray: #2a2a2a;
+            --text-light: #f8f9fa;
+            --text-muted: #adb5bd;
+            --card-shadow: rgba(0, 0, 0, 0.2);
+            --soft-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--deep-black) 0%, var(--dark-gray) 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-light);
+            padding: 15px;
+            overflow-x: hidden;
+            line-height: 1.6;
         }
-        .auth-card {
-            background: white;
+        
+        .container-fluid {
+            max-width: 1400px;
+            width: 100%;
+            padding: 0;
+        }
+        
+        .auth-wrapper {
+            display: flex;
+            min-height: 85vh;
+            max-height: 90vh;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            box-shadow: 0 15px 50px var(--card-shadow);
+            background: var(--dark-gray);
+        }
+        
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-purple) 100%);
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
             overflow: hidden;
         }
-        .auth-header {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 40px 20px;
+        
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" opacity="0.03"><path d="M0,0 L100,0 L100,100 Z" fill="white"/></svg>');
+            background-size: cover;
+        }
+        
+        .brand-logo {
+            position: relative;
+            z-index: 2;
             text-align: center;
-            color: white;
-        }
-        .auth-body {
-            padding: 40px;
-        }
-        .btn-amora {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            color: white;
-            padding: 12px;
+            margin-bottom: 40px;
             width: 100%;
-            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .spinner-border {
-            vertical-align: middle;
-        }
-        .profile-image-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-image-preview {
+        
+        .logo-container {
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #f093fb;
-            cursor: pointer;
-            transition: transform 0.3s;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 8px solid rgba(255,255,255,0.1);
+            transition: var(--soft-transition);
         }
-        .profile-image-preview:hover {
+        
+        .logo-container:hover {
             transform: scale(1.05);
+            border-color: rgba(255,255,255,0.2);
         }
-        .image-upload-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
+        
+        .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+        
+        .brand-logo h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .brand-logo .tagline {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 300;
+            max-width: 85%;
+            line-height: 1.5;
+        }
+        
+        .brand-features {
+            position: relative;
+            z-index: 2;
+            margin-top: 40px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 18px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: var(--soft-transition);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .feature-item:hover {
+            transform: translateX(10px);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.15);
+        }
+        
+        .feature-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .feature-content strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.95);
+        }
+        
+        .feature-content .small {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        .auth-section {
+            flex: 1.2;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            background: var(--dark-gray);
+            overflow-y: auto;
+            max-height: 100%;
+        }
+        
+        .auth-header {
+            margin-bottom: 35px;
+            text-align: center;
+        }
+        
+        .auth-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(to right, var(--primary-red), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+        
+        /* Profile Image Upload */
+        .profile-image-container {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            border: 2px dashed rgba(255,255,255,0.1);
+            transition: var(--soft-transition);
+        }
+        
+        .profile-image-container:hover {
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .profile-image-preview {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255,255,255,0.1);
             cursor: pointer;
-            margin-top: 10px;
-            border: none;
+            transition: var(--soft-transition);
+            background: rgba(255,255,255,0.05);
         }
+        
+        .profile-image-preview:hover {
+            transform: scale(1.03);
+            border-color: var(--primary-purple);
+        }
+        
+        .image-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-purple) 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 15px;
+            border: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--soft-transition);
+        }
+        
+        .image-upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(169, 16, 15, 0.2);
+        }
+        
         #imageFile {
             display: none;
         }
+        
         .image-upload-status {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            line-height: 1.4;
         }
+        
         .progress {
             height: 6px;
+            margin-top: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-purple), var(--primary-red));
+            transition: width 0.3s ease;
+        }
+        
+        /* Form Styling */
+        .form-control {
+            background: var(--light-gray);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-light);
+            padding: 14px 18px;
+            border-radius: 12px;
+            transition: var(--soft-transition);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .form-control:focus {
+            background: var(--light-gray);
+            border-color: var(--primary-purple);
+            color: var(--text-light);
+            box-shadow: 0 0 0 4px rgba(143, 30, 174, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        .required-field::after {
+            content: ' *';
+            color: #ff6b6b;
+        }
+        
+        .character-counter {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
             margin-top: 5px;
+        }
+        
+        /* Buttons */
+        .btn-register {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-purple) 100%);
+            border: none;
+            color: white;
+            padding: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            width: 100%;
+            transition: var(--soft-transition);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(169, 16, 15, 0.2);
+        }
+        
+        .btn-register:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-register:disabled {
+            opacity: 0.7;
+            transform: none !important;
+            cursor: not-allowed;
+        }
+        
+        .btn-register::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.7s;
+        }
+        
+        .btn-register:hover::after {
+            left: 100%;
+        }
+        
+        .btn-login {
+            background: transparent;
+            border: 2px solid var(--primary-purple);
+            color: var(--primary-purple);
+            padding: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            width: 100%;
+            transition: var(--soft-transition);
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-login:hover {
+            background: var(--primary-purple);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(143, 30, 174, 0.15);
+        }
+        
+        /* Alerts */
+        .alert {
+            border-radius: 12px;
+            border: 1px solid transparent;
+            padding: 18px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .alert-danger {
+            background: rgba(169, 16, 15, 0.08);
+            border-color: rgba(169, 16, 15, 0.3);
+            color: #ff8a8a;
+        }
+        
+        .alert-success {
+            background: rgba(40, 167, 69, 0.08);
+            border-color: rgba(40, 167, 69, 0.3);
+            color: #8affaa;
+        }
+        
+        /* Checkbox */
+        .form-check {
+            margin-top: 15px;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary-purple);
+            border-color: var(--primary-purple);
+        }
+        
+        .form-check-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.25rem rgba(143, 30, 174, 0.15);
+        }
+        
+        .form-check-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .form-check-label a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-check-label a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Back link */
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .back-link a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--soft-transition);
+            font-size: 1rem;
+        }
+        
+        .back-link a:hover {
+            color: var(--primary-red);
+            text-decoration: underline;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 1200px) {
+            .auth-wrapper {
+                flex-direction: column;
+                min-height: auto;
+                max-height: none;
+                border-radius: 16px;
+            }
+            
+            .brand-section, .auth-section {
+                padding: 35px 30px;
+            }
+            
+            .brand-section {
+                min-height: 300px;
+                padding-top: 45px;
+                padding-bottom: 45px;
+            }
+            
+            .auth-section {
+                max-height: none;
+                padding-top: 40px;
+            }
+            
+            .logo-container {
+                width: 130px;
+                height: 130px;
+                margin-bottom: 25px;
+            }
+            
+            .brand-logo h1 {
+                font-size: 3rem;
+            }
+            
+            .auth-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .feature-item {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .feature-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.3rem;
+                margin-right: 18px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                min-height: 100vh;
+                display: block;
+            }
+            
+            .container-fluid {
+                max-width: 100%;
+            }
+            
+            .auth-wrapper {
+                min-height: auto;
+                max-height: none;
+                border-radius: 12px;
+                margin: 0;
+                box-shadow: 0 8px 30px var(--card-shadow);
+            }
+            
+            .brand-section, .auth-section {
+                padding: 25px 20px;
+            }
+            
+            .brand-section {
+                min-height: 250px;
+                padding-top: 35px;
+                padding-bottom: 35px;
+            }
+            
+            .logo-container {
+                width: 110px;
+                height: 110px;
+                border-width: 6px;
+                margin-bottom: 20px;
+            }
+            
+            .brand-logo h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+            
+            .brand-logo .tagline {
+                font-size: 1.1rem;
+                max-width: 90%;
+            }
+            
+            .auth-header {
+                margin-bottom: 25px;
+            }
+            
+            .auth-header h2 {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+            
+            .auth-header p {
+                font-size: 1rem;
+                max-width: 100%;
+            }
+            
+            .profile-image-preview {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .form-control {
+                padding: 14px 16px;
+                font-size: 1rem;
+            }
+            
+            .btn-register, .btn-login {
+                padding: 16px;
+                font-size: 1.05rem;
+            }
+            
+            .feature-item {
+                padding: 14px 12px;
+                margin-bottom: 12px;
+            }
+            
+            .feature-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.2rem;
+                margin-right: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .brand-logo h1 {
+                font-size: 2.2rem;
+            }
+            
+            .auth-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .logo-container {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .profile-image-preview {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .row {
+                --bs-gutter-x: 15px;
+            }
+        }
+        
+        /* Hide scrollbar but allow scrolling */
+        .auth-section::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .auth-section::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .auth-section::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary-red), var(--primary-purple));
+            border-radius: 10px;
+        }
+        
+        .auth-section::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--primary-purple), var(--primary-red));
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        /* Password strength indicator */
+        .password-strength {
+            margin-top: 10px;
+        }
+        
+        .strength-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: width 0.4s ease, background 0.4s ease;
+        }
+        
+        /* Bio character counter */
+        .bio-counter {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        
+        /* Form section spacing */
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="auth-card">
-                    <div class="auth-header">
-                        <h1 class="display-5 fw-bold">Join Amora</h1>
-                        <p class="mb-0">Create your account to start matching</p>
+    <div class="container-fluid">
+        <div class="auth-wrapper">
+            <!-- Brand/Info Section -->
+            <div class="brand-section d-none d-lg-flex">
+                <div class="brand-logo">
+                    <div class="logo-container">
+                        <img src="LIILA.png" alt="LIILA Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\"fas fa-heart\" style=\"font-size: 3.5rem; color: #a9100f;\"></i>';">
                     </div>
-                    <div class="auth-body">
-                        <h2 class="text-center mb-4">Create Account</h2>
-                        
-                        <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
-                        <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
-                        
-                        <form id="registerForm">
-                            <!-- Profile Image Upload -->
-                            <div class="profile-image-container">
-                                <img src="https://via.placeholder.com/150x150?text=Upload+Photo" 
-                                     alt="Profile Preview" 
-                                     class="profile-image-preview"
-                                     id="profileImagePreview"
-                                     onclick="document.getElementById('imageFile').click()">
-                                <div>
-                                    <label for="imageFile" class="image-upload-btn">
-                                        <i class="bi bi-camera-fill"></i> Upload Profile Photo
-                                    </label>
-                                    <input type="file" id="imageFile" accept="image/*">
-                                    <div class="image-upload-status" id="imageStatus">
-                                        Click to upload or drag & drop
-                                    </div>
-                                    <div class="progress d-none" id="uploadProgress">
-                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                             role="progressbar" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- User Information -->
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="fullName" class="form-label">Full Name *</label>
-                                    <input type="text" class="form-control form-control-lg" id="fullName" 
-                                           placeholder="Enter your full name" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="username" class="form-label">Username *</label>
-                                    <input type="text" class="form-control form-control-lg" id="username" 
-                                           placeholder="Choose a username" required>
-                                    <div class="form-text">3-20 characters, letters and numbers only</div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label">Email Address *</label>
-                                    <input type="email" class="form-control form-control-lg" id="email" 
-                                           placeholder="Enter your email" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="phone" class="form-label">Phone Number *</label>
-                                    <input type="tel" class="form-control form-control-lg" id="phone" 
-                                           placeholder="Enter phone number" required>
-                                    <div class="form-text">Format: 1234567890 (no spaces/dashes)</div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="gender" class="form-label">Gender *</label>
-                                    <select class="form-control form-control-lg" id="gender" required>
-                                        <option value="">Select Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                        <option value="prefer-not-to-say">Prefer not to say</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="dob" class="form-label">Date of Birth *</label>
-                                    <input type="date" class="form-control form-control-lg" id="dob" 
-                                           max="2006-01-01" required>
-                                    <div class="form-text">Must be 18+ years old</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Bio/About Me -->
-                            <div class="mb-3">
-                                <label for="bio" class="form-label">About Me</label>
-                                <textarea class="form-control form-control-lg" id="bio" 
-                                          placeholder="Tell us about yourself (optional)" 
-                                          rows="3" maxlength="500"></textarea>
-                                <div class="form-text"><span id="bioCounter">0</span>/500 characters</div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="password" class="form-label">Password *</label>
-                                    <input type="password" class="form-control form-control-lg" id="password" 
-                                           placeholder="Create password" required>
-                                    <div class="form-text">At least 8 characters</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="confirmPassword" class="form-label">Confirm Password *</label>
-                                    <input type="password" class="form-control form-control-lg" id="confirmPassword" 
-                                           placeholder="Confirm password" required>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="terms" required>
-                                    <label class="form-check-label" for="terms">
-                                        I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and 
-                                        <a href="#" class="text-decoration-none">Privacy Policy</a>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-amora btn-lg mb-3" id="registerBtn">
-                                Create Account
-                            </button>
-                            
-                            <div class="text-center">
-                                <p class="mb-0">Already have an account? 
-                                    <a href="index.html" class="text-decoration-none fw-bold">Sign In</a>
-                                </p>
-                            </div>
-                        </form>
+                    <h1>LIILA</h1>
+                    <div class="tagline">Create Meaningful Connections</div>
+                </div>
+                
+                <div class="brand-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="feature-content">
+                            <strong>Secure Registration</strong>
+                            <div class="small">End-to-end encrypted personal data</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="feature-content">
+                            <strong>Verified Community</strong>
+                            <div class="small">Authentic profiles only</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="feature-content">
+                            <strong>Smart Matching</strong>
+                            <div class="small">Advanced compatibility algorithms</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="feature-content">
+                            <strong>Privacy First</strong>
+                            <div class="small">Your data is always protected</div>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Registration Section -->
+            <div class="auth-section">
+                <!-- Mobile Logo -->
+                <div class="d-lg-none mb-4 text-center fade-in">
+                    <div class="logo-container mx-auto">
+                        <img src="LIILA.png" alt="LIILA Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\"fas fa-heart\" style=\"font-size: 2.5rem; color: #a9100f;\"></i>';">
+                    </div>
+                    <h2 class="mt-3 mb-2">LIILA</h2>
+                    <p class="text-muted mb-0">Create Your Account</p>
+                </div>
+                
+                <div class="auth-header">
+                    <h2>Join Our Community</h2>
+                    <p>Create your LIILA account and start your journey to meaningful connections</p>
+                </div>
+                
+                <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+                <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
+                
+                <form id="registerForm">
+                    <!-- Profile Image Section -->
+                    <div class="form-section">
+                        <div class="section-title">Profile Image</div>
+                        <div class="profile-image-container fade-in">
+                            <img src="https://via.placeholder.com/160x160?text=Click+to+Upload" 
+                                 alt="Profile Preview" 
+                                 class="profile-image-preview"
+                                 id="profileImagePreview"
+                                 onclick="document.getElementById('imageFile').click()">
+                            <div class="mt-3">
+                                <label for="imageFile" class="image-upload-btn">
+                                    <i class="fas fa-cloud-upload-alt"></i> Upload Profile Photo
+                                </label>
+                                <input type="file" id="imageFile" accept="image/*">
+                                <div class="image-upload-status" id="imageStatus">
+                                    Click to upload or drag & drop (Max 5MB)
+                                </div>
+                                <div class="progress d-none mt-2" id="uploadProgress">
+                                    <div class="progress-bar progress-bar-striped" 
+                                         role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <div class="section-title">Personal Information</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="fullName" class="form-label required-field">
+                                    <i class="fas fa-user"></i> Full Name
+                                </label>
+                                <input type="text" class="form-control" id="fullName" 
+                                       placeholder="Enter your full name" required>
+                                <div class="form-text">As shown on your official documents</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="username" class="form-label required-field">
+                                    <i class="fas fa-at"></i> Username
+                                </label>
+                                <input type="text" class="form-control" id="username" 
+                                       placeholder="Choose a unique username" required>
+                                <div class="form-text">3-20 characters, letters and numbers only</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="form-section">
+                        <div class="section-title">Contact Information</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label required-field">
+                                    <i class="fas fa-envelope"></i> Email Address
+                                </label>
+                                <input type="email" class="form-control" id="email" 
+                                       placeholder="your.email@example.com" required>
+                                <div class="form-text">We'll never share your email</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label required-field">
+                                    <i class="fas fa-phone"></i> Phone Number
+                                </label>
+                                <input type="tel" class="form-control" id="phone" 
+                                       placeholder="1234567890" required>
+                                <div class="form-text">10-15 digits, no spaces or dashes</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Personal Details -->
+                    <div class="form-section">
+                        <div class="section-title">Personal Details</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="gender" class="form-label required-field">
+                                    <i class="fas fa-venus-mars"></i> Gender
+                                </label>
+                                <select class="form-control" id="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                    <option value="prefer-not-to-say">Prefer not to say</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dob" class="form-label required-field">
+                                    <i class="fas fa-birthday-cake"></i> Date of Birth
+                                </label>
+                                <input type="date" class="form-control" id="dob" 
+                                       max="2006-01-01" required>
+                                <div class="form-text">Must be 18+ years old</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- About Me -->
+                    <div class="form-section">
+                        <div class="section-title">About You</div>
+                        <label for="bio" class="form-label">
+                            <i class="fas fa-pen"></i> Bio (Optional)
+                        </label>
+                        <textarea class="form-control" id="bio" 
+                                  placeholder="Tell us about yourself, your interests, and what you're looking for..." 
+                                  rows="4" maxlength="500"></textarea>
+                        <div class="bio-counter">
+                            <span class="form-text">Share what makes you unique</span>
+                            <span class="character-counter">
+                                <span id="bioCounter">0</span>/500 characters
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Security -->
+                    <div class="form-section">
+                        <div class="section-title">Security</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label required-field">
+                                    <i class="fas fa-lock"></i> Password
+                                </label>
+                                <input type="password" class="form-control" id="password" 
+                                       placeholder="Create a strong password" required>
+                                <div class="form-text">At least 8 characters with letters and numbers</div>
+                                <div class="password-strength d-none" id="passwordStrength">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Strength:</span>
+                                        <span id="strengthText">Weak</span>
+                                    </div>
+                                    <div class="strength-bar">
+                                        <div class="strength-fill" id="strengthBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="confirmPassword" class="form-label required-field">
+                                    <i class="fas fa-lock"></i> Confirm Password
+                                </label>
+                                <input type="password" class="form-control" id="confirmPassword" 
+                                       placeholder="Re-enter your password" required>
+                                <div class="form-text">Must match the password above</div>
+                                <div id="matchStatus" class="form-text d-none" style="color: #28a745;">
+                                    <i class="fas fa-check-circle"></i> Passwords match
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Terms and Conditions -->
+                    <div class="form-section">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and 
+                                <a href="privacy.html" target="_blank">Privacy Policy</a>. I confirm that I am 18 years or older.
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-register mb-4" id="registerBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-user-plus"></i> Create LIILA Account
+                        </span>
+                        <span class="btn-loading d-none">
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            Creating Account...
+                        </span>
+                    </button>
+                    
+                    <!-- Login Link -->
+                    <div class="text-center mb-4">
+                        <p class="text-muted mb-3">Already part of our community?</p>
+                        <a href="index.html" class="btn btn-login">
+                            <i class="fas fa-sign-in-alt"></i> Sign In to LIILA
+                        </a>
+                    </div>
+                    
+                    <!-- Support Link -->
+                    <div class="back-link">
+                        <i class="fas fa-question-circle me-1"></i>
+                        Need assistance? <a href="support.html">Contact Our Support Team</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script type="module">
+        // Firebase and ImgBB setup remains the same
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
         import { getDatabase, ref, set, get, query, orderByChild, equalTo } 
                 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
@@ -243,30 +1022,161 @@
         const errorAlert = document.getElementById('errorAlert');
         const successAlert = document.getElementById('successAlert');
         const registerBtn = document.getElementById('registerBtn');
+        const btnText = registerBtn.querySelector('.btn-text');
+        const btnLoading = registerBtn.querySelector('.btn-loading');
         const imageFileInput = document.getElementById('imageFile');
         const profileImagePreview = document.getElementById('profileImagePreview');
         const imageStatus = document.getElementById('imageStatus');
         const uploadProgress = document.getElementById('uploadProgress');
         const bioTextarea = document.getElementById('bio');
         const bioCounter = document.getElementById('bioCounter');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+        const matchStatus = document.getElementById('matchStatus');
 
         // Variables
         let profileImageUrl = '';
         let isUploading = false;
 
-        // Bio character counter
-        bioTextarea.addEventListener('input', () => {
-            bioCounter.textContent = bioTextarea.value.length;
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set max date for 18+ validation (18 years ago from today)
+            const today = new Date();
+            const minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+            document.getElementById('dob').max = minDate.toISOString().split('T')[0];
+            
+            // Auto-focus first field
+            document.getElementById('fullName').focus();
         });
 
-        // Image preview and upload
-        imageFileInput.addEventListener('change', async (e) => {
+        // Bio character counter
+        bioTextarea.addEventListener('input', () => {
+            const count = bioTextarea.value.length;
+            bioCounter.textContent = count;
+            bioCounter.style.color = count === 500 ? '#ff6b6b' : 'var(--text-muted)';
+        });
+
+        // Password strength checker
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            if (password.length === 0) {
+                passwordStrength.classList.add('d-none');
+                return;
+            }
+            
+            passwordStrength.classList.remove('d-none');
+            
+            let strength = 0;
+            let color = '#ff6b6b';
+            let text = 'Weak';
+            let width = 25;
+            
+            // Length check
+            if (password.length >= 8) strength += 1;
+            if (password.length >= 12) strength += 1;
+            
+            // Complexity checks
+            if (/[a-z]/.test(password)) strength += 1;
+            if (/[A-Z]/.test(password)) strength += 1;
+            if (/\d/.test(password)) strength += 1;
+            if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+            
+            // Determine strength level
+            if (strength <= 2) {
+                color = '#ff6b6b';
+                text = 'Weak';
+                width = 25;
+            } else if (strength <= 4) {
+                color = '#ffd166';
+                text = 'Fair';
+                width = 50;
+            } else if (strength <= 5) {
+                color = '#28a745';
+                text = 'Good';
+                width = 75;
+            } else {
+                color = '#20c997';
+                text = 'Strong';
+                width = 100;
+            }
+            
+            strengthBar.style.width = width + '%';
+            strengthBar.style.background = color;
+            strengthText.textContent = text;
+            strengthText.style.color = color;
+            
+            // Check password match
+            checkPasswordMatch();
+        });
+
+        // Password match checker
+        confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+        function checkPasswordMatch() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            if (confirmPassword.length === 0) {
+                matchStatus.classList.add('d-none');
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                matchStatus.classList.remove('d-none');
+                matchStatus.style.color = '#28a745';
+                matchStatus.innerHTML = '<i class="fas fa-check-circle"></i> Passwords match';
+            } else {
+                matchStatus.classList.remove('d-none');
+                matchStatus.style.color = '#ff6b6b';
+                matchStatus.innerHTML = '<i class="fas fa-times-circle"></i> Passwords do not match';
+            }
+        }
+
+        // Image upload functionality (same as before)
+        imageFileInput.addEventListener('change', handleImageUpload);
+        
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            profileImagePreview.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            profileImagePreview.addEventListener(eventName, () => {
+                profileImagePreview.style.borderColor = 'var(--primary-purple)';
+                profileImagePreview.style.transform = 'scale(1.05)';
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            profileImagePreview.addEventListener(eventName, () => {
+                profileImagePreview.style.borderColor = 'rgba(255,255,255,0.1)';
+                profileImagePreview.style.transform = 'scale(1)';
+            });
+        });
+
+        profileImagePreview.addEventListener('drop', async (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                await handleImageUpload({ target: { files: [file] } });
+            }
+        });
+
+        async function handleImageUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
 
             // Validate file type
             if (!file.type.startsWith('image/')) {
-                showAlert('error', 'Please select an image file');
+                showAlert('error', 'Please select an image file (JPEG, PNG, etc.)');
                 return;
             }
 
@@ -285,67 +1195,27 @@
 
             // Upload to ImgBB
             await uploadToImgBB(file);
-        });
-
-        // Drag and drop functionality
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            profileImagePreview.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
         }
 
-        ['dragenter', 'dragover'].forEach(eventName => {
-            profileImagePreview.addEventListener(eventName, highlight, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            profileImagePreview.addEventListener(eventName, unhighlight, false);
-        });
-
-        function highlight() {
-            profileImagePreview.style.transform = 'scale(1.1)';
-            profileImagePreview.style.borderColor = '#667eea';
-        }
-
-        function unhighlight() {
-            profileImagePreview.style.transform = 'scale(1)';
-            profileImagePreview.style.borderColor = '#f093fb';
-        }
-
-        profileImagePreview.addEventListener('drop', async (e) => {
-            const dt = e.dataTransfer;
-            const file = dt.files[0];
-            
-            if (file && file.type.startsWith('image/')) {
-                imageFileInput.files = dt.files;
-                const changeEvent = new Event('change');
-                imageFileInput.dispatchEvent(changeEvent);
-            }
-        });
-
-        // Upload image to ImgBB
         async function uploadToImgBB(file) {
             if (isUploading) return;
             
             isUploading = true;
-            imageStatus.textContent = 'Uploading...';
+            imageStatus.textContent = 'Uploading image...';
+            imageStatus.style.color = 'var(--primary-purple)';
             uploadProgress.classList.remove('d-none');
             const progressBar = uploadProgress.querySelector('.progress-bar');
-            progressBar.style.width = '0%';
             
             try {
                 const formData = new FormData();
                 formData.append('image', file);
                 formData.append('key', IMGBB_API_KEY);
                 
-                // Simulate progress for better UX
+                // Simulate progress
                 let progress = 0;
                 const progressInterval = setInterval(() => {
                     progress += 5;
-                    if (progress <= 90) {
+                    if (progress <= 80) {
                         progressBar.style.width = progress + '%';
                     }
                 }, 100);
@@ -357,84 +1227,69 @@
                 
                 clearInterval(progressInterval);
                 
-                if (!response.ok) {
-                    throw new Error(`Upload failed: ${response.status}`);
-                }
+                if (!response.ok) throw new Error('Upload failed');
                 
                 const data = await response.json();
                 
                 if (data.success) {
                     profileImageUrl = data.data.url;
-                    imageStatus.textContent = 'Upload successful!';
                     progressBar.style.width = '100%';
-                    progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
-                    progressBar.classList.add('bg-success');
+                    imageStatus.textContent = 'Image uploaded successfully!';
+                    imageStatus.style.color = '#28a745';
                     
                     setTimeout(() => {
                         uploadProgress.classList.add('d-none');
-                        progressBar.classList.remove('bg-success');
-                        progressBar.classList.add('progress-bar-striped', 'progress-bar-animated');
                         progressBar.style.width = '0%';
-                    }, 2000);
+                    }, 1500);
                 } else {
                     throw new Error(data.error?.message || 'Upload failed');
                 }
                 
             } catch (error) {
                 console.error('Image upload error:', error);
-                imageStatus.textContent = 'Upload failed. Click to try again';
                 profileImageUrl = '';
+                imageStatus.textContent = 'Upload failed. Click to try again';
+                imageStatus.style.color = '#ff6b6b';
                 uploadProgress.classList.add('d-none');
-                showAlert('error', 'Failed to upload image. You can continue without a profile picture.');
+                showAlert('error', 'Image upload failed. You can continue without a profile picture.');
             } finally {
                 isUploading = false;
             }
         }
 
-        // Check if username or email already exists
+        // Registration functions (same as before)
         async function checkUserExists(field, value) {
             try {
-                console.log(`Checking if ${field}: ${value} exists...`);
                 const usersRef = ref(database, 'users');
                 const userQuery = query(usersRef, orderByChild(field), equalTo(value));
                 const snapshot = await get(userQuery);
-                
-                console.log(`Check result for ${field}:`, snapshot.exists());
                 return snapshot.exists();
             } catch (error) {
                 console.error(`Error checking ${field}:`, error);
-                if (error.message.includes('Permission denied')) {
-                    return false;
-                }
-                throw error;
+                return false;
             }
         }
 
-        // Register new user
         async function registerUser(userData) {
             try {
                 registerBtn.disabled = true;
-                registerBtn.innerHTML = 'Creating account... <span class="spinner-border spinner-border-sm"></span>';
+                btnText.classList.add('d-none');
+                btnLoading.classList.remove('d-none');
                 
-                console.log('Registering user with data:', userData);
-                
-                // Check if username already exists
-                const usernameExists = await checkUserExists('username', userData.username);
-                if (usernameExists) {
+                // Check if username exists
+                if (await checkUserExists('username', userData.username)) {
                     showAlert('error', 'Username already taken. Please choose another.');
                     return false;
                 }
                 
-                // Check if email already exists
-                const emailExists = await checkUserExists('email', userData.email);
-                if (emailExists) {
+                // Check if email exists
+                if (await checkUserExists('email', userData.email)) {
                     showAlert('error', 'Email already registered. Please use a different email.');
                     return false;
                 }
                 
-                // Check if phone already exists
-                const phoneExists = await checkUserExists('phone', userData.phone);
-                if (phoneExists) {
+                // Check if phone exists
+                if (await checkUserExists('phone', userData.phone)) {
                     showAlert('error', 'Phone number already registered.');
                     return false;
                 }
@@ -443,27 +1298,28 @@
                 const userId = 'user_' + Date.now();
                 const newUserRef = ref(database, 'users/' + userId);
                 
-                console.log('Saving user to database at path:', 'users/' + userId);
-                
                 await set(newUserRef, userData);
                 
-                console.log('User saved successfully');
+                showAlert('success', 
+                    '<i class="fas fa-check-circle me-2"></i>' +
+                    '<strong>Account Created Successfully!</strong><br>' +
+                    'Welcome to LIILA! Redirecting to login...');
                 
-                showAlert('success', 'Account created successfully! Redirecting to login...');
-                
-                // Store user data temporarily for login
-                localStorage.setItem('temp_user', JSON.stringify({
+                // Store temporary user data
+                localStorage.setItem('liila_temp_user', JSON.stringify({
                     username: userData.username,
-                    password: userData.password
+                    email: userData.email
                 }));
                 
                 // Clear form
                 registerForm.reset();
-                profileImagePreview.src = 'https://via.placeholder.com/150x150?text=Upload+Photo';
+                profileImagePreview.src = 'https://via.placeholder.com/160x160?text=Click+to+Upload';
                 profileImageUrl = '';
                 bioCounter.textContent = '0';
+                passwordStrength.classList.add('d-none');
+                matchStatus.classList.add('d-none');
                 
-                // Redirect to login after 2 seconds
+                // Redirect after 2 seconds
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
@@ -471,40 +1327,45 @@
                 return true;
                 
             } catch (error) {
-                console.error('Registration error details:', error);
-                showAlert('error', `Error: ${error.message}. Please try again.`);
+                console.error('Registration error:', error);
+                showAlert('error', 
+                    '<i class="fas fa-exclamation-circle me-2"></i>' +
+                    '<strong>Registration Failed</strong><br>' +
+                    'An error occurred. Please try again.');
                 return false;
             } finally {
                 registerBtn.disabled = false;
-                registerBtn.innerHTML = 'Create Account';
+                btnText.classList.remove('d-none');
+                btnLoading.classList.add('d-none');
             }
         }
 
-        // Show alert message
         function showAlert(type, message) {
             if (type === 'error') {
-                errorAlert.textContent = message;
+                errorAlert.innerHTML = message;
                 errorAlert.classList.remove('d-none');
                 successAlert.classList.add('d-none');
+                
+                setTimeout(() => {
+                    errorAlert.classList.add('d-none');
+                }, 5000);
             } else {
-                successAlert.textContent = message;
+                successAlert.innerHTML = message;
                 successAlert.classList.remove('d-none');
                 errorAlert.classList.add('d-none');
+                
+                setTimeout(() => {
+                    successAlert.classList.add('d-none');
+                }, 5000);
             }
-            
-            setTimeout(() => {
-                errorAlert.classList.add('d-none');
-                successAlert.classList.add('d-none');
-            }, 5000);
         }
 
-        // Form validation
         function validateForm(formData) {
             const errors = [];
             
             // Full name validation
             if (!formData.fullName || formData.fullName.trim().length < 2) {
-                errors.push('Please enter a valid full name');
+                errors.push('Please enter a valid full name (minimum 2 characters)');
             }
             
             // Username validation
@@ -533,16 +1394,7 @@
                 errors.push('Please select your gender');
             }
             
-            // Password validation
-            if (formData.password.length < 8) {
-                errors.push('Password must be at least 8 characters');
-            }
-            
-            if (formData.password !== formData.confirmPassword) {
-                errors.push('Passwords do not match');
-            }
-            
-            // Age validation (must be 18+)
+            // Age validation
             const dob = new Date(formData.dob);
             const today = new Date();
             const age = today.getFullYear() - dob.getFullYear();
@@ -550,13 +1402,26 @@
             const dayDiff = today.getDate() - dob.getDate();
             
             if (age < 18 || (age === 18 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
-                errors.push('You must be at least 18 years old');
+                errors.push('You must be at least 18 years old to register');
+            }
+            
+            // Password validation
+            if (formData.password.length < 8) {
+                errors.push('Password must be at least 8 characters');
+            }
+            
+            if (!/\d/.test(formData.password) || !/[a-zA-Z]/.test(formData.password)) {
+                errors.push('Password must contain both letters and numbers');
+            }
+            
+            if (formData.password !== formData.confirmPassword) {
+                errors.push('Passwords do not match');
             }
             
             return { errors, cleanedData: formData };
         }
 
-        // Form submission handler
+        // Form submission
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -583,7 +1448,7 @@
                 return;
             }
             
-            // Prepare user data for database
+            // Prepare user data
             const userData = {
                 fullName: validation.cleanedData.fullName,
                 username: validation.cleanedData.username,
@@ -602,25 +1467,6 @@
             // Register user
             await registerUser(userData);
         });
-
-        // Pre-fill form with temp user data if coming from registration
-        window.addEventListener('DOMContentLoaded', () => {
-            const tempUser = localStorage.getItem('temp_user');
-            if (tempUser) {
-                try {
-                    const user = JSON.parse(tempUser);
-                    document.getElementById('username').value = user.username || '';
-                    document.getElementById('password').value = user.password || '';
-                    localStorage.removeItem('temp_user');
-                } catch (e) {
-                    console.error('Error parsing temp user:', e);
-                }
-            }
-        });
     </script>
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
