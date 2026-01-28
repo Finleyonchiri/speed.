@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LIILA | Authenticate</title>
+    <title>LIILA | Reset Password</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -263,7 +263,7 @@
             line-height: 1.5;
         }
         
-        .btn-login {
+        .btn-reset {
             background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-purple) 100%);
             border: none;
             color: white;
@@ -278,22 +278,22 @@
             letter-spacing: 0.5px;
         }
         
-        .btn-login:hover {
+        .btn-reset:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(169, 16, 15, 0.25);
         }
         
-        .btn-login:active {
+        .btn-reset:active {
             transform: translateY(-1px);
         }
         
-        .btn-login:disabled {
+        .btn-reset:disabled {
             opacity: 0.6;
             transform: none !important;
             cursor: not-allowed;
         }
         
-        .btn-login::after {
+        .btn-reset::after {
             content: '';
             position: absolute;
             top: 0;
@@ -304,28 +304,28 @@
             transition: left 0.7s;
         }
         
-        .btn-login:hover::after {
+        .btn-reset:hover::after {
             left: 100%;
         }
         
-        .btn-register {
-            background: transparent;
-            border: 2px solid var(--primary-purple);
-            color: var(--primary-purple);
+        .btn-proceed {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            color: white;
             padding: 16px;
             font-weight: 600;
             font-size: 1.1rem;
             border-radius: 12px;
             width: 100%;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
             letter-spacing: 0.5px;
         }
         
-        .btn-register:hover {
-            background: var(--primary-purple);
-            color: white;
+        .btn-proceed:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(143, 30, 174, 0.25);
+            box-shadow: 0 12px 25px rgba(40, 167, 69, 0.25);
         }
         
         .alert {
@@ -349,22 +349,53 @@
             color: #8affaa;
         }
         
-        .forgot-password {
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: rgba(255, 193, 7, 0.3);
+            color: #ffd166;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        
+        .verified { background: #28a745; color: white; }
+        .not-verified { background: var(--primary-red); color: white; }
+        .warning { background: #ffc107; color: #333; }
+        
+        .attempts-counter {
+            font-size: 0.85rem;
+            color: var(--text-muted);
             text-align: right;
             margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
         }
         
-        .forgot-password a {
-            color: var(--primary-purple);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .forgot-password a:hover {
-            color: var(--primary-red);
-            text-decoration: underline;
+        .attempts-counter .attempts-badge {
+            background: rgba(169, 16, 15, 0.2);
+            color: #ff8a8a;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
         }
         
         .back-link {
@@ -385,6 +416,55 @@
         .back-link a:hover {
             color: var(--primary-red);
             text-decoration: underline;
+        }
+        
+        .success-section {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.15), rgba(32, 201, 151, 0.15));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 3rem;
+            color: #28a745;
+            border: 4px solid rgba(40, 167, 69, 0.3);
+            animation: pulseSuccess 2s infinite;
+        }
+        
+        @keyframes pulseSuccess {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        
+        .success-section h4 {
+            color: #28a745;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .success-section p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .success-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
         }
         
         /* Mobile-specific styles */
@@ -509,7 +589,7 @@
                 font-size: 1rem;
             }
             
-            .btn-login, .btn-register {
+            .btn-reset, .btn-proceed {
                 padding: 16px;
                 font-size: 1.05rem;
             }
@@ -524,6 +604,21 @@
                 height: 40px;
                 font-size: 1.1rem;
                 margin-right: 12px;
+            }
+            
+            .success-section {
+                padding: 20px 15px;
+            }
+            
+            .success-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+            }
+            
+            .success-section h4 {
+                font-size: 1.6rem;
             }
         }
         
@@ -569,26 +664,6 @@
         .fade-in {
             animation: fadeIn 0.5s ease-out;
         }
-        
-        /* Remember me checkbox */
-        .form-check {
-            margin-top: 10px;
-        }
-        
-        .form-check-input:checked {
-            background-color: var(--primary-purple);
-            border-color: var(--primary-purple);
-        }
-        
-        .form-check-input:focus {
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 0.25rem rgba(143, 30, 174, 0.25);
-        }
-        
-        .form-check-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
     </style>
 </head>
 <body>
@@ -607,31 +682,31 @@
                 <div class="brand-features">
                     <div class="feature-item">
                         <div class="feature-icon">
-                            <i class="fas fa-user-check"></i>
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="feature-content">
+                            <strong>Enterprise Security</strong>
+                            <div class="small">Military-grade encryption & protection</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-check-double"></i>
                         </div>
                         <div class="feature-content">
                             <strong>Verified Community</strong>
-                            <div class="small">100% authenticated profiles</div>
+                            <div class="small">100% authenticated user profiles</div>
                         </div>
                     </div>
                     
                     <div class="feature-item">
                         <div class="feature-icon">
-                            <i class="fas fa-shield-alt"></i>
+                            <i class="fas fa-lock"></i>
                         </div>
                         <div class="feature-content">
-                            <strong>Secure Platform</strong>
-                            <div class="small">End-to-end encrypted communication</div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="feature-content">
-                            <strong>Meaningful Connections</strong>
-                            <div class="small">Curated matches based on compatibility</div>
+                            <strong>Privacy First</strong>
+                            <div class="small">Your data never leaves our servers</div>
                         </div>
                     </div>
                 </div>
@@ -649,74 +724,91 @@
                 </div>
                 
                 <div class="auth-header">
-                    <h2>Welcome Back</h2>
-                    <p>Sign in to continue your journey to meaningful connections</p>
+                    <h2>Reset Password</h2>
+                    <p>Enter your registered email to receive a secure password reset link</p>
                 </div>
                 
                 <div class="security-info">
                     <i class="fas fa-shield-alt me-2"></i>
-                    <strong>Secure Login:</strong> Your credentials are encrypted end-to-end
+                    <strong>Security Protocol:</strong> Password reset limited to 4 attempts every 15 minutes
                 </div>
                 
                 <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
                 <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
                 
-                <!-- Login Form -->
-                <form id="loginForm">
+                <!-- Reset Form -->
+                <form id="resetForm">
                     <div class="mb-4">
-                        <label for="username" class="form-label">
-                            <i class="fas fa-user me-2"></i>Username or Phone Number
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>Email Address
                         </label>
-                        <input type="text" class="form-control" id="username" 
-                               placeholder="Enter username or phone" required>
+                        <input type="email" class="form-control" id="email" 
+                               placeholder="name@example.com" required>
                         <div class="form-text">
                             <i class="fas fa-info-circle me-1"></i>
-                            Use the same identifier you registered with
+                            Use the exact email registered with your LIILA account
+                        </div>
+                        <div id="emailStatus" class="status-indicator d-none mt-2">
+                            <span class="status-icon"><i class="fas fa-check"></i></span>
+                            <span class="status-text"></span>
+                        </div>
+                        <div id="attemptsCounter" class="attempts-counter d-none">
+                            <i class="fas fa-history me-1"></i>
+                            Attempts remaining: 
+                            <span class="attempts-badge"><span id="attemptsCount">4</span>/4</span>
                         </div>
                     </div>
                     
-                    <div class="mb-4">
-                        <label for="password" class="form-label">
-                            <i class="fas fa-lock me-2"></i>Password
-                        </label>
-                        <input type="password" class="form-control" id="password" 
-                               placeholder="Enter your password" required>
-                        <div class="forgot-password">
-                            <a href="reset.html">
-                                <i class="fas fa-key me-1"></i>Forgot Password?
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">
-                            Remember this device for 30 days
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-login mb-4" id="loginBtn">
+                    <button type="submit" class="btn btn-reset mb-4" id="resetBtn">
                         <span class="btn-text">
-                            <i class="fas fa-sign-in-alt me-2"></i>Sign In to LIILA
+                            <i class="fas fa-paper-plane me-2"></i>Send Reset Link
                         </span>
                         <span class="btn-loading d-none">
                             <span class="spinner-border spinner-border-sm me-2"></span>
-                            Authenticating...
+                            Processing Request...
                         </span>
                     </button>
                     
-                    <div class="text-center mb-4">
-                        <p class="text-muted mb-3">New to LIILA?</p>
-                        <a href="register.html" class="btn btn-register">
-                            <i class="fas fa-user-plus me-2"></i>Create Your LIILA Account
-                        </a>
-                    </div>
-                    
                     <div class="back-link">
-                        <i class="fas fa-question-circle me-1"></i>
-                        Need help? <a href="support.html">Contact Support</a>
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Remember your password? 
+                        <a href="index.html">Sign In to LIILA</a>
                     </div>
                 </form>
+                
+                <!-- Success Section (Hidden by default) -->
+                <div id="successSection" class="success-section d-none fade-in">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    
+                    <h4>Reset Email Sent!</h4>
+                    
+                    <p>
+                        We've sent a password reset link to your email address. 
+                        Please check your inbox (including spam folder) and follow 
+                        the instructions to set your new password.
+                    </p>
+                    
+                    <div class="security-info mt-4 mb-4">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>Important:</strong> The reset link will expire in 1 hour for security reasons.
+                    </div>
+                    
+                    <div class="success-actions">
+                        <button class="btn btn-proceed" id="proceedBtn">
+                            <i class="fas fa-key me-2"></i>Proceed to Update Password
+                        </button>
+                        
+                        <button class="btn btn-reset" id="doneBtn">
+                            <i class="fas fa-check-circle me-2"></i>Done, I've Reset My Password
+                        </button>
+                        
+                        <a href="index.html" class="btn" style="background: transparent; border: 2px solid #444; color: var(--text-muted);">
+                            <i class="fas fa-home me-2"></i>Return to Login
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -725,7 +817,11 @@
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getDatabase, ref, get, query, orderByChild, equalTo } 
+        import { 
+            getAuth, 
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        import { getDatabase, ref, query, orderByChild, equalTo, get } 
                 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
         // Your Firebase configuration
@@ -742,133 +838,250 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const database = getDatabase(app);
 
         // DOM Elements
-        const loginForm = document.getElementById('loginForm');
+        const resetForm = document.getElementById('resetForm');
+        const successSection = document.getElementById('successSection');
         const errorAlert = document.getElementById('errorAlert');
         const successAlert = document.getElementById('successAlert');
-        const loginBtn = document.getElementById('loginBtn');
-        const btnText = loginBtn.querySelector('.btn-text');
-        const btnLoading = loginBtn.querySelector('.btn-loading');
-        const rememberMe = document.getElementById('rememberMe');
+        const resetBtn = document.getElementById('resetBtn');
+        const btnText = resetBtn.querySelector('.btn-text');
+        const btnLoading = resetBtn.querySelector('.btn-loading');
+        const emailStatus = document.getElementById('emailStatus');
+        const statusText = emailStatus.querySelector('.status-text');
+        const statusIcon = emailStatus.querySelector('.status-icon');
+        const attemptsCounter = document.getElementById('attemptsCounter');
+        const attemptsCount = document.getElementById('attemptsCount');
+        const proceedBtn = document.getElementById('proceedBtn');
+        const doneBtn = document.getElementById('doneBtn');
 
-        // Check for remembered user
-        window.addEventListener('load', () => {
-            const rememberedUser = localStorage.getItem('liila_remembered_user');
-            if (rememberedUser) {
-                document.getElementById('username').value = rememberedUser;
-                rememberMe.checked = true;
-            }
-            
-            // Auto-focus username field
-            document.getElementById('username').focus();
-        });
-
-        // Login function
-        async function loginUser(identifier, password) {
-            try {
-                loginBtn.disabled = true;
-                btnText.classList.add('d-none');
-                btnLoading.classList.remove('d-none');
-                
-                console.log('Attempting login with identifier:', identifier);
-                
-                // Query database for user by username or phone
-                const usersRef = ref(database, 'users');
-                
-                // Try to find user by username
-                let userQuery = query(usersRef, orderByChild('username'), equalTo(identifier));
-                let snapshot = await get(userQuery);
-                
-                // If not found by username, try phone number
-                if (!snapshot.exists()) {
-                    console.log('Not found by username, trying phone...');
-                    userQuery = query(usersRef, orderByChild('phone'), equalTo(identifier));
-                    snapshot = await get(userQuery);
+        // Security: Rate limiting - 4 ATTEMPTS
+        let resetAttempts = 0;
+        const MAX_ATTEMPTS = 4;
+        const ATTEMPT_RESET_TIME = 15 * 60 * 1000; // 15 minutes
+        
+        // Load attempts from localStorage
+        const storedAttempts = localStorage.getItem('liila_reset_attempts');
+        const lastAttemptTime = localStorage.getItem('liila_last_reset_attempt');
+        
+        if (storedAttempts && lastAttemptTime) {
+            const timeSinceLastAttempt = Date.now() - parseInt(lastAttemptTime);
+            if (timeSinceLastAttempt < ATTEMPT_RESET_TIME) {
+                resetAttempts = parseInt(storedAttempts);
+                if (resetAttempts >= MAX_ATTEMPTS) {
+                    disableResetForm();
+                } else {
+                    updateAttemptsCounter();
                 }
-                
-                console.log('Query result:', snapshot.exists());
+            } else {
+                // Reset attempts after timeout
+                localStorage.removeItem('liila_reset_attempts');
+                localStorage.removeItem('liila_last_reset_attempt');
+            }
+        }
+
+        // Update attempts counter display
+        function updateAttemptsCounter() {
+            const remaining = MAX_ATTEMPTS - resetAttempts;
+            attemptsCount.textContent = remaining;
+            attemptsCounter.classList.remove('d-none');
+            
+            if (remaining <= 1) {
+                attemptsCounter.style.color = '#ff6b6b';
+            } else if (remaining <= 2) {
+                attemptsCounter.style.color = '#ffd166';
+            } else {
+                attemptsCounter.style.color = '#28a745';
+            }
+        }
+
+        // Increment and store attempts
+        function incrementAttempts() {
+            resetAttempts++;
+            localStorage.setItem('liila_reset_attempts', resetAttempts.toString());
+            localStorage.setItem('liila_last_reset_attempt', Date.now().toString());
+            
+            if (resetAttempts >= MAX_ATTEMPTS) {
+                disableResetForm();
+            } else {
+                updateAttemptsCounter();
+            }
+        }
+
+        // Disable form when too many attempts
+        function disableResetForm() {
+            resetBtn.disabled = true;
+            resetBtn.style.opacity = '0.7';
+            resetBtn.style.cursor = 'not-allowed';
+            
+            const resetTime = new Date(Date.now() + ATTEMPT_RESET_TIME);
+            showAlert('error', 
+                `<i class="fas fa-shield-alt me-2"></i>
+                <strong>Maximum Attempts Reached</strong><br>
+                For security reasons, password reset has been temporarily disabled.
+                Please try again after 
+                ${resetTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}.
+                <br><small class="mt-2 d-block">
+                <i class="fas fa-info-circle me-1"></i>
+                This security measure protects against unauthorized access attempts.</small>`);
+            
+            // Auto-enable after timeout
+            setTimeout(() => {
+                resetAttempts = 0;
+                localStorage.removeItem('liila_reset_attempts');
+                localStorage.removeItem('liila_last_reset_attempt');
+                resetBtn.disabled = false;
+                resetBtn.style.opacity = '1';
+                resetBtn.style.cursor = 'pointer';
+                errorAlert.classList.add('d-none');
+                attemptsCounter.classList.add('d-none');
+            }, ATTEMPT_RESET_TIME);
+        }
+
+        // Check if email exists in database
+        async function checkDatabaseUserExists(email) {
+            try {
+                const usersRef = ref(database, 'users');
+                const emailQuery = query(usersRef, orderByChild('email'), equalTo(email));
+                const snapshot = await get(emailQuery);
                 
                 if (snapshot.exists()) {
                     const users = snapshot.val();
-                    console.log('Found users:', users);
-                    
                     const userKey = Object.keys(users)[0];
-                    const userData = users[userKey];
-                    
-                    console.log('User data:', userData);
-                    
-                    // Check password
-                    if (userData.password === password) {
-                        showAlert('success', 
-                            '<i class="fas fa-check-circle me-2"></i>' +
-                            '<strong>Authentication Successful</strong><br>' +
-                            'Welcome back to LIILA! Redirecting to your dashboard...');
-                        
-                        // Store user data in localStorage
-                        localStorage.setItem('liila_user', JSON.stringify({
-                            id: userKey,
-                            username: userData.username,
-                            email: userData.email,
-                            phone: userData.phone,
-                            name: userData.name || userData.username,
-                            lastLogin: new Date().toISOString()
-                        }));
-                        
-                        // Store login timestamp
-                        localStorage.setItem('liila_last_login', new Date().toISOString());
-                        
-                        // Remember user if checkbox is checked
-                        if (rememberMe.checked) {
-                            localStorage.setItem('liila_remembered_user', identifier);
-                        } else {
-                            localStorage.removeItem('liila_remembered_user');
-                        }
-                        
-                        // Clear any reset data
-                        localStorage.removeItem('liila_reset_email');
-                        localStorage.removeItem('liila_reset_timestamp');
-                        
-                        // Redirect to home page after 2 seconds
-                        setTimeout(() => {
-                            window.location.href = 'home.html';
-                        }, 2000);
-                    } else {
-                        showAlert('error', 
-                            '<i class="fas fa-exclamation-triangle me-2"></i>' +
-                            '<strong>Invalid Credentials</strong><br>' +
-                            'The password you entered is incorrect. Please try again.');
-                        
-                        // Suggest forgot password
-                        setTimeout(() => {
-                            errorAlert.innerHTML = `
-                                <i class="fas fa-key me-2"></i>
-                                <strong>Forgot your password?</strong><br>
-                                Reset it securely through our 
-                                <a href="reset.html" class="alert-link fw-bold">password recovery system</a>.
-                            `;
-                        }, 2000);
-                    }
-                } else {
+                    return { exists: true, userKey, userData: users[userKey] };
+                }
+                return { exists: false };
+            } catch (error) {
+                console.error('Error checking database:', error);
+                return { exists: false, error: error.message };
+            }
+        }
+
+        // Show success section
+        function showSuccessSection() {
+            resetForm.classList.add('d-none');
+            successSection.classList.remove('d-none');
+            successSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Send password reset email
+        async function sendResetEmail(email) {
+            try {
+                // Show loading state
+                btnText.classList.add('d-none');
+                btnLoading.classList.remove('d-none');
+                resetBtn.disabled = true;
+                
+                console.log('Starting password reset for:', email);
+                
+                // STEP 1: Check if email exists in database
+                updateStatus('Verifying account...', 'warning');
+                
+                const dbCheck = await checkDatabaseUserExists(email);
+                
+                if (!dbCheck.exists) {
+                    incrementAttempts();
+                    updateStatus('Account not found', 'not-verified');
                     showAlert('error', 
-                        '<i class="fas fa-user-times me-2"></i>' +
+                        '<i class="fas fa-exclamation-triangle me-2"></i>' +
                         '<strong>Account Not Found</strong><br>' +
-                        'No account found with those credentials. ' +
-                        'Please check your details or register for a new account.');
+                        'This email is not registered with LIILA. ' +
+                        'Please use the exact email you used during registration.');
+                    
+                    resetBtn.disabled = false;
+                    btnText.classList.remove('d-none');
+                    btnLoading.classList.add('d-none');
+                    return;
                 }
                 
+                // STEP 2: Send Firebase password reset email
+                updateStatus('Sending secure reset link...', 'warning');
+                
+                await sendPasswordResetEmail(auth, email);
+                
+                console.log('Reset email sent successfully to:', email);
+                
+                // Reset attempts on successful reset
+                resetAttempts = 0;
+                localStorage.removeItem('liila_reset_attempts');
+                localStorage.removeItem('liila_last_reset_attempt');
+                
+                // Store reset data for next page
+                localStorage.setItem('liila_reset_email', email);
+                localStorage.setItem('liila_reset_user_id', dbCheck.userKey);
+                localStorage.setItem('liila_reset_timestamp', Date.now().toString());
+                
+                // Show success section
+                setTimeout(() => {
+                    showSuccessSection();
+                }, 1000);
+                
             } catch (error) {
-                console.error('Login error:', error);
+                console.error('Reset error:', error);
+                
+                // Don't increment attempts for network errors
+                if (error.code !== 'auth/network-request-failed') {
+                    incrementAttempts();
+                }
+                
+                updateStatus('Error occurred', 'not-verified');
+                
+                let errorMessage = '';
+                let icon = '<i class="fas fa-exclamation-circle me-2"></i>';
+                
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'Email not found in authentication system.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address format.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many reset attempts. Please wait 15 minutes.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'Network connection error.';
+                        icon = '<i class="fas fa-wifi me-2"></i>';
+                        break;
+                    default:
+                        errorMessage = 'An unexpected error occurred.';
+                }
+                
                 showAlert('error', 
-                    '<i class="fas fa-exclamation-circle me-2"></i>' +
-                    '<strong>Connection Error</strong><br>' +
-                    'Unable to connect to authentication server. ' +
-                    'Please check your internet connection and try again.');
-            } finally {
-                loginBtn.disabled = false;
+                    `${icon}<strong>Reset Failed</strong><br>${errorMessage} ` +
+                    `Please try again or contact support if the problem persists.`);
+                
+                // Reset button state
+                resetBtn.disabled = false;
                 btnText.classList.remove('d-none');
                 btnLoading.classList.add('d-none');
+            }
+        }
+
+        // Update status indicator
+        function updateStatus(text, type) {
+            statusText.textContent = text;
+            emailStatus.classList.remove('d-none');
+            
+            // Clear all classes
+            statusIcon.className = 'status-icon';
+            statusIcon.innerHTML = '';
+            
+            switch(type) {
+                case 'verified':
+                    statusIcon.classList.add('verified');
+                    statusIcon.innerHTML = '<i class="fas fa-check"></i>';
+                    break;
+                case 'not-verified':
+                    statusIcon.classList.add('not-verified');
+                    statusIcon.innerHTML = '<i class="fas fa-times"></i>';
+                    break;
+                case 'warning':
+                    statusIcon.classList.add('warning');
+                    statusIcon.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>';
+                    break;
             }
         }
 
@@ -878,96 +1091,101 @@
                 errorAlert.innerHTML = message;
                 errorAlert.classList.remove('d-none');
                 successAlert.classList.add('d-none');
-                
-                // Auto hide after 8 seconds
-                setTimeout(() => {
-                    errorAlert.classList.add('d-none');
-                }, 8000);
             } else {
                 successAlert.innerHTML = message;
                 successAlert.classList.remove('d-none');
                 errorAlert.classList.add('d-none');
-                
-                // Auto hide after 5 seconds (unless redirecting)
-                setTimeout(() => {
-                    successAlert.classList.add('d-none');
-                }, 5000);
             }
         }
 
+        // Real-time email validation
+        let emailCheckTimeout;
+        document.getElementById('email').addEventListener('input', function(e) {
+            const email = e.target.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            clearTimeout(emailCheckTimeout);
+            
+            if (email && emailRegex.test(email)) {
+                emailCheckTimeout = setTimeout(async () => {
+                    try {
+                        updateStatus('Verifying...', 'warning');
+                        const dbCheck = await checkDatabaseUserExists(email);
+                        
+                        if (dbCheck.exists) {
+                            updateStatus('✓ Account verified', 'verified');
+                        } else {
+                            updateStatus('✗ Account not found', 'not-verified');
+                        }
+                    } catch (error) {
+                        emailStatus.classList.add('d-none');
+                    }
+                }, 800);
+            } else {
+                emailStatus.classList.add('d-none');
+            }
+        });
+
         // Form submission handler
-        loginForm.addEventListener('submit', async (e) => {
+        resetForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const identifier = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim();
             
             // Basic validation
-            if (!identifier) {
-                showAlert('error', 
-                    '<i class="fas fa-user me-2"></i>' +
-                    '<strong>Identification Required</strong><br>' +
-                    'Please enter your username or phone number');
+            if (!email) {
+                showAlert('error', '<i class="fas fa-exclamation-circle me-2"></i>Please enter your email address');
                 return;
             }
             
-            if (!password) {
-                showAlert('error', 
-                    '<i class="fas fa-lock me-2"></i>' +
-                    '<strong>Password Required</strong><br>' +
-                    'Please enter your password to continue');
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('error', '<i class="fas fa-exclamation-circle me-2"></i>Please enter a valid email address');
                 return;
             }
             
-            if (password.length < 6) {
-                showAlert('error', 
-                    '<i class="fas fa-exclamation-triangle me-2"></i>' +
-                    '<strong>Invalid Password</strong><br>' +
-                    'Password must be at least 6 characters long');
+            // Check rate limiting
+            if (resetAttempts >= MAX_ATTEMPTS) {
+                disableResetForm();
                 return;
             }
             
-            // Attempt login
-            await loginUser(identifier, password);
+            // Send reset email
+            await sendResetEmail(email);
         });
 
-        // Enter key to submit
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                loginForm.dispatchEvent(new Event('submit'));
-            }
+        // Button click handlers
+        proceedBtn.addEventListener('click', () => {
+            window.location.href = 'reset-password.html';
         });
 
-        // Check if user just updated password
+        doneBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // Initialize on page load
         window.addEventListener('load', () => {
-            const updatedTime = localStorage.getItem('liila_updated_time');
-            if (updatedTime) {
-                const timeSinceUpdate = Date.now() - new Date(updatedTime).getTime();
-                const FIVE_MINUTES = 5 * 60 * 1000;
+            // Check if reset was recently sent
+            const resetTimestamp = localStorage.getItem('liila_reset_timestamp');
+            if (resetTimestamp) {
+                const timeSinceReset = Date.now() - parseInt(resetTimestamp);
+                const ONE_HOUR = 60 * 60 * 1000;
                 
-                if (timeSinceUpdate < FIVE_MINUTES) {
-                    showAlert('success', 
-                        '<i class="fas fa-check-circle me-2"></i>' +
-                        '<strong>Password Updated Successfully</strong><br>' +
-                        'Your password has been synchronized. You can now login with your new credentials.');
+                if (timeSinceReset < ONE_HOUR) {
+                    // Show success section directly
+                    showSuccessSection();
                     
-                    // Clear the update flag
-                    localStorage.removeItem('liila_updated_time');
+                    const remainingMinutes = Math.ceil((ONE_HOUR - timeSinceReset) / (60 * 1000));
+                    showAlert('info', 
+                        `<i class="fas fa-clock me-2"></i>
+                        A reset email was sent ${remainingMinutes} minutes ago. 
+                        Please check your inbox before requesting another.`);
                 }
             }
             
-            // Check if user was redirected from reset
-            const resetEmail = localStorage.getItem('liila_reset_email');
-            if (resetEmail) {
-                showAlert('info', 
-                    '<i class="fas fa-info-circle me-2"></i>' +
-                    '<strong>Password Reset Complete</strong><br>' +
-                    'Your password has been reset. Please login with your new credentials.');
-                
-                // Auto-fill the email if it's also a username
-                document.getElementById('username').value = resetEmail;
-                document.getElementById('password').focus();
-            }
+            // Auto-focus email field
+            document.getElementById('email').focus();
         });
     </script>
 </body>

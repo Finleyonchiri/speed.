@@ -1,0 +1,13 @@
+how-fast-bcabe-default-rtdb.firebaseio.com/
+├── users/
+│   ├── user_id_1: {fullName, username, bio, profileImage, age, gender, hobbies, ...}
+│   ├── user_id_2: {fullName, username, bio, ...}
+│   └── ...
+├── likes/
+│   ├── currentUserId_profileId_1: {userId, likedUserId, likedUserName, timestamp, type}
+│   ├── currentUserId_profileId_2: {userId, likedUserId, ...}
+│   └── ...
+├── matches/
+│   └── match_id: {userId1, userId2, userName1, userName2, timestamp, read}
+└── dislikes/
+    └── dislike_id: {userId, dislikedUserId, dislikedUserName, timestamp, type}
