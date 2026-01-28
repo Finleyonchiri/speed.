@@ -26,19 +26,92 @@
         body {
             background: linear-gradient(135deg, var(--deep-black) 0%, var(--dark-gray) 100%);
             min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--deep-black) 0%, var(--dark-gray) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loading-logo-container {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: var(--text-light);
-            padding: 15px;
-            overflow-x: hidden;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 10px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+            animation: pulseLogo 2s infinite alternate;
+        }
+        
+        @keyframes pulseLogo {
+            0% { transform: scale(1); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+            100% { transform: scale(1.05); box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
+        }
+        
+        .loading-logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+        
+        .loading-text {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 20px;
+            background: linear-gradient(to right, var(--primary-red), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .loading-subtext {
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            margin-top: 20px;
+            color: var(--primary-purple);
         }
         
         .container-fluid {
             max-width: 1200px;
             width: 100%;
             padding: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .container-fluid.visible {
+            opacity: 1;
         }
         
         .auth-wrapper {
@@ -592,169 +665,333 @@
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="auth-wrapper">
-            <!-- Brand/Info Section -->
-            <div class="brand-section d-none d-lg-flex">
-                <div class="brand-logo">
-                    <div class="logo-container">
-                        <img src="LIILA.png" alt="LIILA Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\"fas fa-heart\" style=\"font-size: 3.5rem; color: #a9100f;\"></i>';">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo-container">
+            <img src="LIILA.png" alt="LIILA Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\"fas fa-heart\" style=\"font-size: 5rem; color: #a9100f;\"></i>';">
+        </div>
+        <div class="loading-text">LIILA</div>
+        <div class="loading-subtext">Authentic Connections, Lasting Relationships</div>
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid" id="mainContent">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-12">
+                <div class="auth-wrapper">
+                    <!-- Brand/Info Section -->
+                    <div class="brand-section d-none d-lg-flex">
+                        <div class="brand-logo">
+                            <div class="logo-container">
+                                <img src="LIILA.png" alt="LIILA Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\"fas fa-heart\" style=\"font-size: 3.5rem; color: #a9100f;\"></i>';">
+                            </div>
+                            <h1>LIILA</h1>
+                            <div class="tagline">Authentic Connections, Lasting Relationships</div>
+                        </div>
+                        
+                        <div class="brand-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <strong>Verified Community</strong>
+                                    <div class="small">100% authenticated profiles</div>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <strong>Secure Platform</strong>
+                                    <div class="small">End-to-end encrypted communication</div>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <strong>Meaningful Connections</strong>
+                                    <div class="small">Curated matches based on compatibility</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h1>LIILA</h1>
-                    <div class="tagline">Authentic Connections, Lasting Relationships</div>
+                    
+                    <!-- Authentication Section -->
+                    <div class="auth-section">
+                        <!-- Mobile Logo -->
+                        <div class="d-lg-none mb-4 text-center fade-in">
+                            <div class="logo-container mx-auto">
+                                <img src="LIILA.png" alt="LIILA Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\"fas fa-heart\" style=\"font-size: 2.5rem; color: #a9100f;\"></i>';">
+                            </div>
+                            <h2 class="mt-3 mb-2">LIILA</h2>
+                            <p class="text-muted mb-0">Authentic Connections</p>
+                        </div>
+                        
+                        <div class="auth-header">
+                            <h2>Welcome Back</h2>
+                            <p>Sign in to continue your journey to meaningful connections</p>
+                        </div>
+                        
+                        <div class="security-info">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            <strong>Secure Login:</strong> Your credentials are encrypted end-to-end
+                        </div>
+                        
+                        <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+                        <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
+                        
+                        <!-- Login Form -->
+                        <form id="loginForm">
+                            <div class="mb-4">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Username or Phone Number
+                                </label>
+                                <input type="text" class="form-control" id="username" 
+                                       placeholder="Enter username or phone" required>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Use the same identifier you registered with
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Password
+                                </label>
+                                <input type="password" class="form-control" id="password" 
+                                       placeholder="Enter your password" required>
+                                <div class="forgot-password">
+                                    <a href="reset.html">
+                                        <i class="fas fa-key me-1"></i>Forgot Password?
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">
+                                    Remember this device for 30 days
+                                </label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-login mb-4" id="loginBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In to LIILA
+                                </span>
+                                <span class="btn-loading d-none">
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    Authenticating...
+                                </span>
+                            </button>
+                            
+                            <div class="text-center mb-4">
+                                <p class="text-muted mb-3">New to LIILA?</p>
+                                <a href="register.html" class="btn btn-register">
+                                    <i class="fas fa-user-plus me-2"></i>Create Your LIILA Account
+                                </a>
+                            </div>
+                            
+                            <div class="back-link">
+                                <i class="fas fa-question-circle me-1"></i>
+                                Need help? <a href="support.html">Contact Support</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                
-                <div class="brand-features">
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-user-check"></i>
-                        </div>
-                        <div class="feature-content">
-                            <strong>Verified Community</strong>
-                            <div class="small">100% authenticated profiles</div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="feature-content">
-                            <strong>Secure Platform</strong>
-                            <div class="small">End-to-end encrypted communication</div>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="feature-content">
-                            <strong>Meaningful Connections</strong>
-                            <div class="small">Curated matches based on compatibility</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Authentication Section -->
-            <div class="auth-section">
-                <!-- Mobile Logo -->
-                <div class="d-lg-none mb-4 text-center fade-in">
-                    <div class="logo-container mx-auto">
-                        <img src="LIILA.png" alt="LIILA Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\"fas fa-heart\" style=\"font-size: 2.5rem; color: #a9100f;\"></i>';">
-                    </div>
-                    <h2 class="mt-3 mb-2">LIILA</h2>
-                    <p class="text-muted mb-0">Authentic Connections</p>
-                </div>
-                
-                <div class="auth-header">
-                    <h2>Welcome Back</h2>
-                    <p>Sign in to continue your journey to meaningful connections</p>
-                </div>
-                
-                <div class="security-info">
-                    <i class="fas fa-shield-alt me-2"></i>
-                    <strong>Secure Login:</strong> Your credentials are encrypted end-to-end
-                </div>
-                
-                <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
-                <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
-                
-                <!-- Login Form -->
-                <form id="loginForm">
-                    <div class="mb-4">
-                        <label for="username" class="form-label">
-                            <i class="fas fa-user me-2"></i>Username or Phone Number
-                        </label>
-                        <input type="text" class="form-control" id="username" 
-                               placeholder="Enter username or phone" required>
-                        <div class="form-text">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Use the same identifier you registered with
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="password" class="form-label">
-                            <i class="fas fa-lock me-2"></i>Password
-                        </label>
-                        <input type="password" class="form-control" id="password" 
-                               placeholder="Enter your password" required>
-                        <div class="forgot-password">
-                            <a href="reset.html">
-                                <i class="fas fa-key me-1"></i>Forgot Password?
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">
-                            Remember this device for 30 days
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-login mb-4" id="loginBtn">
-                        <span class="btn-text">
-                            <i class="fas fa-sign-in-alt me-2"></i>Sign In to LIILA
-                        </span>
-                        <span class="btn-loading d-none">
-                            <span class="spinner-border spinner-border-sm me-2"></span>
-                            Authenticating...
-                        </span>
-                    </button>
-                    
-                    <div class="text-center mb-4">
-                        <p class="text-muted mb-3">New to LIILA?</p>
-                        <a href="register.html" class="btn btn-register">
-                            <i class="fas fa-user-plus me-2"></i>Create Your LIILA Account
-                        </a>
-                    </div>
-                    
-                    <div class="back-link">
-                        <i class="fas fa-question-circle me-1"></i>
-                        Need help? <a href="support.html">Contact Support</a>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
 
     <!-- Firebase SDK -->
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getDatabase, ref, get, query, orderByChild, equalTo } 
-                from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+<script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getDatabase, ref, get, query, orderByChild, equalTo } 
+            from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEzRCOw2E89qjewG-vuQ_SWBWUbGdDHv8",
-            authDomain: "how-fast-bcabe.firebaseapp.com",
-            databaseURL: "https://how-fast-bcabe-default-rtdb.firebaseio.com",
-            projectId: "how-fast-bcabe",
-            storageBucket: "how-fast-bcabe.firebasestorage.app",
-            messagingSenderId: "435644508816",
-            appId: "1:435644508816:web:53e51d3cc22331996e4615",
-            measurementId: "G-ZBZZK4D9D0"
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDEzRCOw2E89qjewG-vuQ_SWBWUbGdDHv8",
+        authDomain: "how-fast-bcabe.firebaseapp.com",
+        databaseURL: "https://how-fast-bcabe-default-rtdb.firebaseio.com",
+        projectId: "how-fast-bcabe",
+        storageBucket: "how-fast-bcabe.firebasestorage.app",
+        messagingSenderId: "435644508816",
+        appId: "1:435644508816:web:53e51d3cc22331996e4615",
+        measurementId: "G-ZBZZK4D9D0"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // DOM Elements
+    const loadingScreen = document.getElementById('loadingScreen');
+    const mainContent = document.getElementById('mainContent');
+    const loginForm = document.getElementById('loginForm');
+    const errorAlert = document.getElementById('errorAlert');
+    const successAlert = document.getElementById('successAlert');
+    const loginBtn = document.getElementById('loginBtn');
+    const btnText = loginBtn.querySelector('.btn-text');
+    const btnLoading = loginBtn.querySelector('.btn-loading');
+    const rememberMe = document.getElementById('rememberMe');
+
+    // Session Management Functions
+    function setSessionCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/; Secure; SameSite=Strict";
+    }
+
+    function getSessionCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function deleteSessionCookie(name) {
+        document.cookie = name + '=; Max-Age=-99999999; path=/; Secure; SameSite=Strict';
+    }
+
+    function setSecureSession(userData, remember = false) {
+        const sessionData = {
+            userId: userData.id,
+            username: userData.username,
+            email: userData.email,
+            phone: userData.phone,
+            name: userData.name || userData.username,
+            sessionId: 'liila_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            createdAt: new Date().toISOString(),
+            expiresAt: new Date(Date.now() + (remember ? 30 : 7) * 24 * 60 * 60 * 1000).toISOString()
         };
+        
+        // Store in localStorage for quick access
+        localStorage.setItem('liila_session', JSON.stringify(sessionData));
+        
+        // Store in secure cookies
+        setSessionCookie('liila_session_id', sessionData.sessionId, remember ? 30 : 7);
+        setSessionCookie('liila_user_id', sessionData.userId, remember ? 30 : 7);
+        
+        // Store in sessionStorage for current session
+        sessionStorage.setItem('liila_current_session', sessionData.sessionId);
+        
+        return sessionData;
+    }
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+    function getCurrentSession() {
+        const sessionCookie = getSessionCookie('liila_session_id');
+        const userIdCookie = getSessionCookie('liila_user_id');
+        
+        if (!sessionCookie || !userIdCookie) {
+            return null;
+        }
+        
+        const storedSession = localStorage.getItem('liila_session');
+        if (!storedSession) {
+            return null;
+        }
+        
+        const sessionData = JSON.parse(storedSession);
+        
+        // Verify session is still valid
+        if (sessionData.sessionId !== sessionCookie || sessionData.userId !== userIdCookie) {
+            clearSession();
+            return null;
+        }
+        
+        // Check if session has expired
+        if (new Date(sessionData.expiresAt) < new Date()) {
+            clearSession();
+            return null;
+        }
+        
+        return sessionData;
+    }
 
-        // DOM Elements
-        const loginForm = document.getElementById('loginForm');
-        const errorAlert = document.getElementById('errorAlert');
-        const successAlert = document.getElementById('successAlert');
-        const loginBtn = document.getElementById('loginBtn');
-        const btnText = loginBtn.querySelector('.btn-text');
-        const btnLoading = loginBtn.querySelector('.btn-loading');
-        const rememberMe = document.getElementById('rememberMe');
+    function clearSession() {
+        deleteSessionCookie('liila_session_id');
+        deleteSessionCookie('liila_user_id');
+        localStorage.removeItem('liila_session');
+        localStorage.removeItem('liila_user');
+        sessionStorage.removeItem('liila_current_session');
+    }
 
-        // Check for remembered user
-        window.addEventListener('load', () => {
+    // Check for active session on page load
+    async function checkExistingSession() {
+        try {
+            const currentSession = getCurrentSession();
+            
+            if (!currentSession) {
+                console.log('No active session found');
+                return false;
+            }
+            
+            console.log('Active session found:', currentSession);
+            
+            // Verify user still exists in database
+            const userRef = ref(database, 'users/' + currentSession.userId);
+            const snapshot = await get(userRef);
+            
+            if (snapshot.exists()) {
+                console.log('Session validated, redirecting to home...');
+                
+                // Update last login time
+                localStorage.setItem('liila_last_login', new Date().toISOString());
+                
+                // Smooth redirect after showing loading screen
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1500);
+                return true;
+            } else {
+                console.log('User not found in database, clearing session...');
+                clearSession();
+                return false;
+            }
+            
+        } catch (error) {
+            console.error('Session check error:', error);
+            return false;
+        }
+    }
+
+    // Initialize page
+    async function initializePage() {
+        console.log('Initializing login page...');
+        
+        // First check for existing session
+        const hasSession = await checkExistingSession();
+        
+        if (hasSession) {
+            // We're already redirecting, keep loading screen visible
+            // Don't hide loading screen when redirecting
+            return;
+        }
+        
+        // No session found, show login form
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+            mainContent.classList.add('visible');
+            
+            // Check for remembered user
             const rememberedUser = localStorage.getItem('liila_remembered_user');
             if (rememberedUser) {
                 document.getElementById('username').value = rememberedUser;
@@ -763,212 +1000,229 @@
             
             // Auto-focus username field
             document.getElementById('username').focus();
-        });
+            
+            // Check if user just updated password
+            checkForPasswordUpdate();
+        }, 1500);
+    }
 
-        // Login function
-        async function loginUser(identifier, password) {
-            try {
-                loginBtn.disabled = true;
-                btnText.classList.add('d-none');
-                btnLoading.classList.remove('d-none');
+    function checkForPasswordUpdate() {
+        const updatedTime = localStorage.getItem('liila_updated_time');
+        if (updatedTime) {
+            const timeSinceUpdate = Date.now() - new Date(updatedTime).getTime();
+            const FIVE_MINUTES = 5 * 60 * 1000;
+            
+            if (timeSinceUpdate < FIVE_MINUTES) {
+                showAlert('success', 
+                    '<i class="fas fa-check-circle me-2"></i>' +
+                    '<strong>Password Updated Successfully</strong><br>' +
+                    'Your password has been synchronized. You can now login with your new credentials.');
                 
-                console.log('Attempting login with identifier:', identifier);
-                
-                // Query database for user by username or phone
-                const usersRef = ref(database, 'users');
-                
-                // Try to find user by username
-                let userQuery = query(usersRef, orderByChild('username'), equalTo(identifier));
-                let snapshot = await get(userQuery);
-                
-                // If not found by username, try phone number
-                if (!snapshot.exists()) {
-                    console.log('Not found by username, trying phone...');
-                    userQuery = query(usersRef, orderByChild('phone'), equalTo(identifier));
-                    snapshot = await get(userQuery);
-                }
-                
-                console.log('Query result:', snapshot.exists());
-                
-                if (snapshot.exists()) {
-                    const users = snapshot.val();
-                    console.log('Found users:', users);
-                    
-                    const userKey = Object.keys(users)[0];
-                    const userData = users[userKey];
-                    
-                    console.log('User data:', userData);
-                    
-                    // Check password
-                    if (userData.password === password) {
-                        showAlert('success', 
-                            '<i class="fas fa-check-circle me-2"></i>' +
-                            '<strong>Authentication Successful</strong><br>' +
-                            'Welcome back to LIILA! Redirecting to your dashboard...');
-                        
-                        // Store user data in localStorage
-                        localStorage.setItem('liila_user', JSON.stringify({
-                            id: userKey,
-                            username: userData.username,
-                            email: userData.email,
-                            phone: userData.phone,
-                            name: userData.name || userData.username,
-                            lastLogin: new Date().toISOString()
-                        }));
-                        
-                        // Store login timestamp
-                        localStorage.setItem('liila_last_login', new Date().toISOString());
-                        
-                        // Remember user if checkbox is checked
-                        if (rememberMe.checked) {
-                            localStorage.setItem('liila_remembered_user', identifier);
-                        } else {
-                            localStorage.removeItem('liila_remembered_user');
-                        }
-                        
-                        // Clear any reset data
-                        localStorage.removeItem('liila_reset_email');
-                        localStorage.removeItem('liila_reset_timestamp');
-                        
-                        // Redirect to home page after 2 seconds
-                        setTimeout(() => {
-                            window.location.href = 'home.html';
-                        }, 2000);
-                    } else {
-                        showAlert('error', 
-                            '<i class="fas fa-exclamation-triangle me-2"></i>' +
-                            '<strong>Invalid Credentials</strong><br>' +
-                            'The password you entered is incorrect. Please try again.');
-                        
-                        // Suggest forgot password
-                        setTimeout(() => {
-                            errorAlert.innerHTML = `
-                                <i class="fas fa-key me-2"></i>
-                                <strong>Forgot your password?</strong><br>
-                                Reset it securely through our 
-                                <a href="reset.html" class="alert-link fw-bold">password recovery system</a>.
-                            `;
-                        }, 2000);
-                    }
-                } else {
-                    showAlert('error', 
-                        '<i class="fas fa-user-times me-2"></i>' +
-                        '<strong>Account Not Found</strong><br>' +
-                        'No account found with those credentials. ' +
-                        'Please check your details or register for a new account.');
-                }
-                
-            } catch (error) {
-                console.error('Login error:', error);
-                showAlert('error', 
-                    '<i class="fas fa-exclamation-circle me-2"></i>' +
-                    '<strong>Connection Error</strong><br>' +
-                    'Unable to connect to authentication server. ' +
-                    'Please check your internet connection and try again.');
-            } finally {
-                loginBtn.disabled = false;
-                btnText.classList.remove('d-none');
-                btnLoading.classList.add('d-none');
+                // Clear the update flag
+                localStorage.removeItem('liila_updated_time');
             }
         }
-
-        // Show alert message
-        function showAlert(type, message) {
-            if (type === 'error') {
-                errorAlert.innerHTML = message;
-                errorAlert.classList.remove('d-none');
-                successAlert.classList.add('d-none');
-                
-                // Auto hide after 8 seconds
-                setTimeout(() => {
-                    errorAlert.classList.add('d-none');
-                }, 8000);
-            } else {
-                successAlert.innerHTML = message;
-                successAlert.classList.remove('d-none');
-                errorAlert.classList.add('d-none');
-                
-                // Auto hide after 5 seconds (unless redirecting)
-                setTimeout(() => {
-                    successAlert.classList.add('d-none');
-                }, 5000);
-            }
+        
+        // Check if user was redirected from reset
+        const resetEmail = localStorage.getItem('liila_reset_email');
+        if (resetEmail) {
+            showAlert('info', 
+                '<i class="fas fa-info-circle me-2"></i>' +
+                '<strong>Password Reset Complete</strong><br>' +
+                'Your password has been reset. Please login with your new credentials.');
+            
+            // Auto-fill the email if it's also a username
+            document.getElementById('username').value = resetEmail;
+            document.getElementById('password').focus();
         }
+    }
 
-        // Form submission handler
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+    // Login function
+    async function loginUser(identifier, password) {
+        try {
+            loginBtn.disabled = true;
+            btnText.classList.add('d-none');
+            btnLoading.classList.remove('d-none');
             
-            const identifier = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
+            console.log('Attempting login with identifier:', identifier);
             
-            // Basic validation
-            if (!identifier) {
-                showAlert('error', 
-                    '<i class="fas fa-user me-2"></i>' +
-                    '<strong>Identification Required</strong><br>' +
-                    'Please enter your username or phone number');
-                return;
+            // Query database for user by username or phone
+            const usersRef = ref(database, 'users');
+            
+            // Try to find user by username
+            let userQuery = query(usersRef, orderByChild('username'), equalTo(identifier));
+            let snapshot = await get(userQuery);
+            
+            // If not found by username, try phone number
+            if (!snapshot.exists()) {
+                console.log('Not found by username, trying phone...');
+                userQuery = query(usersRef, orderByChild('phone'), equalTo(identifier));
+                snapshot = await get(userQuery);
             }
             
-            if (!password) {
-                showAlert('error', 
-                    '<i class="fas fa-lock me-2"></i>' +
-                    '<strong>Password Required</strong><br>' +
-                    'Please enter your password to continue');
-                return;
-            }
+            console.log('Query result:', snapshot.exists());
             
-            if (password.length < 6) {
-                showAlert('error', 
-                    '<i class="fas fa-exclamation-triangle me-2"></i>' +
-                    '<strong>Invalid Password</strong><br>' +
-                    'Password must be at least 6 characters long');
-                return;
-            }
-            
-            // Attempt login
-            await loginUser(identifier, password);
-        });
-
-        // Enter key to submit
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                loginForm.dispatchEvent(new Event('submit'));
-            }
-        });
-
-        // Check if user just updated password
-        window.addEventListener('load', () => {
-            const updatedTime = localStorage.getItem('liila_updated_time');
-            if (updatedTime) {
-                const timeSinceUpdate = Date.now() - new Date(updatedTime).getTime();
-                const FIVE_MINUTES = 5 * 60 * 1000;
+            if (snapshot.exists()) {
+                const users = snapshot.val();
+                console.log('Found users:', users);
                 
-                if (timeSinceUpdate < FIVE_MINUTES) {
+                const userKey = Object.keys(users)[0];
+                const userData = users[userKey];
+                
+                console.log('User data:', userData);
+                
+                // Check password
+                if (userData.password === password) {
                     showAlert('success', 
                         '<i class="fas fa-check-circle me-2"></i>' +
-                        '<strong>Password Updated Successfully</strong><br>' +
-                        'Your password has been synchronized. You can now login with your new credentials.');
+                        '<strong>Authentication Successful</strong><br>' +
+                        'Welcome back to LIILA! Creating secure session...');
                     
-                    // Clear the update flag
-                    localStorage.removeItem('liila_updated_time');
+                    // Create user session data
+                    const sessionUserData = {
+                        id: userKey,
+                        username: userData.username,
+                        email: userData.email,
+                        phone: userData.phone,
+                        name: userData.fullName || userData.username,
+                        lastLogin: new Date().toISOString()
+                    };
+                    
+                    // Store in localStorage for quick access
+                    localStorage.setItem('liila_user', JSON.stringify(sessionUserData));
+                    
+                    // Create secure session
+                    const session = setSecureSession(sessionUserData, rememberMe.checked);
+                    console.log('Session created:', session);
+                    
+                    // Remember user if checkbox is checked
+                    if (rememberMe.checked) {
+                        localStorage.setItem('liila_remembered_user', identifier);
+                    } else {
+                        localStorage.removeItem('liila_remembered_user');
+                    }
+                    
+                    // Clear any reset data
+                    localStorage.removeItem('liila_reset_email');
+                    localStorage.removeItem('liila_reset_timestamp');
+                    
+                    // Show loading screen for smooth transition
+                    loadingScreen.classList.remove('hidden');
+                    mainContent.classList.remove('visible');
+                    
+                    // Redirect to home page after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
+                    
+                } else {
+                    showAlert('error', 
+                        '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                        '<strong>Invalid Credentials</strong><br>' +
+                        'The password you entered is incorrect. Please try again.');
+                    
+                    // Suggest forgot password
+                    setTimeout(() => {
+                        errorAlert.innerHTML = `
+                            <i class="fas fa-key me-2"></i>
+                            <strong>Forgot your password?</strong><br>
+                            Reset it securely through our 
+                            <a href="reset.html" class="alert-link fw-bold">password recovery system</a>.
+                        `;
+                    }, 2000);
                 }
+            } else {
+                showAlert('error', 
+                    '<i class="fas fa-user-times me-2"></i>' +
+                    '<strong>Account Not Found</strong><br>' +
+                    'No account found with those credentials. ' +
+                    'Please check your details or register for a new account.');
             }
             
-            // Check if user was redirected from reset
-            const resetEmail = localStorage.getItem('liila_reset_email');
-            if (resetEmail) {
-                showAlert('info', 
-                    '<i class="fas fa-info-circle me-2"></i>' +
-                    '<strong>Password Reset Complete</strong><br>' +
-                    'Your password has been reset. Please login with your new credentials.');
-                
-                // Auto-fill the email if it's also a username
-                document.getElementById('username').value = resetEmail;
-                document.getElementById('password').focus();
-            }
-        });
-    </script>
+        } catch (error) {
+            console.error('Login error:', error);
+            showAlert('error', 
+                '<i class="fas fa-exclamation-circle me-2"></i>' +
+                '<strong>Connection Error</strong><br>' +
+                'Unable to connect to authentication server. ' +
+                'Please check your internet connection and try again.');
+        } finally {
+            loginBtn.disabled = false;
+            btnText.classList.remove('d-none');
+            btnLoading.classList.add('d-none');
+        }
+    }
+
+    // Show alert message
+    function showAlert(type, message) {
+        if (type === 'error') {
+            errorAlert.innerHTML = message;
+            errorAlert.classList.remove('d-none');
+            successAlert.classList.add('d-none');
+            
+            // Auto hide after 8 seconds
+            setTimeout(() => {
+                errorAlert.classList.add('d-none');
+            }, 8000);
+        } else {
+            successAlert.innerHTML = message;
+            successAlert.classList.remove('d-none');
+            errorAlert.classList.add('d-none');
+            
+            // Auto hide after 5 seconds (unless redirecting)
+            setTimeout(() => {
+                successAlert.classList.add('d-none');
+            }, 5000);
+        }
+    }
+
+    // Form submission handler
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const identifier = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        
+        // Basic validation
+        if (!identifier) {
+            showAlert('error', 
+                '<i class="fas fa-user me-2"></i>' +
+                '<strong>Identification Required</strong><br>' +
+                'Please enter your username or phone number');
+            return;
+        }
+        
+        if (!password) {
+            showAlert('error', 
+                '<i class="fas fa-lock me-2"></i>' +
+                '<strong>Password Required</strong><br>' +
+                'Please enter your password to continue');
+            return;
+        }
+        
+        if (password.length < 6) {
+            showAlert('error', 
+                '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                '<strong>Invalid Password</strong><br>' +
+                'Password must be at least 6 characters long');
+            return;
+        }
+        
+        // Attempt login
+        await loginUser(identifier, password);
+    });
+
+    // Enter key to submit
+    document.getElementById('password').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            loginForm.dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // Initialize page on load
+    window.addEventListener('load', () => {
+        initializePage();
+    });
+</script>
 </body>
 </html>
